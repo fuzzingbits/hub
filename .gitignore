@@ -1,0 +1,7 @@
+# Project Temporary Files
+/var/
+
+# Nuxt
+/node_modules/
+/.nuxt/
+/dist/
