@@ -1,6 +1,6 @@
 package main
 
-import "github.com/fuzzingbits/hub/src/cmd"
+import "github.com/fuzzingbits/hub/internal/cmd"
 
 func main() {
 	cmd.Run()
