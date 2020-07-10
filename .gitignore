@@ -1,5 +1,6 @@
 # Project Temporary Files
 /var/
+/.env
 
 # Nuxt
 /node_modules/
