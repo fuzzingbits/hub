@@ -38,7 +38,7 @@ dev-ui: ## Start a dev instance of the UI
 
 build-go:
 	@go install github.com/gobuffalo/packr/packr
-	packr build -o $(CURDIR)/var/$(PROJECT_NAME)
+	$(GO_PATH)/bin/packr build -o $(CURDIR)/var/$(PROJECT_NAME)
 	@ln -sf $(CURDIR)/var/$(PROJECT_NAME) $(GO_PATH)/bin/$(PROJECT_NAME)
 
 build-ui:
