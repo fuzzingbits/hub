@@ -8,7 +8,7 @@ type Service struct {
 	container *container.Container
 }
 
-// NewProduction is foobar
+// NewProduction returns a production instance of the service
 func NewProduction() (*Service, error) {
 	config, err := getConfig()
 	if err != nil {

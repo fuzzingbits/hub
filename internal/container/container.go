@@ -2,7 +2,6 @@ package container
 
 // Container for our external connections
 type Container struct {
-	// SQL Database
-	// Cache
-	// Logger (rollbar)
+	// TODO: add connectors (database, cache, logger)
+	// TODO: add exported providers (wrappers for entities being stored in the connectors)
 }
