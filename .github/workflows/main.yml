@@ -33,7 +33,7 @@ jobs:
           infile: var/coverage.txt
           outfile: var/coverage.lcov
 
-      - name: Upload to Coveralls
+      - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
