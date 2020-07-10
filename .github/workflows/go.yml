@@ -1,12 +1,18 @@
 name: Go
-on: [push, pull_request]
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
+
     steps:
       - name: Set up Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v1
         with:
           node-version: 12
 
@@ -27,7 +33,7 @@ jobs:
           infile: var/coverage.txt
           outfile: var/coverage.lcov
 
-      - name: Coveralls
+      - name: Upload to Coveralls
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
