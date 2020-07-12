@@ -24,13 +24,7 @@ type Container struct {
 
 // NewProduction builds a container with all of the config
 func NewProduction(hubConfig *hubconfig.Config) *Container {
-	c := &Container{
+	return &Container{
 		config: hubConfig,
 	}
-
-	{ // Redis Connection
-
-	}
-
-	return c
 }
