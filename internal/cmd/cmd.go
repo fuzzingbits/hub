@@ -9,38 +9,53 @@ import (
 
 	"github.com/fuzzingbits/forge-wip/pkg/web"
 	"github.com/fuzzingbits/hub/internal/api"
+	"github.com/fuzzingbits/hub/internal/container"
 	"github.com/fuzzingbits/hub/internal/hub"
+	"github.com/fuzzingbits/hub/internal/hubconfig"
 	"github.com/gobuffalo/packr"
 )
 
+// App contains the required setup before running the app
+type App struct {
+	Config    *hubconfig.Config
+	Container *container.Container
+	Service   *hub.Service
+	Server    *http.Server
+}
+
 // Run the hub command
 func Run() {
-	service, err := hub.NewProduction()
-	if err != nil {
+	app := App{}
+
+	var err error
+	if app.Config, err = hubconfig.GetConfig(); err != nil {
 		log.Fatal(err)
 	}
 
-	server := getServer(service)
-	log.Printf("Listening on: http://%s\n", server.Addr)
-	log.Fatal(server.ListenAndServe())
+	app.Container = container.NewProduction(app.Config)
+	app.Service = hub.NewService(app.Config, app.Container)
+	app.Server = getServer(app)
+
+	log.Printf("Listening on: http://%s\n", app.Server.Addr)
+	log.Fatal(app.Server.ListenAndServe())
 }
 
-func getServer(service *hub.Service) *http.Server {
+func getServer(app App) *http.Server {
 	mux := http.NewServeMux()
-	mux.Handle("/", getRootHandler(service))
-	api.RegisterRoutes(mux, service)
+	mux.Handle("/", getRootHandler(app))
+	api.RegisterRoutes(mux, app.Service)
 
 	return &http.Server{
-		Addr:         service.Config.Listen,
+		Addr:         app.Config.Listen,
 		Handler:      mux,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
 }
 
-func getRootHandler(service *hub.Service) http.Handler {
-	if service.Config.Dev {
-		uiURL, _ := url.Parse(service.Config.DevUIProxyAddr)
+func getRootHandler(app App) http.Handler {
+	if app.Config.Dev {
+		uiURL, _ := url.Parse(app.Config.DevUIProxyAddr)
 		return httputil.NewSingleHostReverseProxy(uiURL)
 	}
 

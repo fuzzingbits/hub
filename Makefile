@@ -27,14 +27,20 @@ publish: docker ## Build and publish the Docker Image
 clean: ## Remove all git ignored file
 	git clean -Xdf --exclude="!/.env"
 
-dev-go: ## Start a dev instance of the Go Server
+dev-go: install-hooks ## Start a dev instance of the Go Server
 	clear
 	@DEV=true go run main.go
 
-dev-ui: ## Start a dev instance of the UI
+dev-ui: install-hooks ## Start a dev instance of the UI
 	clear
 	[ -f ./node_modules ] || npm install
 	npm run dev
+
+dev-docker-up: install-hooks ## Start the docker containers used for development
+	docker-compose -f ops/hub_dev/docker-compose.yml up -d
+
+dev-docker-down: install-hooks ## Remove the docker containers used for development
+	docker-compose -f ops/hub_dev/docker-compose.yml down
 
 build-go:
 	@go install github.com/gobuffalo/packr/packr
@@ -64,5 +70,8 @@ test-go:
 
 post-lint:
 	@git diff --exit-code --quiet || (echo "There should not be any changes after the lint runs" && git status && exit 122;)
+
+install-hooks:
+	@cp ops/hooks/* .git/hooks/
 
 pipeline: full post-lint
