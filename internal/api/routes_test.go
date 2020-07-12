@@ -11,7 +11,7 @@ import (
 
 func TestTestRoute(t *testing.T) {
 	mux := http.NewServeMux()
-	service, _ := hub.NewProduction()
+	service := &hub.Service{}
 	RegisterRoutes(mux, service)
 
 	rootertest.Test(t, mux, []rootertest.TestCase{

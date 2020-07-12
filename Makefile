@@ -36,6 +36,12 @@ dev-ui: ## Start a dev instance of the UI
 	[ -f ./node_modules ] || npm install
 	npm run dev
 
+dev-docker-up: ## Start the docker containers used for development
+	docker-compose -f ops/hub_dev/docker-compose.yml up -d
+
+dev-docker-down: ## Remove the docker containers used for development
+	docker-compose -f ops/hub_dev/docker-compose.yml down
+
 build-go:
 	@go install github.com/gobuffalo/packr/packr
 	$(GO_PATH)/bin/packr build -o $(CURDIR)/var/$(PROJECT_NAME)
