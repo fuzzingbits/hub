@@ -5,6 +5,7 @@ GO_PATH := $(shell go env GOPATH 2> /dev/null)
 MODULE := $(shell awk '/^module/ {print $$2}' go.mod)
 NAMESPACE := $(shell awk -F "/" '/^module/ {print $$(NF-1)}' go.mod)
 PROJECT_NAME := $(shell awk -F "/" '/^module/ {print $$(NF)}' go.mod)
+PATH := $(GO_PATH)/bin:$(PATH)
 
 help:
 	@echo "Makefile targets:"
@@ -44,8 +45,8 @@ dev-docker-down: install-hooks ## Remove the docker containers used for developm
 
 build-go:
 	@go install github.com/gobuffalo/packr/packr
-	$(GO_PATH)/bin/packr build -o $(CURDIR)/var/$(PROJECT_NAME)
-	@ln -sf $(CURDIR)/var/$(PROJECT_NAME) $(GO_PATH)/bin/$(PROJECT_NAME)
+	packr build -o $(CURDIR)/var/$(PROJECT_NAME)
+	@ln -sf $(CURDIR)/var/$(PROJECT_NAME) $(PROJECT_NAME)
 
 build-ui:
 	npm run build
@@ -56,8 +57,8 @@ lint-go:
 	go get -d ./...
 	gofmt -s -w .
 	go vet ./...
-	$(GO_PATH)/bin/golint -set_exit_status=1 ./...
-	$(GO_PATH)/bin/goimports -w .
+	golint -set_exit_status=1 ./...
+	goimports -w .
 
 lint-ui:
 	[ -d ./node_modules ] || npm install
@@ -72,6 +73,7 @@ post-lint:
 	@git diff --exit-code --quiet || (echo "There should not be any changes after the lint runs" && git status && exit 122;)
 
 install-hooks:
+	echo $$PATH
 	@cp ops/hooks/* .git/hooks/
 
 pipeline: full post-lint
