@@ -33,7 +33,7 @@ dev-go: install-hooks ## Start a dev instance of the Go Server
 
 dev-ui: install-hooks ## Start a dev instance of the UI
 	clear
-	[ -f ./node_modules ] || npm install
+	[ -d ./node_modules ] || npm install
 	npm run dev
 
 dev-docker-up: install-hooks ## Start the docker containers used for development
@@ -60,7 +60,7 @@ lint-go:
 	$(GO_PATH)/bin/goimports -w .
 
 lint-ui:
-	[ -f ./node_modules ] || npm install
+	[ -d ./node_modules ] || npm install
 	npm run fmt
 
 test-go:

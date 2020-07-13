@@ -6,4 +6,4 @@
 [![Main](https://github.com/fuzzingbits/hub/workflows/Main/badge.svg)](https://github.com/fuzzingbits/hub/actions)
 [![Coverage Status](https://coveralls.io/repos/github/fuzzingbits/hub/badge.svg?branch=master)](https://coveralls.io/github/fuzzingbits/hub?branch=master)
 
-TODO: Write a description.
+A productivity center for just you or a small group.
