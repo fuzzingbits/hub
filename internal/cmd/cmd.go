@@ -18,7 +18,7 @@ import (
 // App contains the required setup before running the app
 type App struct {
 	Config    *hubconfig.Config
-	Container *container.Container
+	Container container.Container
 	Service   *hub.Service
 	Server    *http.Server
 }

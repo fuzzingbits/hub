@@ -8,6 +8,7 @@
 		"dev": "nuxt"
 	},
 	"dependencies": {
+		"axios": "^0.19.2",
 		"nuxt": "^2.13.3"
 	},
 	"devDependencies": {

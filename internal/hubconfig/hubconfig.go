@@ -6,7 +6,7 @@ import (
 	"github.com/fuzzingbits/forge-wip/pkg/config"
 )
 
-// Config for the HUB command line tool
+// Config for the Hub command line tool
 type Config struct {
 	Listen           string `env:"LISTEN"`
 	RollbarToken     string `env:"ROLLBAR_TOKEN"`

@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func (c *Container) getMongoClient() (*mongo.Client, error) {
+func (c *Production) getMongoClient() (*mongo.Client, error) {
 	// If it's ready, just return it
 	if c.mongoClient != nil {
 		return c.mongoClient, nil

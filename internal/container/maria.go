@@ -2,7 +2,7 @@ package container
 
 import "database/sql"
 
-func (c *Container) getMariaClient() (*sql.DB, error) {
+func (c *Production) getMariaClient() (*sql.DB, error) {
 	// If it's ready, just return it
 	if c.mariaClient != nil {
 		return c.mariaClient, nil
