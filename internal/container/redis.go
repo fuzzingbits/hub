@@ -2,7 +2,7 @@ package container
 
 import "github.com/go-redis/redis/v8"
 
-func (c *Container) getRedisClient() (*redis.Client, error) {
+func (c *Production) getRedisClient() (*redis.Client, error) {
 	// If it's ready, just return it
 	if c.redisClient != nil {
 		return c.redisClient, nil

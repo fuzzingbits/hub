@@ -6,7 +6,7 @@ services:
       - 127.0.0.1:2021:3306
     environment:
       MYSQL_ROOT_PASSWORD: justTheDevPassword
-      MYSQL_DATABASE: leviathan
+      MYSQL_DATABASE: hub
 
   store:
     image: mongo

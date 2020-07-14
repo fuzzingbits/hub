@@ -6,6 +6,7 @@ import (
 
 	"github.com/fuzzingbits/forge-wip/pkg/rooter"
 	"github.com/fuzzingbits/forge-wip/pkg/rootertest"
+	"github.com/fuzzingbits/hub/internal/entity"
 	"github.com/fuzzingbits/hub/internal/hub"
 )
 
@@ -23,6 +24,12 @@ func TestTestRoute(t *testing.T) {
 				StatusCode: http.StatusOK,
 				State:      true,
 				Message:    "Hello!",
+				Data: entity.UserSession{
+					User: entity.User{
+						FirstName: "Aaron",
+						LastName:  "Ellington",
+					},
+				},
 			}.Bytes(),
 		},
 	})
