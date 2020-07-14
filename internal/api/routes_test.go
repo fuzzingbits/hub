@@ -19,7 +19,7 @@ func TestTestRoute(t *testing.T) {
 		{
 			Name:       "test test route",
 			StatusCode: http.StatusOK,
-			URL:        "/api/test",
+			URL:        "/api/users/me",
 			ResponseBytes: rooter.Response{
 				StatusCode: http.StatusOK,
 				State:      true,

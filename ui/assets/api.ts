@@ -19,7 +19,7 @@ client.interceptors.response.use(
 
 class HubAPI {
 	public async getMe(): Promise<GenericResponse<types.UserSession>> {
-		const response = await client.get("/api/test");
+		const response = await client.get("/api/users/me");
 		return response.data;
 	}
 }
