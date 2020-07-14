@@ -23,8 +23,10 @@ github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymF
 github.com/envoyproxy/go-control-plane v0.9.4/go.mod h1:6rpuAdCZL397s3pYoYcLgu1mIlRU8Am5FuJP05cCM98=
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
-github.com/fuzzingbits/forge-wip v0.0.2 h1:FpEJvafZu7y5CdCgK0EuSI1w2MFQy4ejJH3Pf71XXHU=
 github.com/fuzzingbits/forge-wip v0.0.2/go.mod h1:0FwEQu63BK2I2ejzLsPgLvdosxDhox8UWoXI0gqQuGI=
+github.com/fuzzingbits/forge-wip v0.0.3 h1:cyy0jJxuxq+uArtyTX/XoCzwP7Dk/bm0Bnw88fJ+y3Y=
+github.com/fuzzingbits/forge-wip v0.0.3/go.mod h1:AqW3zy1YXDsJx67Qim1Us8RLd2slnxUcBOeEvIK+K/o=
+github.com/fuzzingbits/hub v0.0.0-20200714153821-ecda9cb7e05d/go.mod h1:/R/dwobbGOLvzHYpI/rR+xPpDDTN4bmg9nfFX8hJLoU=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
 github.com/go-redis/redis/v8 v8.0.0-beta.6 h1:QeXAkG9L5cWJA+eJTBvhkftE7dwpJ0gbMYeBE2NxXS4=
 github.com/go-redis/redis/v8 v8.0.0-beta.6/go.mod h1:g79Vpae8JMzg5qjk8BiwU9tK+HmU3iDVyS4UAJLFycI=

@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/fuzzingbits/forge-wip/pkg/rooter"
+	"github.com/fuzzingbits/forge-wip/pkg/rootertest"
 	"github.com/fuzzingbits/hub/internal/hub"
-	"github.com/fuzzingbits/hub/internal/util/rooter"
-	"github.com/fuzzingbits/hub/internal/util/rootertest"
 )
 
 func TestTestRoute(t *testing.T) {

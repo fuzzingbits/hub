@@ -3,8 +3,8 @@ package api
 import (
 	"net/http"
 
+	"github.com/fuzzingbits/forge-wip/pkg/rooter"
 	"github.com/fuzzingbits/hub/internal/hub"
-	"github.com/fuzzingbits/hub/internal/util/rooter"
 )
 
 // App for the REST API
