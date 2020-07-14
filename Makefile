@@ -46,7 +46,7 @@ dev-docker-down: install-hooks ## Remove the docker containers used for developm
 build-go:
 	@go install github.com/gobuffalo/packr/packr
 	packr build -o $(CURDIR)/var/$(PROJECT_NAME)
-	@ln -sf $(CURDIR)/var/$(PROJECT_NAME) $(PROJECT_NAME)
+	@ln -sf $(CURDIR)/var/$(PROJECT_NAME) $(GO_PATH)/bin/$(PROJECT_NAME)
 
 build-ui:
 	npm run build
