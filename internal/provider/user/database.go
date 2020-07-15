@@ -36,7 +36,7 @@ type DatabaseProvider struct {
 	Database *gorm.DB
 }
 
-// AutoMigrate the data store
+// AutoMigrate the data connection
 func (d *DatabaseProvider) AutoMigrate(devMode bool) error {
 	// If devMode clear the table first
 	if devMode {
@@ -51,9 +51,9 @@ func (d *DatabaseProvider) AutoMigrate(devMode bool) error {
 	return nil
 }
 
-// GetUserByUUID gets a User by UUID
-func (d *DatabaseProvider) GetUserByUUID(uuid string) (entity.User, error) {
-	dbUser, err := d.getUserByUUID(uuid)
+// GetByUUID gets a User by UUID
+func (d *DatabaseProvider) GetByUUID(uuid string) (entity.User, error) {
+	dbUser, err := d.getByUUID(uuid)
 	if err != nil {
 		return entity.User{}, err
 	}
@@ -61,7 +61,7 @@ func (d *DatabaseProvider) GetUserByUUID(uuid string) (entity.User, error) {
 	return databaseUserToEntity(dbUser), nil
 }
 
-// GetAll users
+// GetAll Users
 func (d *DatabaseProvider) GetAll() ([]entity.User, error) {
 	entityUsers := []entity.User{}
 	dbUsers := []databaseUser{}
@@ -78,7 +78,7 @@ func (d *DatabaseProvider) GetAll() ([]entity.User, error) {
 
 // Save a User
 func (d *DatabaseProvider) Save(user entity.User) (entity.User, error) {
-	dbUser, err := d.getUserByUUID(user.UUID)
+	dbUser, err := d.getByUUID(user.UUID)
 	if err != nil {
 		return entity.User{}, err
 	}
@@ -115,7 +115,7 @@ func (d *DatabaseProvider) Create(user entity.User) (entity.User, error) {
 	return user, nil
 }
 
-func (d *DatabaseProvider) getUserByUUID(uuid string) (databaseUser, error) {
+func (d *DatabaseProvider) getByUUID(uuid string) (databaseUser, error) {
 	var dbUser databaseUser
 
 	if err := d.Database.Where("`uuid` = ?", uuid).First(&dbUser).Error; err != nil {

@@ -4,7 +4,7 @@ import (
 	"github.com/fuzzingbits/hub/internal/provider/usersettings"
 )
 
-// UserSettingsProvider builds and returns our UserSetting Provider
+// UserSettingsProvider safety builds and returns the Provider
 func (c *Production) UserSettingsProvider() (usersettings.Provider, error) {
 	// If it's ready, just return it
 	if c.userSettingsProvider != nil {

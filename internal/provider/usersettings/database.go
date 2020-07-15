@@ -20,6 +20,15 @@ type DatabaseProvider struct {
 	Collection *mongo.Collection
 }
 
+// AutoMigrate the data connection
+func (d *DatabaseProvider) AutoMigrate(devMode bool) error {
+	if devMode {
+		return d.Collection.Drop(context.TODO())
+	}
+
+	return nil
+}
+
 // GetByUUID gets a UserSettings by User.UUID
 func (d *DatabaseProvider) GetByUUID(uuid string) (entity.UserSettings, error) {
 	// Create the filter
@@ -52,7 +61,7 @@ func (d *DatabaseProvider) Save(uuid string, userSettings entity.UserSettings) e
 	return nil
 }
 
-// Delete a UserSettings
+// Delete a UserSettings by UUID
 func (d *DatabaseProvider) Delete(uuid string) error {
 	return nil
 }

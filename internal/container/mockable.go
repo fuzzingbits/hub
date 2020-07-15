@@ -28,12 +28,12 @@ func NewMockable() *Mockable {
 	}
 }
 
-// AutoMigrate the data stores
+// AutoMigrate the data connection
 func (m *Mockable) AutoMigrate(devMode bool) error {
 	return nil
 }
 
-// UserProvider returns the user Provider
+// UserProvider safety builds and returns the Provider
 func (m *Mockable) UserProvider() (user.Provider, error) {
 	if m.UserProviderValue == nil {
 		return nil, fmt.Errorf("error getting the mockable user.Provider")
@@ -42,7 +42,7 @@ func (m *Mockable) UserProvider() (user.Provider, error) {
 	return m.UserProviderValue, m.UserProviderError
 }
 
-// UserSettingsProvider returns the usersettings Provider
+// UserSettingsProvider safety builds and returns the Provider
 func (m *Mockable) UserSettingsProvider() (usersettings.Provider, error) {
 	if m.UserSettingsProviderValue == nil {
 		return nil, fmt.Errorf("error getting the mockable usersettings.Provider")

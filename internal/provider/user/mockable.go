@@ -20,8 +20,8 @@ type Mockable struct {
 	DeleteError error
 }
 
-// GetUserByUUID gets a user by UUID
-func (m *Mockable) GetUserByUUID(uuid string) (entity.User, error) {
+// GetByUUID gets a user by UUID
+func (m *Mockable) GetByUUID(uuid string) (entity.User, error) {
 	for _, user := range m.users {
 		if user.UUID == uuid {
 			return user, nil
@@ -31,7 +31,7 @@ func (m *Mockable) GetUserByUUID(uuid string) (entity.User, error) {
 	return entity.User{}, ErrNotFound
 }
 
-// GetAll users
+// GetAll Users
 func (m *Mockable) GetAll() ([]entity.User, error) {
 	if m.GetAllError != nil {
 		return nil, m.GetAllError
@@ -40,7 +40,7 @@ func (m *Mockable) GetAll() ([]entity.User, error) {
 	return m.users, nil
 }
 
-// Save a user
+// Save a User
 func (m *Mockable) Save(user entity.User) (entity.User, error) {
 	if m.SaveError != nil {
 		return entity.User{}, m.SaveError
@@ -52,7 +52,7 @@ func (m *Mockable) Save(user entity.User) (entity.User, error) {
 	return user, nil
 }
 
-// Delete a user
+// Delete a User
 func (m *Mockable) Delete(user entity.User) error {
 	m.Mutex.Lock()
 	defer m.Mutex.Unlock()
@@ -71,7 +71,7 @@ func (m *Mockable) Delete(user entity.User) error {
 	return ErrNotFound
 }
 
-// Create a user
+// Create a User
 func (m *Mockable) Create(user entity.User) (entity.User, error) {
 	m.Mutex.Lock()
 	defer m.Mutex.Unlock()

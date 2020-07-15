@@ -35,7 +35,7 @@ func (s *Service) GetCurrentSession(r *http.Request) (entity.UserSession, error)
 	}
 
 	// TODO: create actual session management
-	user, err := userProvider.GetUserByUUID("313efbe9-173b-4a1b-9a5b-7b69d95a66b9")
+	user, err := userProvider.GetByUUID("313efbe9-173b-4a1b-9a5b-7b69d95a66b9")
 	if err != nil {
 		return entity.UserSession{}, err
 	}

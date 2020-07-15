@@ -13,8 +13,11 @@ import (
 
 // Container exposes data providers
 type Container interface {
+	// AutoMigrate the data connections
 	AutoMigrate(devMode bool) error
+	// UserProvider safety builds and returns the Provider
 	UserProvider() (user.Provider, error)
+	// UserSettingsProvider safety builds and returns the Provider
 	UserSettingsProvider() (usersettings.Provider, error)
 }
 
@@ -61,8 +64,7 @@ func (c *Production) AutoMigrate(devMode bool) error {
 		return err
 	}
 
-	err = c.userProvider.AutoMigrate(devMode)
-	if err != nil {
+	if err := c.userProvider.AutoMigrate(devMode); err != nil {
 		return err
 	}
 

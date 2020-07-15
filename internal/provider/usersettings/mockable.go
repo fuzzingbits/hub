@@ -20,7 +20,7 @@ type Mockable struct {
 	store          []mockableEntry
 }
 
-// GetByUUID a UserSettings
+// GetByUUID gets a UserSettings by User.UUID
 func (m *Mockable) GetByUUID(uuid string) (entity.UserSettings, error) {
 	if m.GetByUUIDError != nil {
 		return entity.UserSettings{}, m.GetByUUIDError
@@ -37,12 +37,12 @@ func (m *Mockable) GetByUUID(uuid string) (entity.UserSettings, error) {
 
 // Save a UserSettings
 func (m *Mockable) Save(uuid string, userSettings entity.UserSettings) error {
-	m.Mutex.Lock()
-	defer m.Mutex.Unlock()
-
 	if m.SaveError != nil {
 		return m.SaveError
 	}
+
+	m.Mutex.Lock()
+	defer m.Mutex.Unlock()
 
 	for i, entry := range m.store {
 		if entry.UUID == uuid {
@@ -56,14 +56,14 @@ func (m *Mockable) Save(uuid string, userSettings entity.UserSettings) error {
 	return nil
 }
 
-// Delete a UserSettings
+// Delete a UserSettings by UUID
 func (m *Mockable) Delete(uuid string) error {
-	m.Mutex.Lock()
-	defer m.Mutex.Unlock()
-
 	if m.DeleteError != nil {
 		return m.DeleteError
 	}
+
+	m.Mutex.Lock()
+	defer m.Mutex.Unlock()
 
 	for i, entry := range m.store {
 		if entry.UUID == uuid {
