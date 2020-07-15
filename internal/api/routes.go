@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/fuzzingbits/forge-wip/pkg/rooter"
-	"github.com/fuzzingbits/hub/internal/entity"
 	"github.com/fuzzingbits/hub/internal/hub"
 )
 
@@ -30,15 +29,18 @@ func RegisterRoutes(mux *http.ServeMux, service *hub.Service) {
 }
 
 func (a *App) testHandler(req *http.Request) rooter.Response {
+	session, err := a.Service.GetCurrentSession(req)
+	if err != nil {
+		return rooter.Response{
+			StatusCode: http.StatusOK,
+			State:      true,
+			Data:       nil,
+		}
+	}
+
 	return rooter.Response{
 		StatusCode: http.StatusOK,
 		State:      true,
-		Message:    "Hello!",
-		Data: entity.UserSession{
-			User: entity.User{
-				FirstName: "Aaron",
-				LastName:  "Ellington",
-			},
-		},
+		Data:       session,
 	}
 }

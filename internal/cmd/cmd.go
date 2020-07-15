@@ -33,6 +33,7 @@ func Run() {
 	}
 
 	app.Container = container.NewProduction(app.Config)
+	app.Container.AutoMigrate(app.Config.Dev)
 	app.Service = hub.NewService(app.Config, app.Container)
 	app.Server = getServer(app)
 

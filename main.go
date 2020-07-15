@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/fuzzingbits/hub/internal/cmd"
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 func main() {
