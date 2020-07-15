@@ -16,9 +16,9 @@ func TestGetCurrentSession(t *testing.T) {
 	service := NewService(&hubconfig.Config{}, container)
 
 	targetUser := entity.User{
-		UUID:      "313efbe9-173b-4a1b-9a5b-7b69d95a66b9",
-		FirstName: "Aaron",
-		LastName:  "Ellington",
+		UUID:      "313efbe9-173b-4a1b-9b5b-7b69d95a66b9",
+		FirstName: "Testy",
+		LastName:  "McTestPants",
 	}
 
 	container.UserProviderValue.Create(targetUser)
@@ -60,7 +60,7 @@ func TestGetCurrentSessionProviderError(t *testing.T) {
 	}
 
 	targetUser := entity.User{
-		UUID:      "313efbe9-173b-4a1b-9a5b-7b69d95a66b9",
+		UUID:      "313efbe9-173b-4a1b-9b5b-7b69d95a66b9",
 		FirstName: "Aaron",
 		LastName:  "Ellington",
 	}

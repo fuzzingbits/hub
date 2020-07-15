@@ -20,9 +20,9 @@ func TestSuccessfulRoutes(t *testing.T) {
 
 	// Insert test data
 	targetUser := entity.User{
-		UUID:      "313efbe9-173b-4a1b-9a5b-7b69d95a66b9",
-		FirstName: "Aaron",
-		LastName:  "Ellington",
+		UUID:      "313efbe9-173b-4a1b-9b5b-7b69d95a66b9",
+		FirstName: "Testy",
+		LastName:  "McTestPants",
 	}
 
 	container.UserProviderValue.Create(targetUser)
