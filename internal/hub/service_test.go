@@ -22,8 +22,10 @@ func TestGetCurrentSession(t *testing.T) {
 	}
 
 	container.UserProviderValue.Create(targetUser)
+	req, _ := http.NewRequest(http.MethodGet, "/", nil)
+	req.Header.Set("UUID", "313efbe9-173b-4a1b-9b5b-7b69d95a66b9")
 
-	session, err := service.GetCurrentSession(&http.Request{})
+	session, err := service.GetCurrentSession(req)
 	if err != nil {
 		t.Error(err)
 	}
@@ -65,9 +67,11 @@ func TestGetCurrentSessionProviderError(t *testing.T) {
 		LastName:  "Ellington",
 	}
 	container.UserProviderValue.Create(targetUser)
+	req, _ := http.NewRequest(http.MethodGet, "/", nil)
+	req.Header.Set("UUID", "313efbe9-173b-4a1b-9b5b-7b69d95a66b9")
 
 	container.UserSettingsProviderValue.GetByUUIDError = errors.New("random error")
-	if _, err := service.GetCurrentSession(&http.Request{}); err == nil {
+	if _, err := service.GetCurrentSession(req); err == nil {
 		t.Errorf("should have returned an error")
 	}
 }
