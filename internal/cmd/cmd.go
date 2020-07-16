@@ -7,9 +7,9 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/fuzzingbits/forge-wip/pkg/web"
 	"github.com/fuzzingbits/hub/internal/api"
 	"github.com/fuzzingbits/hub/internal/container"
+	"github.com/fuzzingbits/hub/internal/forge/web"
 	"github.com/fuzzingbits/hub/internal/hub"
 	"github.com/fuzzingbits/hub/internal/hubconfig"
 	"github.com/gobuffalo/packr"
@@ -33,6 +33,7 @@ func Run() {
 	}
 
 	app.Container = container.NewProduction(app.Config)
+	app.Container.AutoMigrate(app.Config.Dev)
 	app.Service = hub.NewService(app.Config, app.Container)
 	app.Server = getServer(app)
 

@@ -1,8 +1,10 @@
 package container
 
-import "database/sql"
+import (
+	"github.com/jinzhu/gorm"
+)
 
-func (c *Production) getMariaClient() (*sql.DB, error) {
+func (c *Production) getMariaClient() (*gorm.DB, error) {
 	// If it's ready, just return it
 	if c.mariaClient != nil {
 		return c.mariaClient, nil
@@ -18,7 +20,7 @@ func (c *Production) getMariaClient() (*sql.DB, error) {
 	}
 
 	// Try to make a connection
-	client, err := sql.Open("mysql", c.config.DatabaseDSN)
+	client, err := gorm.Open("mysql", c.config.DatabaseDSN)
 	if err != nil {
 		return nil, err
 	}

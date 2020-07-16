@@ -1,7 +1,10 @@
 package hub
 
 import (
+	"net/http"
+
 	"github.com/fuzzingbits/hub/internal/container"
+	"github.com/fuzzingbits/hub/internal/entity"
 	"github.com/fuzzingbits/hub/internal/hubconfig"
 )
 
@@ -17,4 +20,33 @@ func NewService(newConfig *hubconfig.Config, newContainer container.Container) *
 		config:    newConfig,
 		container: newContainer,
 	}
+}
+
+// GetCurrentSession gets the current session
+func (s *Service) GetCurrentSession(r *http.Request) (entity.UserSession, error) {
+	userProvider, err := s.container.UserProvider()
+	if err != nil {
+		return entity.UserSession{}, err
+	}
+
+	userSettingsProvider, err := s.container.UserSettingsProvider()
+	if err != nil {
+		return entity.UserSession{}, err
+	}
+
+	// TODO: create actual session management
+	user, err := userProvider.GetByUUID(r.Header.Get("UUID"))
+	if err != nil {
+		return entity.UserSession{}, err
+	}
+
+	userSettings, err := userSettingsProvider.GetByUUID(user.UUID)
+	if err != nil {
+		return entity.UserSession{}, err
+	}
+
+	return entity.UserSession{
+		User:     user,
+		Settings: userSettings,
+	}, nil
 }

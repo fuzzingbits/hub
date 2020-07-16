@@ -1,6 +1,7 @@
 -include .env
 export
 
+SHELL := /bin/bash -O globstar
 GO_PATH := $(shell go env GOPATH 2> /dev/null)
 MODULE := $(shell awk '/^module/ {print $$2}' go.mod)
 NAMESPACE := $(shell awk -F "/" '/^module/ {print $$(NF-1)}' go.mod)
@@ -79,3 +80,6 @@ install-hooks:
 	@cp ops/hooks/* .git/hooks/
 
 pipeline: full post-lint
+
+loc:
+	@wc -l **/*.go ui/**/*.ts ui/**/*.vue | tail -n 1
