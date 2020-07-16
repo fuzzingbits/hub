@@ -1,0 +1,30 @@
+:root {
+	--background: #ffffff;
+	--background-accent: #eeeeee;
+	--foreground: #222222;
+	--foreground-accent: #444444;
+	--middle: #888888;
+	--primary: #0057ad;
+	--secondary: #9400d3;
+	--spacing: 16px;
+	--spacing-half: calc(var(--spacing) / 2);
+	--spacing-double: calc(var(--spacing) * 2);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--background: #181a1b;
+		--background-accent: #24282d;
+		--foreground: #cfd2d6;
+		--foreground-accent: #888888;
+		--middle: #444444;
+		--primary: #00bfff;
+		--secondary: #f08080;
+	}
+}
+
+@media (max-width: 500px) {
+	:root {
+		--spacing: 12px;
+	}
+}

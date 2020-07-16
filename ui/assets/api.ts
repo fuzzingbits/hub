@@ -17,6 +17,13 @@ client.interceptors.response.use(
 	}
 );
 
+client.interceptors.request.use(function (config) {
+	// TODO: create actual session management and stop doing this terrible thing
+	config.headers.UUID = "313efbe9-173b-4a1b-9a5b-7b69d95a66b9";
+
+	return config;
+});
+
 class HubAPI {
 	public async getMe(): Promise<GenericResponse<types.UserSession>> {
 		const response = await client.get("/api/users/me");

@@ -9,13 +9,13 @@ import Vue from "vue";
 import HubApi from "~/ui/assets/api";
 import * as types from "~/ui/assets/types";
 export default Vue.extend({
-	data: function() {
+	data: function () {
 		return {
 			userSession: null as types.UserSession | null,
 		};
 	},
 	computed: {
-		fullName: function(): string {
+		fullName: function (): string {
 			if (this.userSession === null) {
 				return "world";
 			}
@@ -25,14 +25,14 @@ export default Vue.extend({
 	},
 	mounted() {
 		HubApi.getMe()
-			.then(response => {
+			.then((response) => {
 				this.userSession = response.data;
 			})
-			.catch(err => {
+			.catch((err) => {
 				console.error("ajax error: " + err);
 			})
 			.finally(() => {
-				console.log("completed");
+				// console.log("completed");
 			});
 	},
 });

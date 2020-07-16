@@ -1,0 +1,14 @@
+/* For Firefox */
+html {
+	scrollbar-color: var(--middle) var(--background);
+}
+
+/* For Chrome */
+html::-webkit-scrollbar {
+	width: 8px;
+}
+
+/* For Chrome */
+html::-webkit-scrollbar-thumb {
+	background-color: var(--middle);
+}
