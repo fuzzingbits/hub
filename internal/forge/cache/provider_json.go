@@ -84,6 +84,5 @@ func (p ProviderJSON) getFilename(key string) string {
 		}
 	}
 
-	// TODO: sanitize key?
 	return fmt.Sprintf("%s/%s.json", p.Path, key)
 }

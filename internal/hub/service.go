@@ -34,7 +34,7 @@ func (s *Service) GetCurrentSession(r *http.Request) (entity.UserSession, error)
 		return entity.UserSession{}, err
 	}
 
-	// TODO: create actual session management
+	// TODO: create actual session management and stop doing this terrible thing
 	user, err := userProvider.GetByUUID(r.Header.Get("UUID"))
 	if err != nil {
 		return entity.UserSession{}, err

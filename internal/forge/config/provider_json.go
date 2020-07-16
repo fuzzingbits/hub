@@ -28,7 +28,6 @@ func (p ProviderJSON) Unmarshal(target interface{}) error {
 		return nil
 	}
 
-	// TODO: return no file found error?
 	return nil
 }
 
