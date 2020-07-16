@@ -53,7 +53,6 @@ func NewProduction(hubConfig *hubconfig.Config) Container {
 
 // AutoMigrate the data connections
 func (c *Production) AutoMigrate(clearExitstingDataAndCreateFixtures bool) error {
-
 	userProvider, err := c.UserProvider()
 	if err != nil {
 		return err
@@ -64,7 +63,10 @@ func (c *Production) AutoMigrate(clearExitstingDataAndCreateFixtures bool) error
 		return err
 	}
 
-	if err := c.userProvider.AutoMigrate(clearExitstingDataAndCreateFixtures); err != nil {
+	if err := autoMigrateAll([]dataProvider{
+		c.userProvider,
+		c.userSettingsProvider,
+	}, clearExitstingDataAndCreateFixtures); err != nil {
 		return err
 	}
 

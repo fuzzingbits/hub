@@ -6,6 +6,20 @@ import (
 	"github.com/fuzzingbits/hub/internal/provider/usersettings"
 )
 
+type dataProvider interface {
+	AutoMigrate(clearExitstingDataAndCreateFixtures bool) error
+}
+
+func autoMigrateAll(providers []dataProvider, clearExitstingDataAndCreateFixtures bool) error {
+	for _, provider := range providers {
+		if err := provider.AutoMigrate(clearExitstingDataAndCreateFixtures); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (c *Production) createFixtures(
 	userProvider user.Provider,
 	userSettingProvider usersettings.Provider,
@@ -19,7 +33,7 @@ func (c *Production) createFixtures(
 		})
 
 		userSettingProvider.Save(uuid, entity.UserSettings{
-			ThemeColor: "#00BFFF",
+			ThemeColor: "lime",
 		})
 	}
 }
