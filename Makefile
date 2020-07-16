@@ -82,4 +82,13 @@ install-hooks:
 pipeline: full post-lint
 
 loc:
-	@wc -l **/*.go ui/**/*.ts ui/**/*.vue | tail -n 1
+	@echo -n "Go:"
+	@wc -l **/*.go | tail -n 1 | awk '{print " " $$1}'
+	@echo -n "TypeScript:"
+	@wc -l ui/**/*.ts | tail -n 1 | awk '{print " " $$1}'
+	@echo -n "Vue:"
+	@wc -l ui/**/*.vue | tail -n 1 | awk '{print " " $$1}'
+	@echo -n "CSS:"
+	@wc -l ui/**/*.css | tail -n 1 | awk '{print " " $$1}'
+	@echo -n "Total:"
+	@wc -l **/*.go ui/**/*.ts ui/**/*.vue ui/**/*.css | tail -n 1 | awk '{print " " $$1}'
