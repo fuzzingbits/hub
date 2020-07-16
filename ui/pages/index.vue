@@ -27,6 +27,9 @@ export default Vue.extend({
 		HubApi.getMe()
 			.then((response) => {
 				this.userSession = response.data;
+				if (this.userSession && this.userSession.userSettings.themeColor) {
+					document.documentElement.style.setProperty("--primary", this.userSession.userSettings.themeColor);
+				}
 			})
 			.catch((err) => {
 				console.error("ajax error: " + err);

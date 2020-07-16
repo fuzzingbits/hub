@@ -1,4 +1,5 @@
 module.exports = {
-	useTabs: true,
+	printWidth: 300,
 	trailingComma: "es5",
+	useTabs: true,
 };
