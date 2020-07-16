@@ -63,9 +63,11 @@ func getRootHandler(app App) http.Handler {
 	uiFileSystem := packr.NewBox("../../dist")
 
 	spaHandler := &web.SinglePageAppHandler{
-		FileSystem:       uiFileSystem,
-		FileName:         "index.html",
-		DisableCSPHeader: true,
+		FileSystem: uiFileSystem,
+		FileName:   "index.html",
+		BaseCSPEntries: web.CSPEntries{
+			Script: []string{"self"},
+		},
 	}
 
 	return &web.Handler{
