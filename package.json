@@ -1,5 +1,4 @@
 {
-	"name": "hub",
 	"private": true,
 	"prettier": "./ui/.prettierrc.js",
 	"scripts": {

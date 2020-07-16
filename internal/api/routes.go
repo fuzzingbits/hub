@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/fuzzingbits/forge-wip/pkg/rooter"
+	"github.com/fuzzingbits/hub/internal/forge/rooter"
 	"github.com/fuzzingbits/hub/internal/hub"
 )
 

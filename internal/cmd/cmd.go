@@ -7,9 +7,9 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/fuzzingbits/forge-wip/pkg/web"
 	"github.com/fuzzingbits/hub/internal/api"
 	"github.com/fuzzingbits/hub/internal/container"
+	"github.com/fuzzingbits/hub/internal/forge/web"
 	"github.com/fuzzingbits/hub/internal/hub"
 	"github.com/fuzzingbits/hub/internal/hubconfig"
 	"github.com/gobuffalo/packr"

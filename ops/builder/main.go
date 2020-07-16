@@ -6,9 +6,9 @@ import (
 	"log"
 	"strings"
 
-	"github.com/fuzzingbits/forge-wip/pkg/rooter"
-	"github.com/fuzzingbits/forge-wip/pkg/typescript"
 	"github.com/fuzzingbits/hub/internal/entity"
+	"github.com/fuzzingbits/hub/internal/forge/rooter"
+	"github.com/fuzzingbits/hub/internal/forge/typescript"
 )
 
 // TypeScriptInterfaces written to `ui/assets/types.ts`

@@ -3,7 +3,7 @@ package hubconfig
 import (
 	"fmt"
 
-	"github.com/fuzzingbits/forge-wip/pkg/config"
+	"github.com/fuzzingbits/hub/internal/forge/config"
 )
 
 // Config for the Hub command line tool
