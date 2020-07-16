@@ -32,7 +32,7 @@ clean: ## Remove all git ignored file
 dev-go: install-hooks ## Start a dev instance of the Go Server
 	clear
 	@go run ops/builder/main.go
-	@DEV=true go run main.go
+	@DEV_PROXY_TO_NUXT=true DEV_CLEAR_DATA_AND_LOAD_FIXTURES=true go run main.go
 
 dev-ui: install-hooks ## Start a dev instance of the UI
 	clear

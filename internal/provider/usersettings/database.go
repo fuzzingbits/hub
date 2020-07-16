@@ -21,8 +21,8 @@ type DatabaseProvider struct {
 }
 
 // AutoMigrate the data connection
-func (d *DatabaseProvider) AutoMigrate(devMode bool) error {
-	if devMode {
+func (d *DatabaseProvider) AutoMigrate(clearExitstingData bool) error {
+	if clearExitstingData {
 		return d.Collection.Drop(context.TODO())
 	}
 

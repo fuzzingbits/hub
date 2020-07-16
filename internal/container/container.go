@@ -14,7 +14,7 @@ import (
 // Container exposes data providers
 type Container interface {
 	// AutoMigrate the data connections
-	AutoMigrate(devMode bool) error
+	AutoMigrate(clearExitstingDataAndCreateFixtures bool) error
 	// UserProvider safety builds and returns the Provider
 	UserProvider() (user.Provider, error)
 	// UserSettingsProvider safety builds and returns the Provider
@@ -52,7 +52,7 @@ func NewProduction(hubConfig *hubconfig.Config) Container {
 }
 
 // AutoMigrate the data connections
-func (c *Production) AutoMigrate(devMode bool) error {
+func (c *Production) AutoMigrate(clearExitstingDataAndCreateFixtures bool) error {
 
 	userProvider, err := c.UserProvider()
 	if err != nil {
@@ -64,11 +64,11 @@ func (c *Production) AutoMigrate(devMode bool) error {
 		return err
 	}
 
-	if err := c.userProvider.AutoMigrate(devMode); err != nil {
+	if err := c.userProvider.AutoMigrate(clearExitstingDataAndCreateFixtures); err != nil {
 		return err
 	}
 
-	if devMode {
+	if clearExitstingDataAndCreateFixtures {
 		c.createFixtures(
 			userProvider,
 			userSettingProvider,

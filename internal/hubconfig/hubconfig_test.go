@@ -22,7 +22,7 @@ func TestGetConfig(t *testing.T) {
 }
 
 func TestGetConfigError(t *testing.T) {
-	os.Setenv("DEV", "not a bool")
+	os.Setenv("DEV_PROXY_TO_NUXT", "not a bool")
 	_, err := GetConfig()
 
 	if err == nil {

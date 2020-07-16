@@ -33,7 +33,7 @@ func Run() {
 	}
 
 	app.Container = container.NewProduction(app.Config)
-	app.Container.AutoMigrate(app.Config.Dev)
+	app.Container.AutoMigrate(app.Config.DevClearDataAndLoadFixtures)
 	app.Service = hub.NewService(app.Config, app.Container)
 	app.Server = getServer(app)
 
@@ -55,7 +55,7 @@ func getServer(app App) *http.Server {
 }
 
 func getRootHandler(app App) http.Handler {
-	if app.Config.Dev {
+	if app.Config.DevProxyToNuxt {
 		uiURL, _ := url.Parse(app.Config.DevUIProxyAddr)
 		return httputil.NewSingleHostReverseProxy(uiURL)
 	}

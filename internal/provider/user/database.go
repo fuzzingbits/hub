@@ -37,9 +37,9 @@ type DatabaseProvider struct {
 }
 
 // AutoMigrate the data connection
-func (d *DatabaseProvider) AutoMigrate(devMode bool) error {
+func (d *DatabaseProvider) AutoMigrate(clearExitstingData bool) error {
 	// If devMode clear the table first
-	if devMode {
+	if clearExitstingData {
 		d.Database.DropTableIfExists(&databaseUser{})
 	}
 
