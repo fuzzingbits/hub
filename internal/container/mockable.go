@@ -29,7 +29,7 @@ func NewMockable() *Mockable {
 }
 
 // AutoMigrate the data connection
-func (m *Mockable) AutoMigrate(clearExitstingDataAndCreateFixtures bool) error {
+func (m *Mockable) AutoMigrate(clearExitstingData bool) error {
 	return nil
 }
 

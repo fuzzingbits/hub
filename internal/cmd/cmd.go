@@ -33,8 +33,16 @@ func Run() {
 	}
 
 	app.Container = container.NewProduction(app.Config)
-	app.Container.AutoMigrate(app.Config.DevClearDataAndLoadFixtures)
+	if err := app.Container.AutoMigrate(app.Config.DevClearExitstingData); err != nil {
+		log.Fatal(err)
+	}
+
 	app.Service = hub.NewService(app.Config, app.Container)
+	if app.Config.DevLoadFixtures {
+		if err := app.Service.CreateFixtures(); err != nil {
+			log.Fatal(err)
+		}
+	}
 	app.Server = getServer(app)
 
 	log.Printf("Listening on: http://%s\n", app.Server.Addr)

@@ -14,9 +14,10 @@ type Config struct {
 	DocumentStoreDSN string `env:"DOCUMENT_STORE_DSN"`
 	CacheAddress     string `env:"CACHE_ADDRESS"`
 	// Development Parameters
-	DevProxyToNuxt              bool   `env:"DEV_PROXY_TO_NUXT"`
-	DevClearDataAndLoadFixtures bool   `env:"DEV_CLEAR_DATA_AND_LOAD_FIXTURES"`
-	DevUIProxyAddr              string `env:"DEV_UI_PROXY_ADDR"`
+	DevProxyToNuxt        bool   `env:"DEV_PROXY_TO_NUXT"`
+	DevClearExitstingData bool   `env:"DEV_CLEAR_EXISTING_DATA"`
+	DevLoadFixtures       bool   `env:"DEV_LOAD_FIXTURES"`
+	DevUIProxyAddr        string `env:"DEV_UI_PROXY_ADDR"`
 }
 
 // GetConfig gets the config from the environment

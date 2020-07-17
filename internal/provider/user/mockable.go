@@ -12,16 +12,21 @@ var ErrNotFound = errors.New("User Not Found")
 
 // Mockable user.Provider
 type Mockable struct {
-	users       []entity.User
-	Mutex       *sync.Mutex
-	GetAllError error
-	CreateError error
-	SaveError   error
-	DeleteError error
+	users          []entity.User
+	Mutex          *sync.Mutex
+	GetAllError    error
+	GetByUUIDError error
+	CreateError    error
+	SaveError      error
+	DeleteError    error
 }
 
 // GetByUUID gets a user by UUID
 func (m *Mockable) GetByUUID(uuid string) (entity.User, error) {
+	if m.GetByUUIDError != nil {
+		return entity.User{}, m.GetByUUIDError
+	}
+
 	for _, user := range m.users {
 		if user.UUID == uuid {
 			return user, nil

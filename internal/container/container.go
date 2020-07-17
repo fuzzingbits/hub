@@ -14,7 +14,7 @@ import (
 // Container exposes data providers
 type Container interface {
 	// AutoMigrate the data connections
-	AutoMigrate(clearExitstingDataAndCreateFixtures bool) error
+	AutoMigrate(clearExitstingData bool) error
 	// UserProvider safety builds and returns the Provider
 	UserProvider() (user.Provider, error)
 	// UserSettingsProvider safety builds and returns the Provider
@@ -52,29 +52,34 @@ func NewProduction(hubConfig *hubconfig.Config) Container {
 }
 
 // AutoMigrate the data connections
-func (c *Production) AutoMigrate(clearExitstingDataAndCreateFixtures bool) error {
-	userProvider, err := c.UserProvider()
-	if err != nil {
+func (c *Production) AutoMigrate(clearExitstingData bool) error {
+	if _, err := c.UserProvider(); err != nil {
 		return err
 	}
 
-	userSettingProvider, err := c.UserSettingsProvider()
-	if err != nil {
+	if _, err := c.UserSettingsProvider(); err != nil {
 		return err
 	}
 
 	if err := autoMigrateAll([]dataProvider{
 		c.userProvider,
 		c.userSettingsProvider,
-	}, clearExitstingDataAndCreateFixtures); err != nil {
+	}, clearExitstingData); err != nil {
 		return err
 	}
 
-	if clearExitstingDataAndCreateFixtures {
-		c.createFixtures(
-			userProvider,
-			userSettingProvider,
-		)
+	return nil
+}
+
+type dataProvider interface {
+	AutoMigrate(clearExitstingData bool) error
+}
+
+func autoMigrateAll(providers []dataProvider, clearExitstingData bool) error {
+	for _, provider := range providers {
+		if err := provider.AutoMigrate(clearExitstingData); err != nil {
+			return err
+		}
 	}
 
 	return nil
