@@ -14,9 +14,9 @@ type Field struct {
 func (f Field) String() string {
 	name := f.Name
 
-	seperator := ":"
+	separator := ":"
 	if f.Optional {
-		seperator = "?:"
+		separator = "?:"
 	}
 
 	typeString := f.Type
@@ -29,7 +29,7 @@ func (f Field) String() string {
 	return fmt.Sprintf(
 		"%s%s %s;",
 		name,
-		seperator,
+		separator,
 		typeString,
 	)
 }
