@@ -15,7 +15,7 @@ func TestCreateFixturesSuccess(t *testing.T) {
 		t.Error(err)
 	}
 
-	c.UserProviderValue.CreateError = errors.New("foobar")
+	c.UserProviderValue.Provider.CreateError = errors.New("foobar")
 	if err := s.CreateFixtures(); err == nil {
 		t.Error("there should have been an error")
 	}

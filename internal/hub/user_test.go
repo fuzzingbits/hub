@@ -53,14 +53,14 @@ func TestGetCurrentSession(t *testing.T) {
 	}
 
 	{ // Test Get By UUID Failure
-		c.UserSettingsProviderValue.GetByUUIDError = errors.New("foobar")
+		c.UserSettingsProviderValue.Provider.GetByIDError = errors.New("foobar")
 		if _, err := s.GetCurrentSession(req); err == nil {
 			t.Error("there should have been an error")
 		}
 	}
 
 	{ // Test Get By UUID Failure
-		c.UserProviderValue.GetByUUIDError = errors.New("foobar")
+		c.UserProviderValue.Provider.GetByIDError = errors.New("foobar")
 		if _, err := s.GetCurrentSession(req); err == nil {
 			t.Error("there should have been an error")
 		}
@@ -93,7 +93,7 @@ func TestCreateUser(t *testing.T) {
 		t.Error(err)
 	}
 
-	c.UserSettingsProviderValue.SaveError = errors.New("foobar")
+	c.UserSettingsProviderValue.Provider.UpdateError = errors.New("foobar")
 	if _, err := s.CreateUser(
 		"fake",
 		"fake-first-name",

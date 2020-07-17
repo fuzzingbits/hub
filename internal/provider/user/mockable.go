@@ -2,9 +2,9 @@ package user
 
 import (
 	"errors"
-	"sync"
 
 	"github.com/fuzzingbits/hub/internal/entity"
+	"github.com/fuzzingbits/hub/internal/forge/mockableprovider"
 )
 
 // ErrNotFound is when a user can not be found by the provided UUID
@@ -12,80 +12,48 @@ var ErrNotFound = errors.New("User Not Found")
 
 // Mockable user.Provider
 type Mockable struct {
-	users          []entity.User
-	Mutex          *sync.Mutex
-	GetAllError    error
-	GetByUUIDError error
-	CreateError    error
-	SaveError      error
-	DeleteError    error
+	Provider *mockableprovider.Provider
 }
 
 // GetByUUID gets a user by UUID
 func (m *Mockable) GetByUUID(uuid string) (entity.User, error) {
-	if m.GetByUUIDError != nil {
-		return entity.User{}, m.GetByUUIDError
+	item, err := m.Provider.GetByID(uuid)
+	if err != nil {
+		return entity.User{}, err
 	}
 
-	for _, user := range m.users {
-		if user.UUID == uuid {
-			return user, nil
-		}
-	}
+	user, _ := item.(entity.User)
 
-	return entity.User{}, ErrNotFound
+	return user, nil
 }
 
 // GetAll Users
 func (m *Mockable) GetAll() ([]entity.User, error) {
-	if m.GetAllError != nil {
-		return nil, m.GetAllError
+	items, err := m.Provider.GetAll()
+	if err != nil {
+		return nil, err
 	}
 
-	return m.users, nil
+	users := []entity.User{}
+	for _, item := range items {
+		user, _ := item.(entity.User)
+		users = append(users, user)
+	}
+
+	return users, nil
 }
 
-// Save a User
-func (m *Mockable) Save(user entity.User) (entity.User, error) {
-	if m.SaveError != nil {
-		return entity.User{}, m.SaveError
-	}
-
-	m.Delete(user)
-	m.Create(user)
-
-	return user, nil
+// Update a User
+func (m *Mockable) Update(user entity.User) error {
+	return m.Provider.Update(user.UUID, user)
 }
 
 // Delete a User
 func (m *Mockable) Delete(user entity.User) error {
-	m.Mutex.Lock()
-	defer m.Mutex.Unlock()
-
-	if m.DeleteError != nil {
-		return m.DeleteError
-	}
-
-	for i, storedUser := range m.users {
-		if user.UUID == storedUser.UUID {
-			m.users = append(m.users[:i], m.users[i+1:]...)
-			return nil
-		}
-	}
-
-	return ErrNotFound
+	return m.Provider.Delete(user.UUID)
 }
 
 // Create a User
-func (m *Mockable) Create(user entity.User) (entity.User, error) {
-	m.Mutex.Lock()
-	defer m.Mutex.Unlock()
-
-	if m.CreateError != nil {
-		return user, m.CreateError
-	}
-
-	m.users = append(m.users, user)
-
-	return user, nil
+func (m *Mockable) Create(user entity.User) error {
+	return m.Provider.Create(user.UUID, user)
 }

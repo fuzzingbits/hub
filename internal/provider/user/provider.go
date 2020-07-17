@@ -10,10 +10,10 @@ type Provider interface {
 	GetByUUID(uuid string) (entity.User, error)
 	// GetAll Users
 	GetAll() ([]entity.User, error)
-	// Save a User
-	Save(user entity.User) (entity.User, error)
+	// Update a User
+	Update(user entity.User) error
 	// Delete a User
 	Delete(user entity.User) error
 	// Create a User
-	Create(user entity.User) (entity.User, error)
+	Create(user entity.User) error
 }

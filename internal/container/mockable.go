@@ -2,8 +2,8 @@ package container
 
 import (
 	"fmt"
-	"sync"
 
+	"github.com/fuzzingbits/hub/internal/forge/mockableprovider"
 	"github.com/fuzzingbits/hub/internal/provider/user"
 	"github.com/fuzzingbits/hub/internal/provider/usersettings"
 )
@@ -20,10 +20,10 @@ type Mockable struct {
 func NewMockable() *Mockable {
 	return &Mockable{
 		UserProviderValue: &user.Mockable{
-			Mutex: &sync.Mutex{},
+			Provider: mockableprovider.NewProvider(),
 		},
 		UserSettingsProviderValue: &usersettings.Mockable{
-			Mutex: &sync.Mutex{},
+			Provider: mockableprovider.NewProvider(),
 		},
 	}
 }

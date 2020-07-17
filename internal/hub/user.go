@@ -18,12 +18,13 @@ func (s *Service) CreateUser(uuid string, firstName string, lastName string) (en
 		return entity.UserSession{}, err
 	}
 
-	user, err := userProvider.Create(entity.User{
+	user := entity.User{
 		UUID:      uuid,
 		FirstName: firstName,
 		LastName:  lastName,
-	})
-	if err != nil {
+	}
+
+	if err := userProvider.Create(user); err != nil {
 		return entity.UserSession{}, err
 	}
 

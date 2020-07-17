@@ -13,34 +13,40 @@ import (
 )
 
 func TestSuccessfulRoutes(t *testing.T) {
-	container := container.NewMockable()
-	service := hub.NewService(&hubconfig.Config{}, container)
+	c := container.NewMockable()
+	s := hub.NewService(&hubconfig.Config{}, c)
 	mux := http.NewServeMux()
-	RegisterRoutes(mux, service)
+	RegisterRoutes(mux, s)
 
 	// Insert test data
-	targetUser := entity.User{
-		UUID:      "313efbe9-173b-4a1b-9b5b-7b69d95a66b9",
-		FirstName: "Testy",
-		LastName:  "McTestPants",
+	targetSession := entity.UserSession{
+		User: entity.User{
+			UUID:      "313efbe9-173b-4a1b-9b5b-7b69d95a66b9",
+			FirstName: "Testy",
+			LastName:  "McTestPants",
+		},
+		Settings: entity.UserSettings{
+			ThemeColor: "tomato",
+		},
 	}
-
-	container.UserProviderValue.Create(targetUser)
+	s.CreateUser(
+		targetSession.User.UUID,
+		targetSession.User.FirstName,
+		targetSession.User.LastName,
+	)
 
 	rootertest.Test(t, mux, []rootertest.TestCase{
 		{
 			Name: "test test route",
 			URL:  "/api/users/me",
 			RequestMod: func(req *http.Request) {
-				req.Header.Add("UUID", "313efbe9-173b-4a1b-9b5b-7b69d95a66b9")
+				req.Header.Add("UUID", targetSession.User.UUID)
 			},
 			TargetStatusCode: http.StatusOK,
 			TargetResponseBytes: rooter.Response{
 				StatusCode: http.StatusOK,
 				State:      true,
-				Data: entity.UserSession{
-					User: targetUser,
-				},
+				Data:       targetSession,
 			}.Bytes(),
 		},
 	})

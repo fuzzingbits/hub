@@ -76,20 +76,20 @@ func (d *DatabaseProvider) GetAll() ([]entity.User, error) {
 	return entityUsers, nil
 }
 
-// Save a User
-func (d *DatabaseProvider) Save(user entity.User) (entity.User, error) {
+// Update a User
+func (d *DatabaseProvider) Update(user entity.User) error {
 	dbUser, err := d.getByUUID(user.UUID)
 	if err != nil {
-		return entity.User{}, err
+		return err
 	}
 
 	entityToDatabaseUser(user, &dbUser)
 
 	if err := d.Database.Save(&dbUser).Error; err != nil {
-		return entity.User{}, err
+		return err
 	}
 
-	return databaseUserToEntity(dbUser), nil
+	return nil
 }
 
 // Delete a User
@@ -102,17 +102,15 @@ func (d *DatabaseProvider) Delete(user entity.User) error {
 }
 
 // Create a User
-func (d *DatabaseProvider) Create(user entity.User) (entity.User, error) {
+func (d *DatabaseProvider) Create(user entity.User) error {
 	dbUser := databaseUser{}
 	entityToDatabaseUser(user, &dbUser)
 
 	if err := d.Database.Create(&dbUser).Error; err != nil {
-		return entity.User{}, err
+		return err
 	}
 
-	user = databaseUserToEntity(dbUser)
-
-	return user, nil
+	return nil
 }
 
 func (d *DatabaseProvider) getByUUID(uuid string) (databaseUser, error) {
