@@ -3,12 +3,11 @@ package reactor
 import (
 	"github.com/fuzzingbits/hub/internal/entity"
 	"github.com/fuzzingbits/hub/internal/forge/codex"
-	"github.com/fuzzingbits/hub/internal/provider/user"
 	"github.com/google/uuid"
 )
 
 // DatabaseUserToEntity does with it says
-func DatabaseUserToEntity(dbUser user.User) entity.User {
+func DatabaseUserToEntity(dbUser entity.DatabaseUser) entity.User {
 	return entity.User{
 		UUID:      dbUser.UUID,
 		FirstName: dbUser.FirstName,
@@ -17,10 +16,10 @@ func DatabaseUserToEntity(dbUser user.User) entity.User {
 }
 
 // CreateUserRequestToDBUser does with it says
-func CreateUserRequestToDBUser(request entity.CreateUserRequest) user.User {
+func CreateUserRequestToDBUser(request entity.CreateUserRequest) entity.DatabaseUser {
 	newUUID := uuid.New().String()
 	password := codex.Hash(request.Password, newUUID)
-	return user.User{
+	return entity.DatabaseUser{
 		UUID:      newUUID,
 		FirstName: request.FirstName,
 		LastName:  request.LastName,
@@ -31,8 +30,8 @@ func CreateUserRequestToDBUser(request entity.CreateUserRequest) user.User {
 }
 
 // EntityToDatabaseUser does with it says
-func EntityToDatabaseUser(entityUser entity.User) user.User {
-	return user.User{
+func EntityToDatabaseUser(entityUser entity.User) entity.DatabaseUser {
+	return entity.DatabaseUser{
 		UUID:      entityUser.UUID,
 		FirstName: entityUser.FirstName,
 		LastName:  entityUser.LastName,

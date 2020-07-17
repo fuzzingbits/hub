@@ -3,6 +3,7 @@ package user
 import (
 	"errors"
 
+	"github.com/fuzzingbits/hub/internal/entity"
 	"github.com/fuzzingbits/hub/internal/forge/mockableprovider"
 )
 
@@ -15,27 +16,27 @@ type Mockable struct {
 }
 
 // GetByUUID gets a user by UUID
-func (m *Mockable) GetByUUID(uuid string) (User, error) {
+func (m *Mockable) GetByUUID(uuid string) (entity.DatabaseUser, error) {
 	item, err := m.Provider.GetByID(uuid)
 	if err != nil {
-		return User{}, err
+		return entity.DatabaseUser{}, err
 	}
 
-	user, _ := item.(User)
+	user, _ := item.(entity.DatabaseUser)
 
 	return user, nil
 }
 
 // GetAll Users
-func (m *Mockable) GetAll() ([]User, error) {
+func (m *Mockable) GetAll() ([]entity.DatabaseUser, error) {
 	items, err := m.Provider.GetAll()
 	if err != nil {
 		return nil, err
 	}
 
-	users := []User{}
+	users := []entity.DatabaseUser{}
 	for _, item := range items {
-		user, _ := item.(User)
+		user, _ := item.(entity.DatabaseUser)
 		users = append(users, user)
 	}
 
@@ -43,16 +44,16 @@ func (m *Mockable) GetAll() ([]User, error) {
 }
 
 // Update a User
-func (m *Mockable) Update(user *User) error {
+func (m *Mockable) Update(user *entity.DatabaseUser) error {
 	return m.Provider.Update(user.UUID, *user)
 }
 
 // Delete a User
-func (m *Mockable) Delete(user User) error {
+func (m *Mockable) Delete(user entity.DatabaseUser) error {
 	return m.Provider.Delete(user.UUID)
 }
 
 // Create a User
-func (m *Mockable) Create(user *User) error {
+func (m *Mockable) Create(user *entity.DatabaseUser) error {
 	return m.Provider.Create(user.UUID, *user)
 }

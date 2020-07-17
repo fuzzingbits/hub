@@ -16,6 +16,22 @@ type User struct {
 	LastName  string `json:"lastName"`
 }
 
+// DatabaseUser the the database structure for User objects
+type DatabaseUser struct {
+	ID        uint   `gorm:"primary_key"`
+	UUID      string `gorm:"size:36;not null"`
+	Username  string `gorm:"size:32;not null"`
+	Password  string `gorm:"size:64;not null"`
+	Email     string `gorm:"size:64;not null"`
+	FirstName string `gorm:"size:64;not null"`
+	LastName  string `gorm:"size:64;not null"`
+}
+
+// TableName for GORM
+func (d DatabaseUser) TableName() string {
+	return "user"
+}
+
 // UserSettings for a User
 type UserSettings struct {
 	ThemeColor string `json:"themeColor"`

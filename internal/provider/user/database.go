@@ -1,13 +1,9 @@
 package user
 
 import (
+	"github.com/fuzzingbits/hub/internal/entity"
 	"github.com/jinzhu/gorm"
 )
-
-// TableName for GORM
-func (d User) TableName() string {
-	return "user"
-}
 
 // DatabaseProvider is a user.Provider the uses a database
 type DatabaseProvider struct {
@@ -18,11 +14,11 @@ type DatabaseProvider struct {
 func (d *DatabaseProvider) AutoMigrate(clearExitstingData bool) error {
 	// If devMode clear the table first
 	if clearExitstingData {
-		d.Database.DropTableIfExists(&User{})
+		d.Database.DropTableIfExists(&entity.DatabaseUser{})
 	}
 
 	// Always automigrate the table
-	if err := d.Database.AutoMigrate(User{}).Error; err != nil {
+	if err := d.Database.AutoMigrate(entity.DatabaseUser{}).Error; err != nil {
 		return err
 	}
 
@@ -30,13 +26,13 @@ func (d *DatabaseProvider) AutoMigrate(clearExitstingData bool) error {
 }
 
 // GetByUUID gets a User by UUID
-func (d *DatabaseProvider) GetByUUID(uuid string) (User, error) {
+func (d *DatabaseProvider) GetByUUID(uuid string) (entity.DatabaseUser, error) {
 	return d.getByUUID(uuid)
 }
 
 // GetAll Users
-func (d *DatabaseProvider) GetAll() ([]User, error) {
-	dbUsers := []User{}
+func (d *DatabaseProvider) GetAll() ([]entity.DatabaseUser, error) {
+	dbUsers := []entity.DatabaseUser{}
 	if err := d.Database.Find(dbUsers).Error; err != nil {
 		return nil, err
 	}
@@ -45,7 +41,7 @@ func (d *DatabaseProvider) GetAll() ([]User, error) {
 }
 
 // Update a User
-func (d *DatabaseProvider) Update(dbUser *User) error {
+func (d *DatabaseProvider) Update(dbUser *entity.DatabaseUser) error {
 	if err := d.Database.Save(dbUser).Error; err != nil {
 		return err
 	}
@@ -54,8 +50,8 @@ func (d *DatabaseProvider) Update(dbUser *User) error {
 }
 
 // Delete a User
-func (d *DatabaseProvider) Delete(user User) error {
-	if err := d.Database.Where("`uuid` LIKE ?", user.UUID).Delete(User{}).Error; err != nil {
+func (d *DatabaseProvider) Delete(user entity.DatabaseUser) error {
+	if err := d.Database.Where("`uuid` LIKE ?", user.UUID).Delete(entity.DatabaseUser{}).Error; err != nil {
 		return err
 	}
 
@@ -63,7 +59,7 @@ func (d *DatabaseProvider) Delete(user User) error {
 }
 
 // Create a User
-func (d *DatabaseProvider) Create(dbUser *User) error {
+func (d *DatabaseProvider) Create(dbUser *entity.DatabaseUser) error {
 
 	if err := d.Database.Create(&dbUser).Error; err != nil {
 		return err
@@ -72,11 +68,11 @@ func (d *DatabaseProvider) Create(dbUser *User) error {
 	return nil
 }
 
-func (d *DatabaseProvider) getByUUID(uuid string) (User, error) {
-	var dbUser User
+func (d *DatabaseProvider) getByUUID(uuid string) (entity.DatabaseUser, error) {
+	var dbUser entity.DatabaseUser
 
 	if err := d.Database.Where("`uuid` = ?", uuid).First(&dbUser).Error; err != nil {
-		return User{}, err
+		return entity.DatabaseUser{}, err
 	}
 
 	return dbUser, nil
