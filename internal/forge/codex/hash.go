@@ -7,6 +7,7 @@ import (
 
 // Hash a string with salt
 func Hash(source string, salt string) string {
-	hash := sha256.Sum256([]byte(source))
+	hash := sha256.Sum256([]byte(source + salt))
+
 	return hex.EncodeToString(hash[:])
 }
