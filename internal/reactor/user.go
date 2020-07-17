@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// DatabaseUserToEntity does what is says
+// DatabaseUserToEntity does with it says
 func DatabaseUserToEntity(dbUser user.User) entity.User {
 	return entity.User{
 		UUID:      dbUser.UUID,
@@ -16,6 +16,7 @@ func DatabaseUserToEntity(dbUser user.User) entity.User {
 	}
 }
 
+// CreateUserRequestToDBUser does with it says
 func CreateUserRequestToDBUser(request entity.CreateUserRequest) user.User {
 	newUUID := uuid.New().String()
 	password := codex.Hash(request.Password, newUUID)
@@ -29,7 +30,7 @@ func CreateUserRequestToDBUser(request entity.CreateUserRequest) user.User {
 	}
 }
 
-// EntityToDatabaseUser does what is says
+// EntityToDatabaseUser does with it says
 func EntityToDatabaseUser(entityUser entity.User) user.User {
 	return user.User{
 		UUID:      entityUser.UUID,
