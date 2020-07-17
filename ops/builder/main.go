@@ -14,6 +14,8 @@ import (
 // TypeScriptInterfaces written to `ui/assets/types.ts`
 var TypeScriptInterfaces = []interface{}{
 	rooter.Response{},
+	entity.CreateUserRequest{},
+	entity.ServerStatus{},
 	entity.UserSession{},
 	entity.User{},
 	entity.UserSettings{},

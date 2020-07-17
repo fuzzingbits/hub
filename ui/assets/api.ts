@@ -26,7 +26,7 @@ client.interceptors.request.use(function (config) {
 
 class HubAPI {
 	public async getMe(): Promise<GenericResponse<types.UserSession>> {
-		const response = await client.get("/api/users/me");
+		const response = await client.get("/api/user/me");
 		return response.data;
 	}
 }

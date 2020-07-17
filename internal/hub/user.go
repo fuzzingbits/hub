@@ -3,11 +3,13 @@ package hub
 import (
 	"net/http"
 
+	"github.com/fuzzingbits/hub/internal/reactor"
+
 	"github.com/fuzzingbits/hub/internal/entity"
 )
 
 // CreateUser creates a User
-func (s *Service) CreateUser(uuid string, firstName string, lastName string) (entity.UserSession, error) {
+func (s *Service) CreateUser(request entity.CreateUserRequest) (entity.UserSession, error) {
 	userProvider, err := s.container.UserProvider()
 	if err != nil {
 		return entity.UserSession{}, err
@@ -18,13 +20,9 @@ func (s *Service) CreateUser(uuid string, firstName string, lastName string) (en
 		return entity.UserSession{}, err
 	}
 
-	user := entity.User{
-		UUID:      uuid,
-		FirstName: firstName,
-		LastName:  lastName,
-	}
+	dbUser := reactor.CreateUserRequestToDBUser(request)
 
-	if err := userProvider.Create(user); err != nil {
+	if err := userProvider.Create(&dbUser); err != nil {
 		return entity.UserSession{}, err
 	}
 
@@ -33,12 +31,12 @@ func (s *Service) CreateUser(uuid string, firstName string, lastName string) (en
 		ThemeColor: "tomato",
 	}
 
-	if err := userSettingsProvider.Save(user.UUID, userSettings); err != nil {
+	if err := userSettingsProvider.Save(dbUser.UUID, userSettings); err != nil {
 		return entity.UserSession{}, err
 	}
 
 	return entity.UserSession{
-		User:     user,
+		User:     reactor.DatabaseUserToEntity(dbUser),
 		Settings: userSettings,
 	}, nil
 }
@@ -67,7 +65,7 @@ func (s *Service) GetCurrentSession(r *http.Request) (entity.UserSession, error)
 	}
 
 	return entity.UserSession{
-		User:     user,
+		User:     reactor.DatabaseUserToEntity(user),
 		Settings: userSettings,
 	}, nil
 }

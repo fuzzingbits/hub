@@ -1,34 +1,12 @@
 package user
 
 import (
-	"github.com/fuzzingbits/hub/internal/entity"
 	"github.com/jinzhu/gorm"
 )
 
-type databaseUser struct {
-	ID        uint   `gorm:"primary_key"`
-	UUID      string `gorm:"size:64;not null"`
-	FirstName string `gorm:"size:64;not null"`
-	LastName  string `gorm:"size:64;not null"`
-}
-
-func (d databaseUser) TableName() string {
+// TableName for GORM
+func (d User) TableName() string {
 	return "user"
-}
-
-func databaseUserToEntity(dbUser databaseUser) entity.User {
-	return entity.User{
-		UUID:      dbUser.UUID,
-		FirstName: dbUser.FirstName,
-		LastName:  dbUser.LastName,
-	}
-}
-
-func entityToDatabaseUser(entityUser entity.User, dbUser *databaseUser) {
-	// Copy over values from the entityUser to an existing databaseUser
-	dbUser.UUID = entityUser.UUID
-	dbUser.FirstName = entityUser.FirstName
-	dbUser.LastName = entityUser.LastName
 }
 
 // DatabaseProvider is a user.Provider the uses a database
@@ -40,11 +18,11 @@ type DatabaseProvider struct {
 func (d *DatabaseProvider) AutoMigrate(clearExitstingData bool) error {
 	// If devMode clear the table first
 	if clearExitstingData {
-		d.Database.DropTableIfExists(&databaseUser{})
+		d.Database.DropTableIfExists(&User{})
 	}
 
 	// Always automigrate the table
-	if err := d.Database.AutoMigrate(databaseUser{}).Error; err != nil {
+	if err := d.Database.AutoMigrate(User{}).Error; err != nil {
 		return err
 	}
 
@@ -52,40 +30,23 @@ func (d *DatabaseProvider) AutoMigrate(clearExitstingData bool) error {
 }
 
 // GetByUUID gets a User by UUID
-func (d *DatabaseProvider) GetByUUID(uuid string) (entity.User, error) {
-	dbUser, err := d.getByUUID(uuid)
-	if err != nil {
-		return entity.User{}, err
-	}
-
-	return databaseUserToEntity(dbUser), nil
+func (d *DatabaseProvider) GetByUUID(uuid string) (User, error) {
+	return d.getByUUID(uuid)
 }
 
 // GetAll Users
-func (d *DatabaseProvider) GetAll() ([]entity.User, error) {
-	entityUsers := []entity.User{}
-	dbUsers := []databaseUser{}
+func (d *DatabaseProvider) GetAll() ([]User, error) {
+	dbUsers := []User{}
 	if err := d.Database.Find(dbUsers).Error; err != nil {
 		return nil, err
 	}
 
-	for _, dbUser := range dbUsers {
-		entityUsers = append(entityUsers, databaseUserToEntity(dbUser))
-	}
-
-	return entityUsers, nil
+	return dbUsers, nil
 }
 
 // Update a User
-func (d *DatabaseProvider) Update(user entity.User) error {
-	dbUser, err := d.getByUUID(user.UUID)
-	if err != nil {
-		return err
-	}
-
-	entityToDatabaseUser(user, &dbUser)
-
-	if err := d.Database.Save(&dbUser).Error; err != nil {
+func (d *DatabaseProvider) Update(dbUser *User) error {
+	if err := d.Database.Save(dbUser).Error; err != nil {
 		return err
 	}
 
@@ -93,8 +54,8 @@ func (d *DatabaseProvider) Update(user entity.User) error {
 }
 
 // Delete a User
-func (d *DatabaseProvider) Delete(user entity.User) error {
-	if err := d.Database.Where("`uuid` LIKE ?", user.UUID).Delete(databaseUser{}).Error; err != nil {
+func (d *DatabaseProvider) Delete(user User) error {
+	if err := d.Database.Where("`uuid` LIKE ?", user.UUID).Delete(User{}).Error; err != nil {
 		return err
 	}
 
@@ -102,9 +63,7 @@ func (d *DatabaseProvider) Delete(user entity.User) error {
 }
 
 // Create a User
-func (d *DatabaseProvider) Create(user entity.User) error {
-	dbUser := databaseUser{}
-	entityToDatabaseUser(user, &dbUser)
+func (d *DatabaseProvider) Create(dbUser *User) error {
 
 	if err := d.Database.Create(&dbUser).Error; err != nil {
 		return err
@@ -113,11 +72,11 @@ func (d *DatabaseProvider) Create(user entity.User) error {
 	return nil
 }
 
-func (d *DatabaseProvider) getByUUID(uuid string) (databaseUser, error) {
-	var dbUser databaseUser
+func (d *DatabaseProvider) getByUUID(uuid string) (User, error) {
+	var dbUser User
 
 	if err := d.Database.Where("`uuid` = ?", uuid).First(&dbUser).Error; err != nil {
-		return databaseUser{}, err
+		return User{}, err
 	}
 
 	return dbUser, nil

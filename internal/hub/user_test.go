@@ -15,22 +15,15 @@ func TestGetCurrentSession(t *testing.T) {
 	c := container.NewMockable()
 	s := NewService(&hubconfig.Config{}, c)
 
-	targetUserSession := entity.UserSession{
-		User: entity.User{
-			UUID:      "313efbe9-173b-4a1b-9b5b-7b69d95a66b9",
+	// Create Fixture User
+	targetUserSession, _ := s.CreateUser(
+		entity.CreateUserRequest{
 			FirstName: "Testy",
 			LastName:  "McTestPants",
+			Username:  "testy",
+			Email:     "testy@example.com",
+			Password:  "Password123",
 		},
-		Settings: entity.UserSettings{
-			ThemeColor: "tomato",
-		},
-	}
-
-	// Create Fixture User
-	s.CreateUser(
-		targetUserSession.User.UUID,
-		targetUserSession.User.FirstName,
-		targetUserSession.User.LastName,
 	)
 
 	// Create Fake Request
@@ -85,38 +78,30 @@ func TestCreateUser(t *testing.T) {
 	c := container.NewMockable()
 	s := NewService(&hubconfig.Config{}, c)
 
-	if _, err := s.CreateUser(
-		"fake-uuid",
-		"fake-first-name",
-		"fake-last-name",
-	); err != nil {
+	createUserRequest := entity.CreateUserRequest{
+		FirstName: "Testy",
+		LastName:  "McTestPants",
+		Username:  "testy",
+		Email:     "testy@example.com",
+		Password:  "Password123",
+	}
+
+	if _, err := s.CreateUser(createUserRequest); err != nil {
 		t.Error(err)
 	}
 
 	c.UserSettingsProviderValue.Provider.UpdateError = errors.New("foobar")
-	if _, err := s.CreateUser(
-		"fake",
-		"fake-first-name",
-		"fake-last-name",
-	); err == nil {
+	if _, err := s.CreateUser(createUserRequest); err == nil {
 		t.Error("there should have been an error")
 	}
 
 	c.UserSettingsProviderError = errors.New("foobar")
-	if _, err := s.CreateUser(
-		"fake",
-		"fake-first-name",
-		"fake-last-name",
-	); err == nil {
+	if _, err := s.CreateUser(createUserRequest); err == nil {
 		t.Error("there should have been an error")
 	}
 
 	c.UserProviderError = errors.New("foobar")
-	if _, err := s.CreateUser(
-		"fake",
-		"fake-first-name",
-		"fake-last-name",
-	); err == nil {
+	if _, err := s.CreateUser(createUserRequest); err == nil {
 		t.Error("there should have been an error")
 	}
 }

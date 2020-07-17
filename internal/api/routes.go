@@ -20,7 +20,15 @@ func RegisterRoutes(mux *http.ServeMux, service *hub.Service) {
 
 	routes := []rooter.Route{
 		{
-			Path:    "/api/users/me",
+			Path:    "/api/server/status",
+			Handler: rooter.ResponseFunc(a.testHandler),
+		},
+		{
+			Path:    "/api/server/setup",
+			Handler: rooter.ResponseFunc(a.testHandler),
+		},
+		{
+			Path:    "/api/user/me",
 			Handler: rooter.ResponseFunc(a.testHandler),
 		},
 	}

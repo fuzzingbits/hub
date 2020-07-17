@@ -19,26 +19,20 @@ func TestSuccessfulRoutes(t *testing.T) {
 	RegisterRoutes(mux, s)
 
 	// Insert test data
-	targetSession := entity.UserSession{
-		User: entity.User{
-			UUID:      "313efbe9-173b-4a1b-9b5b-7b69d95a66b9",
+	targetSession, _ := s.CreateUser(
+		entity.CreateUserRequest{
 			FirstName: "Testy",
 			LastName:  "McTestPants",
+			Username:  "testy",
+			Email:     "testy@example.com",
+			Password:  "Password123",
 		},
-		Settings: entity.UserSettings{
-			ThemeColor: "tomato",
-		},
-	}
-	s.CreateUser(
-		targetSession.User.UUID,
-		targetSession.User.FirstName,
-		targetSession.User.LastName,
 	)
 
 	rootertest.Test(t, mux, []rootertest.TestCase{
 		{
 			Name: "test test route",
-			URL:  "/api/users/me",
+			URL:  "/api/user/me",
 			RequestMod: func(req *http.Request) {
 				req.Header.Add("UUID", targetSession.User.UUID)
 			},
@@ -65,7 +59,7 @@ func TestFailedRoutes(t *testing.T) {
 		{
 			Name:             "test test route",
 			TargetStatusCode: http.StatusOK,
-			URL:              "/api/users/me",
+			URL:              "/api/user/me",
 			TargetResponseBytes: rooter.Response{
 				StatusCode: http.StatusOK,
 				State:      true,

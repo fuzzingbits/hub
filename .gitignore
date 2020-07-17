@@ -2,6 +2,9 @@
 /var/
 /.env
 
+# Go
+__debug_bin
+
 # Nuxt
 /node_modules/
 /.nuxt/
