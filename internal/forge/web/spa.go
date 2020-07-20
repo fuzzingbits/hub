@@ -13,6 +13,7 @@ type SinglePageAppHandler struct {
 	FileName         string
 	DisableCSPHeader bool
 	BaseCSPEntries   CSPEntries
+	ModResponse      func(http.ResponseWriter)
 }
 
 // ServeHTTP satisfies the http.Handler interface
@@ -30,6 +31,9 @@ func (s *SinglePageAppHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	// Add the appropriate http headers
 	s.addHeaders(w, r, fileContents)
+	if s.ModResponse != nil {
+		s.ModResponse(w)
+	}
 
 	// Write the file contents
 	_, _ = w.Write(fileContents)

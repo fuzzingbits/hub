@@ -77,6 +77,12 @@ func getRootHandler(app App) http.Handler {
 			Script: []string{"'self'"},
 			Style:  []string{"'self'"},
 		},
+		ModResponse: func(w http.ResponseWriter) {
+			w.Header().Set("X-Frame-Options", "SAMEORIGIN")
+			w.Header().Set("X-XSS-Protection", "1; mode=block")
+			w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+			w.Header().Set("X-Content-Type-Options", "nosniff")
+		},
 	}
 
 	return &web.Handler{
