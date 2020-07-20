@@ -71,14 +71,12 @@ func getRootHandler(app App) http.Handler {
 	uiFileSystem := packr.NewBox("../../dist")
 
 	spaHandler := &web.SinglePageAppHandler{
-		FileSystem:       uiFileSystem,
-		FileName:         "index.html",
-		DisableCSPHeader: true,
-		// TODO: looks like we have a bug with CSP header generation
-		// BaseCSPEntries: web.CSPEntries{
-		// 	Script: []string{"'self'"},
-		// 	Style:  []string{"'self'"},
-		// },
+		FileSystem: uiFileSystem,
+		FileName:   "index.html",
+		BaseCSPEntries: web.CSPEntries{
+			Script: []string{"'self'"},
+			Style:  []string{"'self'"},
+		},
 	}
 
 	return &web.Handler{

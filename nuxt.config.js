@@ -7,6 +7,9 @@ export default {
 		static: "ui/static",
 		store: "ui/store",
 	},
+	build: {
+		extractCSS: true,
+	},
 	buildModules: ["@nuxt/typescript-build"],
 	head: {
 		title: "Hub",
