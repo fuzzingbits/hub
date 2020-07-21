@@ -1,0 +1,20 @@
+package hub
+
+import (
+	"github.com/fuzzingbits/hub/pkg/container"
+	"github.com/fuzzingbits/hub/pkg/hubconfig"
+)
+
+// Service is the internal API of Hub
+type Service struct {
+	config    *hubconfig.Config
+	container container.Container
+}
+
+// NewService returns a production instance of the service
+func NewService(newConfig *hubconfig.Config, newContainer container.Container) *Service {
+	return &Service{
+		config:    newConfig,
+		container: newContainer,
+	}
+}

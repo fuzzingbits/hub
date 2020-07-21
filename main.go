@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/fuzzingbits/hub/internal/cmd"
+	"github.com/fuzzingbits/hub/pkg/cmd"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
