@@ -6,10 +6,8 @@ export interface Response {
 }
 
 export interface CreateUserRequest {
-	firstName: string;
-	lastName: string;
 	email: string;
-	useranmae: string;
+	username: string;
 	password: string;
 }
 

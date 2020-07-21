@@ -28,7 +28,6 @@ func (c *Production) UserSettingsProvider() (usersettings.Provider, error) {
 
 	// Create and save the provder
 	c.userSettingsProvider = &usersettings.DatabaseProvider{
-
 		Collection: db.Database("hub").Collection("user_settings"),
 	}
 
