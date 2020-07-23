@@ -60,7 +60,6 @@ func (d *DatabaseProvider) Delete(user entity.DatabaseUser) error {
 
 // Create a User
 func (d *DatabaseProvider) Create(dbUser *entity.DatabaseUser) error {
-
 	if err := d.Database.Create(&dbUser).Error; err != nil {
 		return err
 	}

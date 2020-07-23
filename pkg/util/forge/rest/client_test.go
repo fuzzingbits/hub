@@ -240,7 +240,6 @@ func testPayloadHelper(req *http.Request, payload interface{}) error {
 	}
 
 	if !reflect.DeepEqual(payloadBytes, requestBytes) {
-
 		return fmt.Errorf("Request body did not match. Want: %s, Got: %s",
 			string(payloadBytes),
 			string(requestBytes))
