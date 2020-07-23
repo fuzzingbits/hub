@@ -95,6 +95,11 @@ func TestCreateUser(t *testing.T) {
 		t.Error("there should have been an error")
 	}
 
+	c.UserProviderValue.Provider.CreateError = errors.New("foobar")
+	if _, err := s.CreateUser(createUserRequest); err == nil {
+		t.Error("there should have been an error")
+	}
+
 	c.UserSettingsProviderError = errors.New("foobar")
 	if _, err := s.CreateUser(createUserRequest); err == nil {
 		t.Error("there should have been an error")
