@@ -26,6 +26,7 @@ func (c *Production) getMariaClient() (*gorm.DB, error) {
 	}
 
 	// TODO: configure the client here
+	client.LogMode(false)
 
 	// Save the successful connection
 	c.mariaClient = client
