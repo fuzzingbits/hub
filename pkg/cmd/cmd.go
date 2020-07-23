@@ -33,20 +33,12 @@ func Run() {
 	}
 
 	app.Container = container.NewProduction(app.Config)
-	if err := app.Container.AutoMigrate(app.Config.DevClearExitstingData); err != nil {
-		log.Fatal(err)
-	}
-
 	app.Service = hub.NewService(app.Config, app.Container)
-	if app.Config.DevLoadFixtures {
-		if err := app.Service.CreateFixtures(); err != nil {
-			log.Fatal(err)
-		}
-	}
-	app.Server = getServer(app)
+	server := getServer(app)
+	go app.autoMigrate()
 
-	log.Printf("Listening on: http://%s\n", app.Server.Addr)
-	log.Fatal(app.Server.ListenAndServe())
+	log.Printf("Listening on: http://%s\n", server.Addr)
+	log.Fatal(server.ListenAndServe())
 }
 
 func getServer(app App) *http.Server {
@@ -90,4 +82,24 @@ func getRootHandler(app App) http.Handler {
 		NotFoundHandler: spaHandler,
 		RootHandler:     spaHandler,
 	}
+}
+
+func (app App) autoMigrate() {
+	var lastError error
+	maxTryCount := 5
+	postFailureWait := time.Second * 30
+
+	for tryCount := 1; tryCount <= maxTryCount; tryCount++ {
+		if lastError = app.Container.AutoMigrate(app.Config.DevClearExitstingData); lastError != nil {
+			log.Printf("AutoMigrate Attempt Failed %d/%d: Waiting %.0f seconds before trying again...", tryCount, maxTryCount, postFailureWait.Seconds())
+			time.Sleep(postFailureWait)
+			continue
+		}
+
+		log.Printf("AutoMigrate Attempt Successful %d/%d", tryCount, maxTryCount)
+
+		return
+	}
+
+	log.Printf("AutoMirgate Error: %s", lastError.Error())
 }

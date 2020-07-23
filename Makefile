@@ -29,10 +29,10 @@ publish: docker ## Build and publish the Docker Image
 clean: ## Remove all git ignored file
 	git clean -Xdf --exclude="!/.env"
 
-dev-go: install-hooks ## Start a dev instance of the Go Server
+dev-go: install-hooks dev-docker-up ## Start a dev instance of the Go Server
 	clear
 	@go run ops/builder/main.go
-	@DEV_PROXY_TO_NUXT=true DEV_CLEAR_EXISTING_DATA=true DEV_LOAD_FIXTURES=true go run main.go
+	@DEV_PROXY_TO_NUXT=true DEV_CLEAR_EXISTING_DATA=true go run main.go
 
 dev-ui: install-hooks ## Start a dev instance of the UI
 	clear
