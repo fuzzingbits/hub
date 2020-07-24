@@ -9,7 +9,8 @@ import (
 
 func TestHandler(t *testing.T) {
 	testHandler := &Handler{
-		FileSystem: http.Dir("handler_test_files"),
+		FileSystem:  http.Dir("handler_test_files"),
+		ModResponse: func(w http.ResponseWriter, r *http.Request) {},
 	}
 
 	testCases := []rootertest.TestCase{

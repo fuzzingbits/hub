@@ -18,7 +18,7 @@ func TestSinglePageAppHandler(t *testing.T) {
 		BaseCSPEntries: CSPEntries{
 			Script: []string{"'self'"},
 		},
-		ModResponse: func(w http.ResponseWriter) {
+		ModResponse: func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("TestHeader", "testValue")
 		},
 	}

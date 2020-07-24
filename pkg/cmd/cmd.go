@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/fuzzingbits/hub/pkg/api"
@@ -69,11 +70,14 @@ func getRootHandler(app App) http.Handler {
 			Script: []string{"'self'"},
 			Style:  []string{"'self'"},
 		},
-		ModResponse: func(w http.ResponseWriter) {
+		ModResponse: func(w http.ResponseWriter, r *http.Request) {
+			// Add security headers when serving the html app
 			w.Header().Set("X-Frame-Options", "SAMEORIGIN")
 			w.Header().Set("X-XSS-Protection", "1; mode=block")
 			w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 			w.Header().Set("X-Content-Type-Options", "nosniff")
+			// Don't cache the html page. It's the only thing that will change and it should always be small
+			w.Header().Set("Cache-Control", "no-cache")
 		},
 	}
 
@@ -81,6 +85,12 @@ func getRootHandler(app App) http.Handler {
 		FileSystem:      uiFileSystem,
 		NotFoundHandler: spaHandler,
 		RootHandler:     spaHandler,
+		ModResponse: func(w http.ResponseWriter, r *http.Request) {
+			// Make sure all nuxt content is cached because all the files names include a hash
+			if strings.HasPrefix(r.URL.Path, "/_nuxt") {
+				w.Header().Set("Cache-Control", "public, max-age=31536000")
+			}
+		},
 	}
 }
 

@@ -13,7 +13,7 @@ type SinglePageAppHandler struct {
 	FileName         string
 	DisableCSPHeader bool
 	BaseCSPEntries   CSPEntries
-	ModResponse      func(http.ResponseWriter)
+	ModResponse      func(http.ResponseWriter, *http.Request)
 }
 
 // ServeHTTP satisfies the http.Handler interface
@@ -32,7 +32,7 @@ func (s *SinglePageAppHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	// Add the appropriate http headers
 	s.addHeaders(w, r, fileContents)
 	if s.ModResponse != nil {
-		s.ModResponse(w)
+		s.ModResponse(w, r)
 	}
 
 	// Write the file contents
@@ -43,11 +43,8 @@ func (s *SinglePageAppHandler) addHeaders(w http.ResponseWriter, r *http.Request
 	extension := filepath.Ext(s.FileName)
 	w.Header().Set("Content-Type", mime.TypeByExtension(extension))
 
-	w.Header().Set("Cache-Control", "public, max-age=31536000")
-
 	if !s.DisableCSPHeader {
 		csp := GenerateContentSecurityPolicy(fileContents, s.BaseCSPEntries)
-
 		w.Header().Set("Content-Security-Policy", csp)
 	}
 }

@@ -10,6 +10,7 @@ type Handler struct {
 	FileSystem      http.FileSystem
 	RootHandler     http.Handler
 	NotFoundHandler http.Handler
+	ModResponse     func(http.ResponseWriter, *http.Request)
 	fileServer      http.Handler
 }
 
@@ -31,6 +32,10 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	requestingDirectory := strings.HasSuffix(requestedFilename, "/")
 	if requestingDirectory {
 		requestedFilename += defaultDirectoryIndex
+	}
+
+	if h.ModResponse != nil {
+		h.ModResponse(w, r)
 	}
 
 	// 404 Not Found Handling
