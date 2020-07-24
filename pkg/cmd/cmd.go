@@ -38,8 +38,8 @@ func Run() {
 	server := getServer(app)
 	go app.autoMigrate()
 
-	log.Printf("Listening on: http://%s\n", server.Addr)
-	log.Fatal(server.ListenAndServe())
+	app.Service.Logger.Printf("Listening on: http://%s\n", server.Addr)
+	app.Service.Logger.Fatal(server.ListenAndServe())
 }
 
 func getServer(app App) *http.Server {
@@ -103,15 +103,15 @@ func (app App) autoMigrate() {
 
 	for tryCount := 1; tryCount <= maxTryCount; tryCount++ {
 		if lastError = app.Container.AutoMigrate(app.Config.DevClearExitstingData); lastError != nil {
-			log.Printf("AutoMigrate Attempt Failed %d/%d: Waiting %.0f seconds before trying again...", tryCount, maxTryCount, postFailureWait.Seconds())
+			app.Service.Logger.Printf("AutoMigrate Attempt Failed %d/%d: Waiting %.0f seconds before trying again...", tryCount, maxTryCount, postFailureWait.Seconds())
 			time.Sleep(postFailureWait)
 			continue
 		}
 
-		log.Printf("AutoMigrate Attempt Successful %d/%d", tryCount, maxTryCount)
+		app.Service.Logger.Printf("AutoMigrate Attempt Successful %d/%d", tryCount, maxTryCount)
 
 		return
 	}
 
-	log.Printf("AutoMirgate Error: %s", lastError.Error())
+	app.Service.Logger.Printf("AutoMirgate Error: %s", lastError.Error())
 }
