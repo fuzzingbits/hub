@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"net/http"
 	"testing"
 
@@ -48,12 +49,9 @@ func TestSuccessfulRoutes(t *testing.T) {
 
 func TestFailedRoutes(t *testing.T) {
 	container := container.NewMockable()
-	service := hub.NewService(&hubconfig.Config{}, container)
+	service := hub.NewService(&hubconfig.Config{RollbarToken: "foobar-fake-token"}, container)
 	mux := http.NewServeMux()
 	RegisterRoutes(mux, service)
-
-	// Test with no UserProvider
-	container.UserProviderValue = nil
 
 	rootertest.Test(t, mux, []rootertest.TestCase{
 		{
@@ -63,8 +61,20 @@ func TestFailedRoutes(t *testing.T) {
 			TargetResponseBytes: rooter.Response{
 				StatusCode: http.StatusOK,
 				State:      true,
+				Message:    "you are not logged in",
 				Data:       nil,
 			}.Bytes(),
+		},
+	})
+
+	container.UserProviderError = errors.New("foobar")
+
+	rootertest.Test(t, mux, []rootertest.TestCase{
+		{
+			Name:                "test test route",
+			TargetStatusCode:    http.StatusInternalServerError,
+			URL:                 "/api/user/me",
+			TargetResponseBytes: rooter.ResponseInternalServerError().Bytes(),
 		},
 	})
 }

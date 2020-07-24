@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -14,6 +15,7 @@ import (
 	"github.com/fuzzingbits/hub/pkg/hubconfig"
 	"github.com/fuzzingbits/hub/pkg/util/forge/web"
 	"github.com/gobuffalo/packr"
+	"github.com/rollbar/rollbar-go"
 )
 
 // App contains the required setup before running the app
@@ -39,7 +41,8 @@ func Run() {
 	go app.autoMigrate()
 
 	app.Service.Logger.Printf("Listening on: http://%s\n", server.Addr)
-	app.Service.Logger.Fatal(server.ListenAndServe())
+	app.logError(server.ListenAndServe())
+	app.Service.Rollbar.Wait()
 }
 
 func getServer(app App) *http.Server {
@@ -113,5 +116,12 @@ func (app App) autoMigrate() {
 		return
 	}
 
-	app.Service.Logger.Printf("AutoMirgate Error: %s", lastError.Error())
+	app.logError(fmt.Errorf("AutoMirgate Error: %s", lastError.Error()))
+}
+
+func (app App) logError(err error) {
+	app.Service.ErrorLogger.Printf("AutoMirgate Error: %s", err.Error())
+	if app.Service.Rollbar != nil {
+		app.Service.Rollbar.Message(rollbar.ERR, err.Error())
+	}
 }

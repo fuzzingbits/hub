@@ -7,9 +7,6 @@ import (
 	"github.com/fuzzingbits/hub/pkg/util/forge/mockableprovider"
 )
 
-// ErrNotFound is when a user can not be found by the provided UUID
-var ErrNotFound = errors.New("User Not Found")
-
 // Mockable user.Provider
 type Mockable struct {
 	Provider *mockableprovider.Provider
@@ -19,6 +16,10 @@ type Mockable struct {
 func (m *Mockable) GetByUUID(uuid string) (entity.DatabaseUser, error) {
 	item, err := m.Provider.GetByID(uuid)
 	if err != nil {
+		if errors.Is(err, mockableprovider.ErrNotFound) {
+			return entity.DatabaseUser{}, ErrNotFound
+		}
+
 		return entity.DatabaseUser{}, err
 	}
 

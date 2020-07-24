@@ -13,7 +13,7 @@ import (
 
 func TestGetCurrentSession(t *testing.T) {
 	c := container.NewMockable()
-	s := NewService(&hubconfig.Config{}, c)
+	s := NewService(&hubconfig.Config{RollbarToken: "fake-token"}, c)
 
 	// Create Fixture User
 	targetUserSession, _ := s.CreateUser(
