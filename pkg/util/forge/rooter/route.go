@@ -2,7 +2,6 @@ package rooter
 
 import "net/http"
 
-
 // Route is an API Route
 type Route struct {
 	Path       string
