@@ -89,6 +89,8 @@ func getRootHandler(app App) http.Handler {
 			// Make sure all nuxt content is cached because all the files names include a hash
 			if strings.HasPrefix(r.URL.Path, "/_nuxt") {
 				w.Header().Set("Cache-Control", "public, max-age=31536000")
+			} else {
+				w.Header().Set("Cache-Control", "public, max-age=3600")
 			}
 		},
 	}
