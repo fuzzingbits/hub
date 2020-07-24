@@ -1,6 +1,7 @@
 <template>
 	<div class="card">
 		<nuxt-link to="/">Home Page</nuxt-link>
+		<nuxt-link to="/about">About</nuxt-link>
 		<nuxt />
 	</div>
 </template>
