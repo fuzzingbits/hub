@@ -64,7 +64,7 @@ func getRootHandler(app App) http.Handler {
 
 	spaHandler := &web.SinglePageAppHandler{
 		FileSystem: uiFileSystem,
-		FileName:   "index.html",
+		FileName:   "200.html",
 		BaseCSPEntries: web.CSPEntries{
 			Script: []string{"'self'"},
 			Style:  []string{"'self'"},

@@ -1,5 +1,9 @@
 export default {
 	mode: "spa",
+	generate: {
+		fallback: "200.html",
+		exclude: [/^.*$/],
+	},
 	dir: {
 		layouts: "ui/layouts",
 		middleware: "ui/middleware",
