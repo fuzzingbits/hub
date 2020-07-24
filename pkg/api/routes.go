@@ -20,23 +20,17 @@ func RegisterRoutes(mux *http.ServeMux, service *hub.Service) {
 
 	routes := []rooter.Route{
 		{
-			Path:    "/api/server/status",
-			Handler: rooter.ResponseFunc(a.testHandler),
-		},
-		{
-			Path:    "/api/server/setup",
-			Handler: rooter.ResponseFunc(a.testHandler),
-		},
-		{
 			Path:    "/api/user/me",
-			Handler: rooter.ResponseFunc(a.testHandler),
+			Handler: rooter.ResponseFunc(a.handlerTest),
 		},
 	}
 
-	rooter.RegisterRoutes(mux, routes)
+	rooter.RegisterRoutes(mux, routes, []rooter.Middleware{
+		a.middlewareLogger,
+	})
 }
 
-func (a *App) testHandler(req *http.Request) rooter.Response {
+func (a *App) handlerTest(req *http.Request) rooter.Response {
 	session, err := a.Service.GetCurrentSession(req)
 	if err != nil {
 		return rooter.Response{

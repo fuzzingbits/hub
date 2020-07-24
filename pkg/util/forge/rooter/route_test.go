@@ -21,11 +21,16 @@ func TestTestRoute(t *testing.T) {
 			Handler: ResponseFunc(func(r *http.Request) Response {
 				return responseBasicTest
 			}),
+			Middleware: []Middleware{
+				MiddlewareLogger,
+			},
 		},
 	}
 
 	mux := http.NewServeMux()
-	RegisterRoutes(mux, routes)
+	RegisterRoutes(mux, routes, []Middleware{
+		MiddlewareLogger,
+	})
 
 	rootertest.Test(t, mux, []rootertest.TestCase{
 		{
