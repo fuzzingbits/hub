@@ -3,6 +3,11 @@
 		<nuxt-link to="/">Home Page</nuxt-link>
 		<nuxt-link to="/about">About</nuxt-link>
 		<nuxt />
+		<p>
+			<a href="https://github.com/fuzzingbits/hub" target="_blank" rel="noreferrer">
+				Source Code
+			</a>
+		</p>
 	</div>
 </template>
 
