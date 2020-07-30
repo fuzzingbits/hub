@@ -33,3 +33,11 @@ export interface User {
 export interface UserSettings {
 	themeColor: string;
 }
+
+export interface CreateUserRequest {
+	firstName: string;
+	lastName: string;
+	email: string;
+	username: string;
+	password: string;
+}
