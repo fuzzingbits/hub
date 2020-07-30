@@ -2,7 +2,7 @@ export interface Response {
 	state: boolean;
 	message: string;
 	data: any;
-	extra_data: any;
+	extraData: any;
 }
 
 export interface CreateUserRequest {

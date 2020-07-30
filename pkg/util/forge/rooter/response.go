@@ -11,7 +11,7 @@ type Response struct {
 	State      bool        `json:"state"`
 	Message    string      `json:"message"`
 	Data       interface{} `json:"data"`
-	ExtraData  interface{} `json:"extra_data"`
+	ExtraData  interface{} `json:"extraData"`
 }
 
 // Bytes return
