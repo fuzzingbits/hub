@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/fuzzingbits/hub/pkg/hubconfig"
+	"github.com/fuzzingbits/hub/pkg/provider/session"
 	"github.com/fuzzingbits/hub/pkg/provider/user"
 	"github.com/fuzzingbits/hub/pkg/provider/usersettings"
 	redis "github.com/go-redis/redis/v8"
@@ -15,9 +16,11 @@ import (
 type Container interface {
 	// AutoMigrate the data connections
 	AutoMigrate(clearExitstingData bool) error
-	// UserProvider safety builds and returns the Provider
+	// UserProvider safely builds and returns the Provider
 	UserProvider() (user.Provider, error)
-	// UserSettingsProvider safety builds and returns the Provider
+	// SessionProvider safely builds and returns the Provider
+	SessionProvider() (session.Provider, error)
+	// UserSettingsProvider safely builds and returns the Provider
 	UserSettingsProvider() (usersettings.Provider, error)
 }
 
@@ -27,6 +30,7 @@ type Production struct {
 	// Providers
 	userProvider         *user.DatabaseProvider
 	userSettingsProvider *usersettings.DatabaseProvider
+	sessionProvider      *session.RedisProvider
 	// Clients
 	mariaClient *gorm.DB
 	mongoClient *mongo.Client
@@ -34,6 +38,7 @@ type Production struct {
 	// Mutex Locks
 	userProviderMutex         *sync.Mutex
 	userSettingsProviderMutex *sync.Mutex
+	sessionProviderMutex      *sync.Mutex
 	mariaClientMutex          *sync.Mutex
 	mongoClientMutex          *sync.Mutex
 	redisClientMutex          *sync.Mutex
@@ -45,6 +50,7 @@ func NewProduction(hubConfig *hubconfig.Config) Container {
 		config:                    hubConfig,
 		userProviderMutex:         &sync.Mutex{},
 		userSettingsProviderMutex: &sync.Mutex{},
+		sessionProviderMutex:      &sync.Mutex{},
 		mariaClientMutex:          &sync.Mutex{},
 		mongoClientMutex:          &sync.Mutex{},
 		redisClientMutex:          &sync.Mutex{},

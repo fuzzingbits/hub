@@ -28,12 +28,12 @@ func (s Response) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // ResponseHandler is a simpler than http.HandlerFunc for enforcing the proper usage of Response
-type ResponseHandler func(r *http.Request) Response
+type ResponseHandler func(w http.ResponseWriter, r *http.Request) Response
 
 // ResponseFunc is a shortcut for making sure a ResponseHandler can be used as a http.Handler
 func ResponseFunc(s ResponseHandler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		response := s(r)
+		response := s(w, r)
 		response.ServeHTTP(w, r)
 	})
 }

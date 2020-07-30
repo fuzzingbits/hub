@@ -4,7 +4,7 @@ import (
 	"github.com/fuzzingbits/hub/pkg/provider/user"
 )
 
-// UserProvider safety builds and returns the Provider
+// UserProvider safely builds and returns the Provider
 func (c *Production) UserProvider() (user.Provider, error) {
 	// If it's ready, just return it
 	if c.userProvider != nil {

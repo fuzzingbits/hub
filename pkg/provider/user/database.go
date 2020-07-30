@@ -40,6 +40,21 @@ func (d *DatabaseProvider) GetByUUID(uuid string) (entity.DatabaseUser, error) {
 	return dbUser, nil
 }
 
+// GetByUsername gets a user by username
+func (d *DatabaseProvider) GetByUsername(username string) (entity.DatabaseUser, error) {
+	var dbUser entity.DatabaseUser
+
+	if err := d.Database.Where("`username` = ?", username).First(&dbUser).Error; err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return entity.DatabaseUser{}, ErrNotFound
+		}
+
+		return entity.DatabaseUser{}, err
+	}
+
+	return dbUser, nil
+}
+
 // GetAll Users
 func (d *DatabaseProvider) GetAll() ([]entity.DatabaseUser, error) {
 	dbUsers := []entity.DatabaseUser{}

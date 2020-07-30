@@ -1,6 +1,8 @@
 package api
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"testing"
@@ -30,6 +32,13 @@ func TestSuccessfulRoutes(t *testing.T) {
 		},
 	)
 
+	loginRequest := entity.CreateUserRequest{
+		Username: "testy",
+		Password: "Password123",
+	}
+
+	loginRequestBytes, _ := json.Marshal(loginRequest)
+
 	rootertest.Test(t, mux, []rootertest.TestCase{
 		{
 			Name: "test test route",
@@ -37,6 +46,18 @@ func TestSuccessfulRoutes(t *testing.T) {
 			RequestMod: func(req *http.Request) {
 				req.Header.Add("UUID", targetSession.User.UUID)
 			},
+			TargetStatusCode: http.StatusOK,
+			TargetResponseBytes: rooter.Response{
+				StatusCode: http.StatusOK,
+				State:      true,
+				Data:       targetSession,
+			}.Bytes(),
+		},
+		{
+			Name:             "test login",
+			Method:           http.MethodPost,
+			URL:              "/api/user/login",
+			Body:             bytes.NewReader(loginRequestBytes),
 			TargetStatusCode: http.StatusOK,
 			TargetResponseBytes: rooter.Response{
 				StatusCode: http.StatusOK,
@@ -53,6 +74,13 @@ func TestFailedRoutes(t *testing.T) {
 	mux := http.NewServeMux()
 	RegisterRoutes(mux, service)
 
+	loginRequest := entity.CreateUserRequest{
+		Username: "testy",
+		Password: "Password123",
+	}
+
+	loginRequestBytes, _ := json.Marshal(loginRequest)
+
 	rootertest.Test(t, mux, []rootertest.TestCase{
 		{
 			Name:             "test test route",
@@ -64,6 +92,14 @@ func TestFailedRoutes(t *testing.T) {
 				Message:    "you are not logged in",
 				Data:       nil,
 			}.Bytes(),
+		},
+		{
+			Name:                "test login",
+			Method:              http.MethodPost,
+			URL:                 "/api/user/login",
+			Body:                bytes.NewReader(loginRequestBytes),
+			TargetStatusCode:    http.StatusInternalServerError,
+			TargetResponseBytes: rooter.ResponseInternalServerError().Bytes(),
 		},
 	})
 

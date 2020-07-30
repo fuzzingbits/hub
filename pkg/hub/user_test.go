@@ -1,8 +1,12 @@
 package hub
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
+	"net/http/httptest"
 	"reflect"
 	"testing"
 
@@ -109,4 +113,161 @@ func TestCreateUser(t *testing.T) {
 	if _, err := s.CreateUser(createUserRequest); err == nil {
 		t.Error("there should have been an error")
 	}
+}
+
+func TestLoginMissingRequestBody(t *testing.T) {
+	c := container.NewMockable()
+	s := NewService(&hubconfig.Config{}, c)
+
+	if _, err := loginTestHelper(t, s, nil); err == nil {
+		t.Errorf("there should have been an error")
+	}
+}
+
+func TestLoginBadRequestBody(t *testing.T) {
+	loginRequest := entity.CreateUserRequest{
+		Username: "testy",
+		Password: "Password123",
+	}
+
+	loginRequestBytes, _ := json.Marshal(loginRequest)
+
+	c := container.NewMockable()
+	s := NewService(&hubconfig.Config{}, c)
+
+	if _, err := loginTestHelper(t, s, loginRequestBytes[:1]); err == nil {
+		t.Errorf("there should have been an error")
+	}
+
+}
+
+func TestLoginSuccess(t *testing.T) {
+	loginRequest := entity.CreateUserRequest{
+		Username: "testy",
+		Password: "Password123",
+	}
+
+	loginRequestBytes, _ := json.Marshal(loginRequest)
+
+	c := container.NewMockable()
+	s := NewService(&hubconfig.Config{}, c)
+
+	s.CreateUser(entity.CreateUserRequest{
+		FirstName: "Testy",
+		LastName:  "McTestPants",
+		Username:  "testy",
+		Email:     "testy@example.com",
+		Password:  "Password123",
+	})
+
+	if _, err := loginTestHelper(t, s, loginRequestBytes); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestLoginIncorrectPassword(t *testing.T) {
+	loginRequest := entity.CreateUserRequest{
+		Username: "testy",
+		Password: "NotTheCorrectPassword",
+	}
+
+	loginRequestBytes, _ := json.Marshal(loginRequest)
+
+	c := container.NewMockable()
+	s := NewService(&hubconfig.Config{}, c)
+
+	s.CreateUser(entity.CreateUserRequest{
+		FirstName: "Testy",
+		LastName:  "McTestPants",
+		Username:  "testy",
+		Email:     "testy@example.com",
+		Password:  "Password123",
+	})
+
+	if _, err := loginTestHelper(t, s, loginRequestBytes); err == nil {
+		t.Errorf("there should have been an error")
+	}
+}
+
+func TestLoginUserNotFound(t *testing.T) {
+	loginRequest := entity.CreateUserRequest{
+		Username: "testy",
+		Password: "NotTheCorrectPassword",
+	}
+
+	loginRequestBytes, _ := json.Marshal(loginRequest)
+
+	c := container.NewMockable()
+	s := NewService(&hubconfig.Config{}, c)
+
+	if _, err := loginTestHelper(t, s, loginRequestBytes); err == nil {
+		t.Errorf("there should have been an error")
+	}
+}
+
+func TestLoginErrors(t *testing.T) {
+	loginRequest := entity.CreateUserRequest{
+		Username: "testy",
+		Password: "Password123",
+	}
+
+	loginRequestBytes, _ := json.Marshal(loginRequest)
+
+	c := container.NewMockable()
+	s := NewService(&hubconfig.Config{}, c)
+
+	s.CreateUser(entity.CreateUserRequest{
+		FirstName: "Testy",
+		LastName:  "McTestPants",
+		Username:  "testy",
+		Email:     "testy@example.com",
+		Password:  "Password123",
+	})
+
+	{
+		c.SessionProviderValue.Provider.CreateError = errors.New("foobar")
+		if _, err := loginTestHelper(t, s, loginRequestBytes); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{
+		c.SessionProviderError = errors.New("foobar")
+		if _, err := loginTestHelper(t, s, loginRequestBytes); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{
+		c.UserSettingsProviderError = errors.New("foobar")
+		if _, err := loginTestHelper(t, s, loginRequestBytes); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{
+		c.UserProviderValue.GetByUsernameError = errors.New("foobar")
+		if _, err := loginTestHelper(t, s, loginRequestBytes); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{
+		c.UserProviderError = errors.New("foobar")
+		if _, err := loginTestHelper(t, s, loginRequestBytes); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+}
+
+func loginTestHelper(t *testing.T, s *Service, body []byte) (entity.UserSession, error) {
+	var payload io.Reader
+	if body != nil {
+		payload = bytes.NewReader(body)
+	}
+
+	x := httptest.NewRecorder()
+	r, _ := http.NewRequest("", "/", payload)
+
+	return s.Login(x, r)
 }

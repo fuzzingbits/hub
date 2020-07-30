@@ -18,7 +18,7 @@ func TestTestRoute(t *testing.T) {
 	routes := []Route{
 		{
 			Path: pathBasicTest,
-			Handler: ResponseFunc(func(r *http.Request) Response {
+			Handler: ResponseFunc(func(w http.ResponseWriter, r *http.Request) Response {
 				return responseBasicTest
 			}),
 			Middleware: []Middleware{

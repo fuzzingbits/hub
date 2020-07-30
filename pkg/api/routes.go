@@ -24,7 +24,11 @@ func RegisterRoutes(mux *http.ServeMux, service *hub.Service) {
 	routes := []rooter.Route{
 		{
 			Path:    "/api/user/me",
-			Handler: rooter.ResponseFunc(a.handlerTest),
+			Handler: rooter.ResponseFunc(a.handlerUserMe),
+		},
+		{
+			Path:    "/api/user/login",
+			Handler: rooter.ResponseFunc(a.handlerUserLogin),
 		},
 	}
 
@@ -50,7 +54,7 @@ func (a *App) serverError(err error, r *http.Request) rooter.Response {
 	return rooter.ResponseInternalServerError()
 }
 
-func (a *App) handlerTest(req *http.Request) rooter.Response {
+func (a *App) handlerUserMe(w http.ResponseWriter, req *http.Request) rooter.Response {
 	session, err := a.Service.GetCurrentSession(req)
 	if err != nil {
 		if !errors.Is(err, user.ErrNotFound) {
@@ -69,5 +73,18 @@ func (a *App) handlerTest(req *http.Request) rooter.Response {
 		StatusCode: http.StatusOK,
 		State:      true,
 		Data:       session,
+	}
+}
+
+func (a *App) handlerUserLogin(w http.ResponseWriter, req *http.Request) rooter.Response {
+	userSession, err := a.Service.Login(w, req)
+	if err != nil {
+		return a.serverError(err, req)
+	}
+
+	return rooter.Response{
+		StatusCode: http.StatusOK,
+		State:      true,
+		Data:       userSession,
 	}
 }
