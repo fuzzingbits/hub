@@ -1,7 +1,13 @@
 package entity
 
-// UserSession is all of the user data needed for the session
-type UserSession struct {
+// Session is all of the user data needed for the session
+type Session struct {
+	Token   string      `json:"token"`
+	Context UserContext `json:"context"`
+}
+
+// UserContext is all of the data surrounding a User
+type UserContext struct {
 	User     User         `json:"user"`
 	Settings UserSettings `json:"userSettings"`
 }

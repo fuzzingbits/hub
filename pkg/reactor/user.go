@@ -12,6 +12,8 @@ func DatabaseUserToEntity(dbUser entity.DatabaseUser) entity.User {
 		UUID:      dbUser.UUID,
 		FirstName: dbUser.FirstName,
 		LastName:  dbUser.LastName,
+		Username:  dbUser.Username,
+		Email:     dbUser.Email,
 	}
 }
 

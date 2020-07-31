@@ -17,7 +17,7 @@ export interface ServerStatus {
 	setupRequired: boolean;
 }
 
-export interface UserSession {
+export interface UserContext {
 	user: User;
 	userSettings: UserSettings;
 }

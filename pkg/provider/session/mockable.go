@@ -11,16 +11,16 @@ type Mockable struct {
 }
 
 // Get a session by token
-func (p *Mockable) Get(token string) (entity.UserSession, error) {
+func (p *Mockable) Get(token string) (entity.Session, error) {
 	result, err := p.Provider.GetByID(token)
 	if err != nil {
-		return entity.UserSession{}, err
+		return entity.Session{}, err
 	}
 
-	return result.(entity.UserSession), nil
+	return result.(entity.Session), nil
 }
 
 // Set a session by token
-func (p *Mockable) Set(token string, session entity.UserSession) error {
+func (p *Mockable) Set(token string, session entity.Session) error {
 	return p.Provider.Create(token, session)
 }

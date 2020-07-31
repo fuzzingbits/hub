@@ -10,6 +10,36 @@ import (
 	"github.com/fuzzingbits/hub/pkg/hubconfig"
 )
 
+func TestSetupServer(t *testing.T) {
+	c := container.NewMockable()
+	s := NewService(&hubconfig.Config{}, c)
+
+	createUserRequest := entity.CreateUserRequest{
+		Username: "foobar",
+	}
+
+	if _, err := s.SetupServer(createUserRequest); err != nil {
+		t.Error(err)
+	}
+
+	if _, err := s.SetupServer(createUserRequest); err == nil {
+		t.Errorf("there should have been an error")
+	}
+
+	c = container.NewMockable()
+	s = NewService(&hubconfig.Config{}, c)
+
+	c.UserProviderValue.Provider.CreateError = errors.New("foobar")
+	if _, err := s.SetupServer(createUserRequest); err == nil {
+		t.Errorf("there should have been an error")
+	}
+
+	c.UserProviderValue.Provider.GetAllError = errors.New("foobar")
+	if _, err := s.SetupServer(createUserRequest); err == nil {
+		t.Errorf("there should have been an error")
+	}
+}
+
 func TestGetServerStatus(t *testing.T) {
 	c := container.NewMockable()
 	s := NewService(&hubconfig.Config{}, c)

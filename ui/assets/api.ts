@@ -17,15 +17,22 @@ client.interceptors.response.use(
 	}
 );
 
-client.interceptors.request.use(function (config) {
-	// TODO: create actual session management and stop doing this terrible thing
-	config.headers.UUID = "313efbe9-173b-4a1b-9a5b-7b69d95a66b9";
-
+client.interceptors.request.use(function(config) {
 	return config;
 });
 
 class HubAPI {
-	public async getMe(): Promise<GenericResponse<types.UserSession>> {
+	public async serverStatus(): Promise<GenericResponse<types.ServerStatus | null>> {
+		const response = await client.get("/api/server/status");
+		return response.data;
+	}
+
+	public async serverSetup(payload: types.CreateUserRequest): Promise<GenericResponse<types.UserContext | null>> {
+		const response = await client.post("/api/server/setup", payload);
+		return response.data;
+	}
+
+	public async userMe(): Promise<GenericResponse<types.UserContext | null>> {
 		const response = await client.get("/api/user/me");
 		return response.data;
 	}

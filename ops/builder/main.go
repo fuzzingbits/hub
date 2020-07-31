@@ -16,7 +16,7 @@ var TypeScriptInterfaces = []interface{}{
 	rooter.Response{},
 	entity.CreateUserRequest{},
 	entity.ServerStatus{},
-	entity.UserSession{},
+	entity.UserContext{},
 	entity.User{},
 	entity.UserSettings{},
 	entity.CreateUserRequest{},

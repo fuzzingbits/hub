@@ -9,34 +9,24 @@ import Vue from "vue";
 import HubApi from "~/ui/assets/api";
 import * as types from "~/ui/assets/types";
 export default Vue.extend({
-	data: function () {
-		return {
-			userSession: null as types.UserSession | null,
-		};
-	},
 	computed: {
-		fullName: function (): string {
-			if (this.userSession === null) {
+		fullName: function(): string {
+			if (this.session === null) {
 				return "world";
 			}
 
-			return `${this.userSession.user.firstName} ${this.userSession.user.lastName}`;
+			return `${this.session.context.user.firstName} ${this.session.context.user.lastName}`;
+		},
+		session: function(): types.UserContext | null {
+			return this.$store.state.user.session;
 		},
 	},
 	mounted() {
-		HubApi.getMe()
-			.then((response) => {
-				this.userSession = response.data;
-				if (this.userSession && this.userSession.userSettings.themeColor) {
-					document.documentElement.style.setProperty("--primary", this.userSession.userSettings.themeColor);
-				}
-			})
-			.catch((err) => {
-				console.error("ajax error: " + err);
-			})
-			.finally(() => {
-				// console.log("completed");
-			});
+		HubApi.serverStatus().then(response => {
+			if (response.data && response.data.setupRequired) {
+				this.$router.push("/setup");
+			}
+		});
 	},
 });
 </script>

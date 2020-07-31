@@ -13,19 +13,19 @@ type RedisProvider struct {
 }
 
 // Get a session by token
-func (p *RedisProvider) Get(token string) (entity.UserSession, error) {
-	var session entity.UserSession
+func (p *RedisProvider) Get(token string) (entity.Session, error) {
+	var session entity.Session
 
 	result := p.Client.Get(context.TODO(), token)
 	if err := result.Scan(&session); err != nil {
-		return entity.UserSession{}, err
+		return entity.Session{}, err
 	}
 
 	return session, nil
 }
 
 // Set a session by token
-func (p *RedisProvider) Set(token string, session entity.UserSession) error {
+func (p *RedisProvider) Set(token string, session entity.Session) error {
 	p.Client.Set(
 		context.TODO(),
 		token,

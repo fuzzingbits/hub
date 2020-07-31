@@ -15,7 +15,7 @@ const CookieName = "HUB_SID"
 // Provider is the Session Provider
 type Provider interface {
 	// Get a session by token
-	Get(token string) (entity.UserSession, error)
+	Get(token string) (entity.Session, error)
 	// Set a session by token
-	Set(token string, session entity.UserSession) error
+	Set(token string, session entity.Session) error
 }

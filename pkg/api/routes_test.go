@@ -6,14 +6,81 @@ import (
 	"errors"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/fuzzingbits/hub/pkg/container"
 	"github.com/fuzzingbits/hub/pkg/entity"
 	"github.com/fuzzingbits/hub/pkg/hub"
 	"github.com/fuzzingbits/hub/pkg/hubconfig"
+	"github.com/fuzzingbits/hub/pkg/provider/session"
 	"github.com/fuzzingbits/hub/pkg/util/forge/rooter"
 	"github.com/fuzzingbits/hub/pkg/util/forge/rootertest"
 )
+
+func TestSuccessfulRoutes2(t *testing.T) {
+	c := container.NewMockable()
+	s := hub.NewService(&hubconfig.Config{}, c)
+	mux := http.NewServeMux()
+	RegisterRoutes(mux, s)
+
+	// Insert test data
+	request := entity.CreateUserRequest{
+		FirstName: "Testy",
+		LastName:  "McTestPants",
+		Username:  "testy",
+		Email:     "testy@example.com",
+		Password:  "Password123",
+	}
+
+	requestBytes, _ := json.Marshal(request)
+
+	rootertest.Test(t, mux, []rootertest.TestCase{
+		{
+			Name:                   "test login",
+			Method:                 http.MethodPost,
+			URL:                    "/api/server/setup",
+			Body:                   bytes.NewReader(requestBytes),
+			TargetStatusCode:       http.StatusOK,
+			SkipResponseBytesCheck: true,
+		},
+		{
+			Name:                   "test login",
+			Method:                 http.MethodPost,
+			URL:                    "/api/server/setup",
+			Body:                   bytes.NewReader(requestBytes),
+			TargetStatusCode:       http.StatusInternalServerError,
+			SkipResponseBytesCheck: true,
+		},
+	})
+}
+func TestServerStatus(t *testing.T) {
+	c := container.NewMockable()
+	s := hub.NewService(&hubconfig.Config{}, c)
+	mux := http.NewServeMux()
+	RegisterRoutes(mux, s)
+
+	rootertest.Test(t, mux, []rootertest.TestCase{
+		{
+			Name:                   "test login",
+			Method:                 http.MethodGet,
+			URL:                    "/api/server/status",
+			Body:                   nil,
+			TargetStatusCode:       http.StatusOK,
+			SkipResponseBytesCheck: true,
+		},
+	})
+	c.UserProviderError = errors.New("foobar")
+	rootertest.Test(t, mux, []rootertest.TestCase{
+		{
+			Name:                   "test login",
+			Method:                 http.MethodGet,
+			URL:                    "/api/server/status",
+			Body:                   nil,
+			TargetStatusCode:       http.StatusInternalServerError,
+			SkipResponseBytesCheck: true,
+		},
+	})
+}
 
 func TestSuccessfulRoutes(t *testing.T) {
 	c := container.NewMockable()
@@ -22,7 +89,7 @@ func TestSuccessfulRoutes(t *testing.T) {
 	RegisterRoutes(mux, s)
 
 	// Insert test data
-	targetSession, _ := s.CreateUser(
+	targetSession, _ := s.SetupServer(
 		entity.CreateUserRequest{
 			FirstName: "Testy",
 			LastName:  "McTestPants",
@@ -41,16 +108,31 @@ func TestSuccessfulRoutes(t *testing.T) {
 
 	rootertest.Test(t, mux, []rootertest.TestCase{
 		{
-			Name: "test test route",
+			Name: "test me logged in",
 			URL:  "/api/user/me",
 			RequestMod: func(req *http.Request) {
-				req.Header.Add("UUID", targetSession.User.UUID)
+				req.AddCookie(&http.Cookie{
+					Name:    session.CookieName,
+					Value:   targetSession.Token,
+					Expires: time.Now().Add(time.Minute),
+				})
 			},
 			TargetStatusCode: http.StatusOK,
 			TargetResponseBytes: rooter.Response{
 				StatusCode: http.StatusOK,
 				State:      true,
-				Data:       targetSession,
+				Data:       targetSession.Context,
+			}.Bytes(),
+		},
+		{
+			Name:             "test no cookie me request",
+			TargetStatusCode: http.StatusOK,
+			URL:              "/api/user/me",
+			TargetResponseBytes: rooter.Response{
+				StatusCode: http.StatusOK,
+				State:      true,
+				Message:    "you are not logged in",
+				Data:       nil,
 			}.Bytes(),
 		},
 		{
@@ -62,7 +144,7 @@ func TestSuccessfulRoutes(t *testing.T) {
 			TargetResponseBytes: rooter.Response{
 				StatusCode: http.StatusOK,
 				State:      true,
-				Data:       targetSession,
+				Data:       targetSession.Context,
 			}.Bytes(),
 		},
 	})
@@ -79,19 +161,16 @@ func TestFailedRoutes(t *testing.T) {
 		Password: "Password123",
 	}
 
+	container.SessionProviderError = errors.New("foobar")
+
 	loginRequestBytes, _ := json.Marshal(loginRequest)
 
 	rootertest.Test(t, mux, []rootertest.TestCase{
 		{
-			Name:             "test test route",
-			TargetStatusCode: http.StatusOK,
-			URL:              "/api/user/me",
-			TargetResponseBytes: rooter.Response{
-				StatusCode: http.StatusOK,
-				State:      true,
-				Message:    "you are not logged in",
-				Data:       nil,
-			}.Bytes(),
+			Name:                "test test route",
+			TargetStatusCode:    http.StatusInternalServerError,
+			URL:                 "/api/user/me",
+			TargetResponseBytes: rooter.ResponseInternalServerError().Bytes(),
 		},
 		{
 			Name:                "test login",
@@ -101,15 +180,39 @@ func TestFailedRoutes(t *testing.T) {
 			TargetStatusCode:    http.StatusInternalServerError,
 			TargetResponseBytes: rooter.ResponseInternalServerError().Bytes(),
 		},
+		{
+			Name:                "test login",
+			Method:              http.MethodPost,
+			URL:                 "/api/user/login",
+			Body:                nil,
+			TargetStatusCode:    http.StatusInternalServerError,
+			TargetResponseBytes: rooter.ResponseInternalServerError().Bytes(),
+		},
+		{
+			Name:                "test setup",
+			Method:              http.MethodPost,
+			URL:                 "/api/server/setup",
+			Body:                nil,
+			TargetStatusCode:    http.StatusInternalServerError,
+			TargetResponseBytes: rooter.ResponseInternalServerError().Bytes(),
+		},
 	})
 
 	container.UserProviderError = errors.New("foobar")
 
 	rootertest.Test(t, mux, []rootertest.TestCase{
 		{
-			Name:                "test test route",
+			Name:                "test me no user provider",
 			TargetStatusCode:    http.StatusInternalServerError,
 			URL:                 "/api/user/me",
+			TargetResponseBytes: rooter.ResponseInternalServerError().Bytes(),
+		},
+		{
+			Name:                "test setup",
+			Method:              http.MethodPost,
+			URL:                 "/api/server/setup",
+			Body:                nil,
+			TargetStatusCode:    http.StatusInternalServerError,
 			TargetResponseBytes: rooter.ResponseInternalServerError().Bytes(),
 		},
 	})

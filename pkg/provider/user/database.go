@@ -58,7 +58,7 @@ func (d *DatabaseProvider) GetByUsername(username string) (entity.DatabaseUser, 
 // GetAll Users
 func (d *DatabaseProvider) GetAll() ([]entity.DatabaseUser, error) {
 	dbUsers := []entity.DatabaseUser{}
-	if err := d.Database.Find(dbUsers).Error; err != nil {
+	if err := d.Database.Find(&dbUsers).Error; err != nil {
 		return nil, err
 	}
 
