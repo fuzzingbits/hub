@@ -20,6 +20,7 @@ var TypeScriptInterfaces = []interface{}{
 	entity.User{},
 	entity.UserSettings{},
 	entity.CreateUserRequest{},
+	entity.UserLoginRequest{},
 }
 
 func main() {

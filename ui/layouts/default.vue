@@ -2,6 +2,7 @@
 	<div class="card">
 		<nuxt-link to="/">Home Page</nuxt-link>
 		<nuxt-link to="/about">About</nuxt-link>
+		<nuxt-link v-if="!session" to="/login">Login</nuxt-link>
 		<nuxt />
 		<p>
 			<a href="https://github.com/fuzzingbits/hub" target="_blank" rel="noreferrer">
@@ -21,17 +22,19 @@ export default Vue.extend({
 			return this.$store.state.user.session;
 		},
 	},
+	methods: {
+		checkForLogin() {
+			HubApi.userMe()
+				.then(response => {
+					this.$store.commit("user/setState", response.data);
+				})
+				.catch(err => {
+					console.error("ajax error: " + err);
+				});
+		},
+	},
 	mounted() {
-		HubApi.userMe()
-			.then(response => {
-				this.$store.commit("user/setState", response.data);
-			})
-			.catch(err => {
-				console.error("ajax error: " + err);
-			})
-			.finally(() => {
-				// console.log("completed");
-			});
+		this.checkForLogin();
 	},
 });
 </script>

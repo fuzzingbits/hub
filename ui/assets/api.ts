@@ -32,6 +32,11 @@ class HubAPI {
 		return response.data;
 	}
 
+	public async userLogin(payload: types.UserLoginRequest): Promise<GenericResponse<types.UserContext>> {
+		const response = await client.post("/api/user/login", payload);
+		return response.data;
+	}
+
 	public async userMe(): Promise<GenericResponse<types.UserContext | null>> {
 		const response = await client.get("/api/user/me");
 		return response.data;
