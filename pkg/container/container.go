@@ -7,7 +7,7 @@ import (
 	"github.com/fuzzingbits/hub/pkg/provider/session"
 	"github.com/fuzzingbits/hub/pkg/provider/user"
 	"github.com/fuzzingbits/hub/pkg/provider/usersettings"
-	redis "github.com/go-redis/redis/v8"
+	"github.com/gomodule/redigo/redis"
 	"github.com/jinzhu/gorm"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -34,7 +34,7 @@ type Production struct {
 	// Clients
 	mariaClient *gorm.DB
 	mongoClient *mongo.Client
-	redisClient *redis.Client
+	redisClient redis.Conn
 	// Mutex Locks
 	userProviderMutex         *sync.Mutex
 	userSettingsProviderMutex *sync.Mutex
@@ -67,9 +67,14 @@ func (c *Production) AutoMigrate(clearExitstingData bool) error {
 		return err
 	}
 
+	if _, err := c.SessionProvider(); err != nil {
+		return err
+	}
+
 	if err := autoMigrateAll([]dataProvider{
 		c.userProvider,
 		c.userSettingsProvider,
+		c.sessionProvider,
 	}, clearExitstingData); err != nil {
 		return err
 	}

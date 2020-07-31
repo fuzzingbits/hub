@@ -3,8 +3,8 @@ module github.com/fuzzingbits/hub
 go 1.14
 
 require (
-	github.com/go-redis/redis/v8 v8.0.0-beta.7
 	github.com/gobuffalo/packr v1.30.1
+	github.com/gomodule/redigo v1.8.2
 	github.com/google/uuid v1.1.1
 	github.com/jinzhu/gorm v1.9.15
 	github.com/rollbar/rollbar-go v1.2.0

@@ -1,23 +1,41 @@
 package session
 
 import (
-	"context"
+	"bytes"
+	"encoding/gob"
+	"encoding/hex"
+	"errors"
 
 	"github.com/fuzzingbits/hub/pkg/entity"
-	"github.com/go-redis/redis/v8"
+	"github.com/gomodule/redigo/redis"
 )
 
 // RedisProvider is a Redis SessionProvider
 type RedisProvider struct {
-	Client *redis.Client
+	Connection redis.Conn
 }
 
 // Get a session by token
 func (p *RedisProvider) Get(token string) (entity.Session, error) {
 	var session entity.Session
 
-	result := p.Client.Get(context.TODO(), token)
-	if err := result.Scan(&session); err != nil {
+	result, err := p.Connection.Do("GET", token)
+	if err != nil {
+		return entity.Session{}, err
+	}
+
+	resultBytes, ok := result.([]byte)
+	if !ok {
+		return entity.Session{}, errors.New("no session found")
+	}
+
+	sessionBytes, err := hex.DecodeString(string(resultBytes))
+	if err != nil {
+		return entity.Session{}, err
+	}
+
+	decoder := gob.NewDecoder(bytes.NewBuffer(sessionBytes))
+	if err := decoder.Decode(&session); err != nil {
 		return entity.Session{}, err
 	}
 
@@ -26,12 +44,27 @@ func (p *RedisProvider) Get(token string) (entity.Session, error) {
 
 // Set a session by token
 func (p *RedisProvider) Set(token string, session entity.Session) error {
-	p.Client.Set(
-		context.TODO(),
-		token,
-		session,
-		Duration,
-	)
+	var sessionBytes bytes.Buffer
+
+	encoder := gob.NewEncoder(&sessionBytes)
+	if err := encoder.Encode(session); err != nil {
+		return err
+	}
+
+	sessionString := hex.EncodeToString(sessionBytes.Bytes())
+
+	if _, err := p.Connection.Do("SETEX", token, Duration.Seconds(), sessionString); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// AutoMigrate the data connection
+func (p *RedisProvider) AutoMigrate(clearExitstingData bool) error {
+	if clearExitstingData {
+		p.Connection.Do("FLUSHALL")
+	}
 
 	return nil
 }

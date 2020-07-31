@@ -95,7 +95,7 @@ func (a *App) handlerServerSetup(w http.ResponseWriter, req *http.Request) roote
 	return rooter.Response{
 		StatusCode: http.StatusOK,
 		State:      true,
-		Data:       userSession,
+		Data:       userSession.Context,
 	}
 }
 
@@ -149,5 +149,6 @@ func createLoginCookie(w http.ResponseWriter, userSession entity.Session) {
 		Name:    session.CookieName,
 		Value:   userSession.Token,
 		Expires: time.Now().Add(session.Duration),
+		Path:    "/",
 	})
 }

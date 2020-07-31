@@ -28,7 +28,7 @@ func (c *Production) SessionProvider() (session.Provider, error) {
 
 	// Create and save the provder
 	c.sessionProvider = &session.RedisProvider{
-		Client: client,
+		Connection: client,
 	}
 
 	return c.sessionProvider, nil

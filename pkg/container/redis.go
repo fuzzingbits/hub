@@ -1,8 +1,8 @@
 package container
 
-import "github.com/go-redis/redis/v8"
+import "github.com/gomodule/redigo/redis"
 
-func (c *Production) getRedisClient() (*redis.Client, error) {
+func (c *Production) getRedisClient() (redis.Conn, error) {
 	// If it's ready, just return it
 	if c.redisClient != nil {
 		return c.redisClient, nil
@@ -18,9 +18,10 @@ func (c *Production) getRedisClient() (*redis.Client, error) {
 	}
 
 	// Try to make a connection
-	client := redis.NewClient(&redis.Options{
-		Addr: c.config.CacheAddress,
-	})
+	client, err := redis.Dial("tcp", c.config.CacheAddress)
+	if err != nil {
+		return nil, err
+	}
 
 	// TODO: configure the client here
 
