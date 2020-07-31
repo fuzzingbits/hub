@@ -8,8 +8,8 @@ export const mutations = {
 	setState(state: any, target: types.UserContext | null) {
 		state.session = target;
 
-		if (target && target.context.userSettings.themeColor) {
-			document.documentElement.style.setProperty("--primary", target.context.userSettings.themeColor);
+		if (target && target.userSettings.themeColor) {
+			document.documentElement.style.setProperty("--primary", target.userSettings.themeColor);
 		}
 	},
 };

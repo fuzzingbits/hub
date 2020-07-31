@@ -15,7 +15,7 @@ export default Vue.extend({
 				return "world";
 			}
 
-			return `${this.session.context.user.firstName} ${this.session.context.user.lastName}`;
+			return `${this.session.user.firstName} ${this.session.user.lastName}`;
 		},
 		session: function(): types.UserContext | null {
 			return this.$store.state.user.session;
