@@ -60,6 +60,19 @@ func TestGetCurrentSession(t *testing.T) {
 	}
 
 	{
+		req, _ := http.NewRequest(http.MethodGet, "/", nil)
+
+		req.AddCookie(&http.Cookie{
+			Name:    session.CookieName,
+			Value:   "invalid-session-token",
+			Expires: time.Now().Add(time.Minute),
+		})
+		if _, err := s.GetCurrentSession(req); err == nil {
+			t.Error("there should have been an error")
+		}
+	}
+
+	{
 		c.SessionProviderValue.Provider.GetByIDError = errors.New("foobar")
 		if _, err := s.GetCurrentSession(req); err == nil {
 			t.Error("there should have been an error")
@@ -109,32 +122,6 @@ func TestCreateUser(t *testing.T) {
 	if _, err := s.CreateUser(createUserRequest); err == nil {
 		t.Error("there should have been an error")
 	}
-}
-
-func TestLoginMissingRequestBody(t *testing.T) {
-	// c := container.NewMockable()
-	// s := NewService(&hubconfig.Config{}, c)
-
-	// if _, err := loginTestHelper(t, s, nil); err == nil {
-	// 	t.Errorf("there should have been an error")
-	// }
-}
-
-func TestLoginBadRequestBody(t *testing.T) {
-	// loginRequest := entity.UserLoginRequest{
-	// 	Username: "testy",
-	// 	Password: "Password123",
-	// }
-
-	// loginRequestBytes, _ := json.Marshal(loginRequest)
-
-	// c := container.NewMockable()
-	// s := NewService(&hubconfig.Config{}, c)
-
-	// if _, err := loginTestHelper(t, s, loginRequestBytes[:1]); err == nil {
-	// 	t.Errorf("there should have been an error")
-	// }
-
 }
 
 func TestLoginSuccess(t *testing.T) {

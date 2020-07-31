@@ -6,6 +6,9 @@ import (
 	"github.com/fuzzingbits/hub/pkg/entity"
 )
 
+// ErrServerAlreadySetup is when the server is already setup
+var ErrServerAlreadySetup = errors.New("Server Already Setup")
+
 // GetServerStatus gets the status for the server
 func (s *Service) GetServerStatus() (entity.ServerStatus, error) {
 	userProvider, err := s.container.UserProvider()
@@ -36,7 +39,7 @@ func (s *Service) SetupServer(createUserRequest entity.CreateUserRequest) (entit
 	}
 
 	if !serverStatus.SetupRequired {
-		return entity.Session{}, errors.New("Server is already setup")
+		return entity.Session{}, ErrServerAlreadySetup
 	}
 
 	_, createUserErr := s.CreateUser(createUserRequest)

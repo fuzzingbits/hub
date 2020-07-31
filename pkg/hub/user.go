@@ -16,6 +16,9 @@ import (
 // ErrInvalidLogin is when the login credentials are incorrect
 var ErrInvalidLogin = errors.New("Invalid Login")
 
+// ErrMissingValidSession is when there is no valid session
+var ErrMissingValidSession = errors.New("No Valid Session")
+
 // CreateUser creates a User
 func (s *Service) CreateUser(request entity.CreateUserRequest) (entity.UserContext, error) {
 	userProvider, err := s.container.UserProvider()
@@ -58,13 +61,17 @@ func (s *Service) GetCurrentSession(r *http.Request) (entity.Session, error) {
 
 	sessionCookie, err := r.Cookie(session.CookieName)
 	if err != nil {
-		return entity.Session{}, err
+		return entity.Session{}, ErrMissingValidSession
 	}
 
 	token := sessionCookie.Value
 
 	userSession, err := sessionProvider.Get(token)
 	if err != nil {
+		if errors.Is(err, session.ErrNotFound) {
+			return entity.Session{}, ErrMissingValidSession
+		}
+
 		return entity.Session{}, err
 	}
 
@@ -113,6 +120,7 @@ func (s *Service) Login(loginRequest entity.UserLoginRequest) (entity.Session, e
 		if errors.Is(err, user.ErrNotFound) {
 			return entity.Session{}, ErrInvalidLogin
 		}
+
 		return entity.Session{}, err
 	}
 

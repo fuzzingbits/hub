@@ -18,6 +18,24 @@ type App struct {
 	Service *hub.Service
 }
 
+var responseServerAlreadySetup = rooter.Response{
+	StatusCode: http.StatusOK,
+	Message:    "Server Is Already Setup",
+	State:      false,
+}
+
+var responseMissingValidSession = rooter.Response{
+	StatusCode: http.StatusOK,
+	Message:    "Missing Valid Session",
+	State:      false,
+}
+
+var responseInvalidLogin = rooter.Response{
+	StatusCode: http.StatusOK,
+	State:      false,
+	Message:    "Invlaid Login",
+}
+
 // RegisterRoutes for the API
 func RegisterRoutes(mux *http.ServeMux, service *hub.Service) {
 	a := &App{
@@ -87,6 +105,10 @@ func (a *App) handlerServerSetup(w http.ResponseWriter, req *http.Request) roote
 
 	userSession, err := a.Service.SetupServer(payload)
 	if err != nil {
+		if errors.Is(err, hub.ErrServerAlreadySetup) {
+			return responseServerAlreadySetup
+		}
+
 		return a.serverError(err, req)
 	}
 
@@ -102,16 +124,11 @@ func (a *App) handlerServerSetup(w http.ResponseWriter, req *http.Request) roote
 func (a *App) handlerUserMe(w http.ResponseWriter, req *http.Request) rooter.Response {
 	session, err := a.Service.GetCurrentSession(req)
 	if err != nil {
-		if !errors.Is(err, http.ErrNoCookie) {
-			return a.serverError(err, req)
+		if errors.Is(err, hub.ErrMissingValidSession) {
+			return responseMissingValidSession
 		}
 
-		return rooter.Response{
-			StatusCode: http.StatusOK,
-			Message:    "you are not logged in",
-			State:      true,
-			Data:       nil,
-		}
+		return a.serverError(err, req)
 	}
 
 	return rooter.Response{
@@ -131,6 +148,10 @@ func (a *App) handlerUserLogin(w http.ResponseWriter, req *http.Request) rooter.
 
 	userSession, err := a.Service.Login(loginRequest)
 	if err != nil {
+		if errors.Is(err, hub.ErrInvalidLogin) {
+			return responseInvalidLogin
+		}
+
 		return a.serverError(err, req)
 	}
 
