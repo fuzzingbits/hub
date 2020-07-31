@@ -20,6 +20,16 @@ export default {
 		htmlAttrs: {
 			lang: "en",
 		},
+		link: [
+			{
+				rel: "icon",
+				href: "/favicon.png",
+			},
+			{
+				rel: "apple-touch-icon",
+				href: "/apple-touch-icon.png",
+			},
+		],
 		meta: [
 			{ charset: "utf-8" },
 			{ name: "viewport", content: "width=device-width, initial-scale=1" },
