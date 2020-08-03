@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -29,12 +30,22 @@ type TestCase struct {
 
 // Test all the provided test cases
 func Test(t *testing.T, handler http.Handler, testCases []TestCase) {
+	var testCaseNameMap = map[string]bool{}
+
 	ts := httptest.NewServer(handler)
 	defer ts.Close()
 
 	for _, testCase := range testCases {
-		// TODO: make sure testCase.Name does not have spaces
-		// TODO: check for unique test names
+		if strings.Contains(testCase.Name, " ") {
+			t.Fatalf("Test Case Name Can Not Contain Spaces: '%s'", testCase.Name)
+		}
+
+		_, alreadyExists := testCaseNameMap[testCase.Name]
+		if alreadyExists {
+			t.Fatalf("Test Case Names Must Be Unique: '%s'", testCase.Name)
+		}
+		testCaseNameMap[testCase.Name] = true
+
 		t.Run(testCase.Name, func(t *testing.T) {
 			// Build the request if one is not set
 			if testCase.Request == nil {

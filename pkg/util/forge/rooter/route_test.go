@@ -34,7 +34,7 @@ func TestTestRoute(t *testing.T) {
 
 	rootertest.Test(t, mux, []rootertest.TestCase{
 		{
-			Name:                "Basic Route Test",
+			Name:                "Basic_Route_Test",
 			TargetStatusCode:    http.StatusOK,
 			URL:                 pathBasicTest,
 			TargetResponseBytes: responseBasicTest.Bytes(),

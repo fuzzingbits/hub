@@ -31,11 +31,13 @@ func TestSinglePageAppHandler(t *testing.T) {
 
 	testCases := []rootertest.TestCase{
 		{
+			Name:                "test_spa_response_on_404",
 			URL:                 "/fakepage",
 			TargetStatusCode:    http.StatusOK,
 			TargetResponseBytes: spaResponse,
 		},
 		{
+			Name:                "test_root",
 			URL:                 "/",
 			TargetStatusCode:    http.StatusOK,
 			TargetResponseBytes: spaResponse,

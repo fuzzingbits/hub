@@ -46,6 +46,14 @@ func ResponseNotFound() Response {
 	}
 }
 
+// ResponseBadRequest is a standard way of serving a 400
+func ResponseBadRequest() Response {
+	return Response{
+		StatusCode: http.StatusBadRequest,
+		Message:    "bad request",
+	}
+}
+
 // ResponseMethodNotAllowed is a standard way of serving a 405
 func ResponseMethodNotAllowed() Response {
 	return Response{

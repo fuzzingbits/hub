@@ -7,5 +7,6 @@ import (
 func TestResponses(t *testing.T) {
 	ResponseInternalServerError()
 	ResponseMethodNotAllowed()
+	ResponseBadRequest()
 	ResponseNotFound()
 }

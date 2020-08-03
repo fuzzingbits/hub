@@ -100,7 +100,7 @@ func (a *App) handlerServerSetup(w http.ResponseWriter, req *http.Request) roote
 	var payload entity.CreateUserRequest
 	decoder := json.NewDecoder(req.Body)
 	if err := decoder.Decode(&payload); err != nil {
-		return a.serverError(err, req)
+		return rooter.ResponseBadRequest()
 	}
 
 	userSession, err := a.Service.SetupServer(payload)
@@ -129,7 +129,7 @@ func (a *App) handlerUserMe(w http.ResponseWriter, req *http.Request) rooter.Res
 
 	token := sessionCookie.Value
 
-	session, err := a.Service.GetCurrentSession(token)
+	userSession, err := a.Service.GetCurrentSession(token)
 	if err != nil {
 		if errors.Is(err, hub.ErrMissingValidSession) {
 			return responseMissingValidSession
@@ -141,7 +141,7 @@ func (a *App) handlerUserMe(w http.ResponseWriter, req *http.Request) rooter.Res
 	return rooter.Response{
 		StatusCode: http.StatusOK,
 		State:      true,
-		Data:       session.Context,
+		Data:       userSession.Context,
 	}
 }
 
@@ -150,7 +150,7 @@ func (a *App) handlerUserLogin(w http.ResponseWriter, req *http.Request) rooter.
 	var loginRequest entity.UserLoginRequest
 	decoder := json.NewDecoder(req.Body)
 	if err := decoder.Decode(&loginRequest); err != nil {
-		return a.serverError(err, req)
+		return rooter.ResponseBadRequest()
 	}
 
 	userSession, err := a.Service.Login(loginRequest)
