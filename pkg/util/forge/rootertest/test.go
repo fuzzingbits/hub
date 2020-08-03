@@ -15,15 +15,16 @@ type TestCase struct {
 	// Test Name
 	Name string
 	// Request
+	Request    *http.Request
 	Method     string
 	URL        string
 	Body       io.Reader
 	RequestMod func(req *http.Request)
 	// Response Checks
 	TargetStatusCode       int
-	SkipResponseBytesCheck bool
 	TargetResponseBytes    []byte
-	ResponseChecker        func(response *http.Response) error
+	SkipResponseBytesCheck bool
+	CustomResponseChecker  func(response *http.Response) error
 }
 
 // Test all the provided test cases
@@ -32,27 +33,41 @@ func Test(t *testing.T, handler http.Handler, testCases []TestCase) {
 	defer ts.Close()
 
 	for _, testCase := range testCases {
+		// TODO: make sure testCase.Name does not have spaces
+		// TODO: check for unique test names
 		t.Run(testCase.Name, func(t *testing.T) {
-			req, err := http.NewRequest(testCase.Method, ts.URL+testCase.URL, testCase.Body)
-			if err != nil {
-				log.Fatal(err)
+			// Build the request if one is not set
+			if testCase.Request == nil {
+				var err error
+				testCase.Request, err = http.NewRequest(
+					testCase.Method,
+					ts.URL+testCase.URL,
+					testCase.Body,
+				)
+				if err != nil {
+					log.Fatal(err)
+				}
 			}
 
+			// Modify the request if RequestMod func is set
 			if testCase.RequestMod != nil {
-				testCase.RequestMod(req)
+				testCase.RequestMod(testCase.Request)
 			}
 
-			response, err := http.DefaultClient.Do(req)
+			// Make the request
+			response, err := http.DefaultClient.Do(testCase.Request)
 			if err != nil {
 				log.Fatal(err)
 			}
 
+			// Read out all the bytes
 			responseBytes, err := ioutil.ReadAll(response.Body)
 			response.Body.Close()
 			if err != nil {
 				log.Fatal(err)
 			}
 
+			// Always confirm the status code
 			if response.StatusCode != testCase.TargetStatusCode {
 				t.Errorf(
 					"%s return %d instead of %d",
@@ -62,9 +77,10 @@ func Test(t *testing.T, handler http.Handler, testCases []TestCase) {
 				)
 			}
 
+			// Compare the response bytes
 			if !testCase.SkipResponseBytesCheck {
 				if !reflect.DeepEqual(responseBytes, testCase.TargetResponseBytes) {
-					t.Errorf(
+					t.Fatalf(
 						"%s returned: %s expected: %s",
 						testCase.URL,
 						string(responseBytes),
@@ -73,8 +89,9 @@ func Test(t *testing.T, handler http.Handler, testCases []TestCase) {
 				}
 			}
 
-			if testCase.ResponseChecker != nil {
-				if err := testCase.ResponseChecker(response); err != nil {
+			// Use the custom response checker
+			if testCase.CustomResponseChecker != nil {
+				if err := testCase.CustomResponseChecker(response); err != nil {
 					log.Fatal(err)
 				}
 			}

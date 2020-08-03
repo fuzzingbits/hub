@@ -21,10 +21,7 @@ func (s *Service) GetServerStatus() (entity.ServerStatus, error) {
 		return entity.ServerStatus{}, err
 	}
 
-	setupRequired := false
-	if len(users) < 1 {
-		setupRequired = true
-	}
+	setupRequired := len(users) < 1
 
 	return entity.ServerStatus{
 		SetupRequired: setupRequired,

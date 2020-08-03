@@ -2,7 +2,6 @@ package hub
 
 import (
 	"errors"
-	"net/http"
 
 	"github.com/fuzzingbits/hub/pkg/provider/session"
 	"github.com/fuzzingbits/hub/pkg/provider/user"
@@ -53,18 +52,11 @@ func (s *Service) CreateUser(request entity.CreateUserRequest) (entity.UserConte
 }
 
 // GetCurrentSession gets the current session
-func (s *Service) GetCurrentSession(r *http.Request) (entity.Session, error) {
+func (s *Service) GetCurrentSession(token string) (entity.Session, error) {
 	sessionProvider, err := s.container.SessionProvider()
 	if err != nil {
 		return entity.Session{}, err
 	}
-
-	sessionCookie, err := r.Cookie(session.CookieName)
-	if err != nil {
-		return entity.Session{}, ErrMissingValidSession
-	}
-
-	token := sessionCookie.Value
 
 	userSession, err := sessionProvider.Get(token)
 	if err != nil {

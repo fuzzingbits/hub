@@ -2,105 +2,65 @@ package hub
 
 import (
 	"errors"
-	"reflect"
 	"testing"
 
 	"github.com/fuzzingbits/hub/pkg/container"
-	"github.com/fuzzingbits/hub/pkg/entity"
 	"github.com/fuzzingbits/hub/pkg/hubconfig"
 )
-
-func TestSetupServer(t *testing.T) {
-	c := container.NewMockable()
-	s := NewService(&hubconfig.Config{}, c)
-
-	createUserRequest := entity.CreateUserRequest{
-		Username: "foobar",
-	}
-
-	if _, err := s.SetupServer(createUserRequest); err != nil {
-		t.Error(err)
-	}
-
-	if _, err := s.SetupServer(createUserRequest); err == nil {
-		t.Errorf("there should have been an error")
-	}
-
-	c = container.NewMockable()
-	s = NewService(&hubconfig.Config{}, c)
-
-	c.UserProviderValue.Provider.CreateError = errors.New("foobar")
-	if _, err := s.SetupServer(createUserRequest); err == nil {
-		t.Errorf("there should have been an error")
-	}
-
-	c.UserProviderValue.Provider.GetAllError = errors.New("foobar")
-	if _, err := s.SetupServer(createUserRequest); err == nil {
-		t.Errorf("there should have been an error")
-	}
-}
 
 func TestGetServerStatus(t *testing.T) {
 	c := container.NewMockable()
 	s := NewService(&hubconfig.Config{}, c)
 
-	{ // Success! on new server
-		status, err := s.GetServerStatus()
-		if err != nil {
+	{ // Success
+		if _, err := s.GetServerStatus(); err != nil {
 			t.Error(err)
-		}
-
-		targetStatus := entity.ServerStatus{
-			SetupRequired: true,
-		}
-
-		if !reflect.DeepEqual(status, targetStatus) {
-			t.Errorf(
-				"[ServerStatus Did Not Match] returned: %+v expected: %+v",
-				status,
-				targetStatus,
-			)
 		}
 	}
 
-	{ // Success! on server with a user already
-		s.CreateUser(entity.CreateUserRequest{
-			FirstName: "Testy",
-			LastName:  "McTestPants",
-			Username:  "testy",
-			Email:     "testy@example.com",
-			Password:  "Password123",
-		})
-
-		status, err := s.GetServerStatus()
-		if err != nil {
-			t.Error(err)
-		}
-
-		targetStatus := entity.ServerStatus{
-			SetupRequired: false,
-		}
-
-		if !reflect.DeepEqual(status, targetStatus) {
-			t.Errorf(
-				"[ServerStatus Did Not Match] returned: %+v expected: %+v",
-				status,
-				targetStatus,
-			)
-		}
-	}
-
-	{ // Failed, could not get users
+	{ // Error
 		c.UserProviderValue.Provider.GetAllError = errors.New("foobar")
 		if _, err := s.GetServerStatus(); err == nil {
-			t.Error("there should have been an error")
+			t.Errorf("there should have been an error")
 		}
 	}
 
-	{ // Failed, could not get userProvider
+	{ // Error
 		c.UserProviderError = errors.New("foobar")
 		if _, err := s.GetServerStatus(); err == nil {
-			t.Error("there should have been an error")
+			t.Errorf("there should have been an error")
+		}
+	}
+}
+
+func TestSetupServer(t *testing.T) {
+	{ // Success and already setup
+		c := container.NewMockable()
+		s := NewService(&hubconfig.Config{}, c)
+
+		if _, err := s.SetupServer(standardTestCreateUserRequest); err != nil {
+			t.Error(err)
+		}
+
+		if _, err := s.SetupServer(standardTestCreateUserRequest); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	c := container.NewMockable()
+	s := NewService(&hubconfig.Config{}, c)
+
+	{ // Error
+		c.UserProviderValue.Provider.CreateError = errors.New("foobar")
+		if _, err := s.SetupServer(standardTestCreateUserRequest); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		c.UserProviderError = errors.New("foobar")
+		if _, err := s.SetupServer(standardTestCreateUserRequest); err == nil {
+			t.Errorf("there should have been an error")
 		}
 	}
 }

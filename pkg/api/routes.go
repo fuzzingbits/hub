@@ -122,7 +122,14 @@ func (a *App) handlerServerSetup(w http.ResponseWriter, req *http.Request) roote
 }
 
 func (a *App) handlerUserMe(w http.ResponseWriter, req *http.Request) rooter.Response {
-	session, err := a.Service.GetCurrentSession(req)
+	sessionCookie, err := req.Cookie(session.CookieName)
+	if err != nil {
+		return responseMissingValidSession
+	}
+
+	token := sessionCookie.Value
+
+	session, err := a.Service.GetCurrentSession(token)
 	if err != nil {
 		if errors.Is(err, hub.ErrMissingValidSession) {
 			return responseMissingValidSession

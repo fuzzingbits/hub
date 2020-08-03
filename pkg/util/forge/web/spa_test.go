@@ -39,7 +39,7 @@ func TestSinglePageAppHandler(t *testing.T) {
 			URL:                 "/",
 			TargetStatusCode:    http.StatusOK,
 			TargetResponseBytes: spaResponse,
-			ResponseChecker: func(r *http.Response) error {
+			CustomResponseChecker: func(r *http.Response) error {
 				targetCSP := "script-src 'self' 'sha256-QXZRmRPAsseuAgOGnvjVUJOnlHEzu25Ou1XhFOWnqyI='"
 				actualCSP := r.Header.Get("Content-Security-Policy")
 				if actualCSP != targetCSP {

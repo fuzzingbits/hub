@@ -2,183 +2,98 @@ package hub
 
 import (
 	"errors"
-	"net/http"
-	"reflect"
 	"testing"
-	"time"
 
 	"github.com/fuzzingbits/hub/pkg/container"
 	"github.com/fuzzingbits/hub/pkg/entity"
 	"github.com/fuzzingbits/hub/pkg/hubconfig"
-	"github.com/fuzzingbits/hub/pkg/provider/session"
 )
 
-func TestGetCurrentSession(t *testing.T) {
-	c := container.NewMockable()
-	s := NewService(&hubconfig.Config{RollbarToken: "fake-token"}, c)
+var standardTestCreateUserRequest = entity.CreateUserRequest{
+	FirstName: "Testy",
+	LastName:  "McTestPants",
+	Username:  "testy",
+	Email:     "testy@example.com",
+	Password:  "Password123",
+}
 
-	// Create Fixture User
-	targetSession, _ := s.SetupServer(
-		entity.CreateUserRequest{
-			FirstName: "Testy",
-			LastName:  "McTestPants",
-			Username:  "testy",
-			Email:     "testy@example.com",
-			Password:  "Password123",
-		},
-	)
-
-	// Create Fake Request
-	req, _ := http.NewRequest(http.MethodGet, "/", nil)
-
-	{ // No Cookie
-		if _, err := s.GetCurrentSession(req); err == nil {
-			t.Error("there should have been an error")
-		}
-	}
-
-	req.AddCookie(&http.Cookie{
-		Name:    session.CookieName,
-		Value:   targetSession.Token,
-		Expires: time.Now().Add(time.Minute),
-	})
-
-	{ // Test Success!
-		userSession, err := s.GetCurrentSession(req)
-		if err != nil {
-			t.Error(err)
-			return
-		}
-
-		if !reflect.DeepEqual(userSession, targetSession) {
-			t.Errorf(
-				"[Session Did Not Match] returned: %s expected: %s",
-				userSession,
-				targetSession,
-			)
-		}
-	}
-
-	{
-		req, _ := http.NewRequest(http.MethodGet, "/", nil)
-
-		req.AddCookie(&http.Cookie{
-			Name:    session.CookieName,
-			Value:   "invalid-session-token",
-			Expires: time.Now().Add(time.Minute),
-		})
-		if _, err := s.GetCurrentSession(req); err == nil {
-			t.Error("there should have been an error")
-		}
-	}
-
-	{
-		c.SessionProviderValue.Provider.GetByIDError = errors.New("foobar")
-		if _, err := s.GetCurrentSession(req); err == nil {
-			t.Error("there should have been an error")
-		}
-	}
-
-	{
-		c.SessionProviderError = errors.New("foobar")
-		if _, err := s.GetCurrentSession(req); err == nil {
-			t.Error("there should have been an error")
-		}
-	}
+var standardTestLoginRequest = entity.UserLoginRequest{
+	Username: standardTestCreateUserRequest.Username,
+	Password: standardTestCreateUserRequest.Password,
 }
 
 func TestCreateUser(t *testing.T) {
 	c := container.NewMockable()
 	s := NewService(&hubconfig.Config{}, c)
 
-	createUserRequest := entity.CreateUserRequest{
-		FirstName: "Testy",
-		LastName:  "McTestPants",
-		Username:  "testy",
-		Email:     "testy@example.com",
-		Password:  "Password123",
+	{ // Success
+		if _, err := s.CreateUser(standardTestCreateUserRequest); err != nil {
+			t.Error(err)
+		}
 	}
 
-	if _, err := s.CreateUser(createUserRequest); err != nil {
-		t.Error(err)
+	{ // Error
+		c.UserSettingsProviderValue.Provider.UpdateError = errors.New("foobar")
+		if _, err := s.CreateUser(standardTestCreateUserRequest); err == nil {
+			t.Errorf("there should have been an error")
+		}
 	}
 
-	c.UserSettingsProviderValue.Provider.UpdateError = errors.New("foobar")
-	if _, err := s.CreateUser(createUserRequest); err == nil {
-		t.Error("there should have been an error")
+	{ // Error
+		c.UserProviderValue.Provider.CreateError = errors.New("foobar")
+		if _, err := s.CreateUser(standardTestCreateUserRequest); err == nil {
+			t.Errorf("there should have been an error")
+		}
 	}
 
-	c.UserProviderValue.Provider.CreateError = errors.New("foobar")
-	if _, err := s.CreateUser(createUserRequest); err == nil {
-		t.Error("there should have been an error")
+	{ // Error
+		c.UserSettingsProviderError = errors.New("foobar")
+		if _, err := s.CreateUser(standardTestCreateUserRequest); err == nil {
+			t.Errorf("there should have been an error")
+		}
 	}
 
-	c.UserSettingsProviderError = errors.New("foobar")
-	if _, err := s.CreateUser(createUserRequest); err == nil {
-		t.Error("there should have been an error")
-	}
-
-	c.UserProviderError = errors.New("foobar")
-	if _, err := s.CreateUser(createUserRequest); err == nil {
-		t.Error("there should have been an error")
-	}
-}
-
-func TestLoginSuccess(t *testing.T) {
-	loginRequest := entity.UserLoginRequest{
-		Username: "testy",
-		Password: "Password123",
-	}
-
-	c := container.NewMockable()
-	s := NewService(&hubconfig.Config{}, c)
-
-	s.CreateUser(entity.CreateUserRequest{
-		FirstName: "Testy",
-		LastName:  "McTestPants",
-		Username:  "testy",
-		Email:     "testy@example.com",
-		Password:  "Password123",
-	})
-
-	if _, err := s.Login(loginRequest); err != nil {
-		t.Error(err)
+	{ // Error
+		c.UserProviderError = errors.New("foobar")
+		if _, err := s.CreateUser(standardTestCreateUserRequest); err == nil {
+			t.Errorf("there should have been an error")
+		}
 	}
 }
 
-func TestLoginIncorrectPassword(t *testing.T) {
-	loginRequest := entity.UserLoginRequest{
-		Username: "testy",
-		Password: "NotTheCorrectPassword",
-	}
-
+func TestGetCurrentSession(t *testing.T) {
 	c := container.NewMockable()
 	s := NewService(&hubconfig.Config{}, c)
 
-	s.CreateUser(entity.CreateUserRequest{
-		FirstName: "Testy",
-		LastName:  "McTestPants",
-		Username:  "testy",
-		Email:     "testy@example.com",
-		Password:  "Password123",
-	})
-
-	if _, err := s.Login(loginRequest); err == nil {
-		t.Errorf("there should have been an error")
-	}
-}
-
-func TestLoginUserNotFound(t *testing.T) {
-	loginRequest := entity.UserLoginRequest{
-		Username: "testy",
-		Password: "NotTheCorrectPassword",
+	userSession, err := s.SetupServer(standardTestCreateUserRequest)
+	if err != nil {
+		t.Fatalf("Failed to create user session: %s", err.Error())
 	}
 
-	c := container.NewMockable()
-	s := NewService(&hubconfig.Config{}, c)
+	{ // Success
+		if _, err := s.GetCurrentSession(userSession.Token); err != nil {
+			t.Error(err)
+		}
+	}
 
-	if _, err := s.Login(loginRequest); err == nil {
-		t.Errorf("there should have been an error")
+	{ // Error
+		if _, err := s.GetCurrentSession("INVALID_TOKEN"); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		c.SessionProviderValue.Provider.GetByIDError = errors.New("foobar")
+		if _, err := s.GetCurrentSession(userSession.Token); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		c.SessionProviderError = errors.New("foobar")
+		if _, err := s.GetCurrentSession(userSession.Token); err == nil {
+			t.Errorf("there should have been an error")
+		}
 	}
 }
 
@@ -186,82 +101,110 @@ func TestGetUserContextByUUID(t *testing.T) {
 	c := container.NewMockable()
 	s := NewService(&hubconfig.Config{}, c)
 
-	createdUser, _ := s.CreateUser(entity.CreateUserRequest{
-		FirstName: "Testy",
-		LastName:  "McTestPants",
-		Username:  "testy",
-		Email:     "testy@example.com",
-		Password:  "Password123",
-	})
-
-	if _, err := s.GetUserContextByUUID(createdUser.User.UUID); err != nil {
-		t.Error(err)
+	userSession, err := s.SetupServer(standardTestCreateUserRequest)
+	if err != nil {
+		t.Fatalf("Failed to create user session: %s", err.Error())
 	}
 
-	c.UserSettingsProviderValue.Provider.GetByIDError = errors.New("foobar")
-	if _, err := s.GetUserContextByUUID(createdUser.User.UUID); err == nil {
-		t.Errorf("there should have been an error")
+	{ // Success
+		if _, err := s.GetUserContextByUUID(userSession.Context.User.UUID); err != nil {
+			t.Error(err)
+		}
 	}
 
-	c.UserProviderValue.Provider.GetByIDError = errors.New("foobar")
-	if _, err := s.GetUserContextByUUID(createdUser.User.UUID); err == nil {
-		t.Errorf("there should have been an error")
+	{ // Error
+		c.UserSettingsProviderValue.Provider.GetByIDError = errors.New("foobar")
+		if _, err := s.GetUserContextByUUID(userSession.Context.User.UUID); err == nil {
+			t.Errorf("there should have been an error")
+		}
 	}
 
-	c.UserProviderError = errors.New("foobar")
-	if _, err := s.GetUserContextByUUID(createdUser.User.UUID); err == nil {
-		t.Errorf("there should have been an error")
+	{ // Error
+		c.UserProviderValue.Provider.GetByIDError = errors.New("foobar")
+		if _, err := s.GetUserContextByUUID(userSession.Context.User.UUID); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		c.UserSettingsProviderError = errors.New("foobar")
+		if _, err := s.GetUserContextByUUID(userSession.Context.User.UUID); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		c.UserProviderError = errors.New("foobar")
+		if _, err := s.GetUserContextByUUID(userSession.Context.User.UUID); err == nil {
+			t.Errorf("there should have been an error")
+		}
 	}
 }
 
-func TestLoginErrors(t *testing.T) {
+func TestLogin(t *testing.T) {
 	c := container.NewMockable()
 	s := NewService(&hubconfig.Config{}, c)
 
-	loginRequest := entity.UserLoginRequest{
-		Username: "testy",
-		Password: "Password123",
+	_, err := s.SetupServer(standardTestCreateUserRequest)
+	if err != nil {
+		t.Fatalf("Failed to create user session: %s", err.Error())
 	}
 
-	s.CreateUser(entity.CreateUserRequest{
-		FirstName: "Testy",
-		LastName:  "McTestPants",
-		Username:  "testy",
-		Email:     "testy@example.com",
-		Password:  "Password123",
-	})
+	{ // Success
+		if _, err := s.Login(standardTestLoginRequest); err != nil {
+			t.Error(err)
+		}
+	}
 
-	{
+	{ // Error
 		c.SessionProviderValue.Provider.CreateError = errors.New("foobar")
-		if _, err := s.Login(loginRequest); err == nil {
+		if _, err := s.Login(standardTestLoginRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}
 
-	{
+	{ // Error
 		c.SessionProviderError = errors.New("foobar")
-		if _, err := s.Login(loginRequest); err == nil {
+		if _, err := s.Login(standardTestLoginRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}
 
-	{
+	{ // Error
 		c.UserSettingsProviderError = errors.New("foobar")
-		if _, err := s.Login(loginRequest); err == nil {
+		if _, err := s.Login(standardTestLoginRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}
 
-	{
+	{ // Error
+		if _, err := s.Login(entity.UserLoginRequest{
+			Username: standardTestLoginRequest.Username,
+			Password: "INVLAID_PASSWORD",
+		}); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		if _, err := s.Login(entity.UserLoginRequest{
+			Username: "INVALID_USERNAME",
+			Password: "INVLAID_PASSWORD",
+		}); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
 		c.UserProviderValue.GetByUsernameError = errors.New("foobar")
-		if _, err := s.Login(loginRequest); err == nil {
+		if _, err := s.Login(standardTestLoginRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}
 
-	{
+	{ // Error
 		c.UserProviderError = errors.New("foobar")
-		if _, err := s.Login(loginRequest); err == nil {
+		if _, err := s.Login(standardTestLoginRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}
