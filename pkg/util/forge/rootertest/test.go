@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"reflect"
 	"strings"
 	"testing"
@@ -25,7 +26,7 @@ type TestCase struct {
 	TargetStatusCode       int
 	TargetResponseBytes    []byte
 	SkipResponseBytesCheck bool
-	CustomResponseChecker  func(response *http.Response) error
+	CustomResponseChecker  func(t *testing.T, response *http.Response)
 }
 
 // Test all the provided test cases
@@ -52,13 +53,17 @@ func Test(t *testing.T, handler http.Handler, testCases []TestCase) {
 				var err error
 				testCase.Request, err = http.NewRequest(
 					testCase.Method,
-					ts.URL+testCase.URL,
+					testCase.URL,
 					testCase.Body,
 				)
 				if err != nil {
 					log.Fatal(err)
 				}
 			}
+
+			tsURL, _ := url.Parse(ts.URL)
+			testCase.Request.URL.Host = tsURL.Host
+			testCase.Request.URL.Scheme = tsURL.Scheme
 
 			// Modify the request if RequestMod func is set
 			if testCase.RequestMod != nil {
@@ -67,13 +72,6 @@ func Test(t *testing.T, handler http.Handler, testCases []TestCase) {
 
 			// Make the request
 			response, err := http.DefaultClient.Do(testCase.Request)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			// Read out all the bytes
-			responseBytes, err := ioutil.ReadAll(response.Body)
-			response.Body.Close()
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -90,6 +88,13 @@ func Test(t *testing.T, handler http.Handler, testCases []TestCase) {
 
 			// Compare the response bytes
 			if !testCase.SkipResponseBytesCheck {
+				// Read out all the bytes
+				responseBytes, err := ioutil.ReadAll(response.Body)
+				response.Body.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+
 				if !reflect.DeepEqual(responseBytes, testCase.TargetResponseBytes) {
 					t.Fatalf(
 						"%s returned: %s expected: %s",
@@ -102,9 +107,7 @@ func Test(t *testing.T, handler http.Handler, testCases []TestCase) {
 
 			// Use the custom response checker
 			if testCase.CustomResponseChecker != nil {
-				if err := testCase.CustomResponseChecker(response); err != nil {
-					log.Fatal(err)
-				}
+				testCase.CustomResponseChecker(t, response)
 			}
 		})
 	}

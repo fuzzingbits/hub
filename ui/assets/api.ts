@@ -17,11 +17,12 @@ client.interceptors.response.use(
 	}
 );
 
-client.interceptors.request.use(function(config) {
+client.interceptors.request.use(function (config) {
 	return config;
 });
 
 class HubAPI {
+
 	public async serverStatus(): Promise<GenericResponse<types.ServerStatus | null>> {
 		const response = await client.get("/api/server/status");
 		return response.data;
@@ -32,7 +33,7 @@ class HubAPI {
 		return response.data;
 	}
 
-	public async userLogin(payload: types.UserLoginRequest): Promise<GenericResponse<types.UserContext>> {
+	public async userLogin(payload: types.UserLoginRequest): Promise<GenericResponse<types.UserContext | null>> {
 		const response = await client.post("/api/user/login", payload);
 		return response.data;
 	}
@@ -41,6 +42,7 @@ class HubAPI {
 		const response = await client.get("/api/user/me");
 		return response.data;
 	}
+
 }
 
 export default new HubAPI();

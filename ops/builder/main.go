@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"strings"
@@ -28,7 +27,12 @@ func main() {
 	newContents := generateTypesContents()
 
 	if err := ioutil.WriteFile(tsTypesTargetFile, newContents, 0644); err != nil {
-		log.Print(fmt.Errorf("Could not write file [%s]: %w", tsTypesTargetFile, err))
+		log.Fatalf("Error building types: %s", err.Error())
+
+	}
+
+	if err := buildClientFile(); err != nil {
+		log.Fatalf("Error building API Client: %s", err.Error())
 	}
 }
 

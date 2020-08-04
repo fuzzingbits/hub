@@ -36,32 +36,49 @@ var responseInvalidLogin = rooter.Response{
 	Message:    "Invlaid Login",
 }
 
+// Route Names
+const (
+	RouteServerStatus = "/api/server/status"
+	RouteServerSetup  = "/api/server/setup"
+	RouteUserMe       = "/api/user/me"
+	RouteUserLogin    = "/api/user/login"
+)
+
+// GetRoutes gets all the routes
+func (a *App) GetRoutes() []rooter.Route {
+	return []rooter.Route{
+		{
+			Path:     RouteServerStatus,
+			Handler:  rooter.ResponseFunc(a.handlerServerStatus),
+			Response: entity.ServerStatus{},
+		},
+		{
+			Path:     RouteServerSetup,
+			Handler:  rooter.ResponseFunc(a.handlerServerSetup),
+			Payload:  entity.CreateUserRequest{},
+			Response: entity.UserContext{},
+		},
+		{
+			Path:     RouteUserLogin,
+			Handler:  rooter.ResponseFunc(a.handlerUserLogin),
+			Response: entity.UserContext{},
+			Payload:  entity.UserLoginRequest{},
+		},
+		{
+			Path:     RouteUserMe,
+			Handler:  rooter.ResponseFunc(a.handlerUserMe),
+			Response: entity.UserContext{},
+		},
+	}
+}
+
 // RegisterRoutes for the API
 func RegisterRoutes(mux *http.ServeMux, service *hub.Service) {
 	a := &App{
 		Service: service,
 	}
 
-	routes := []rooter.Route{
-		{
-			Path:    "/api/server/status",
-			Handler: rooter.ResponseFunc(a.handlerServerStatus),
-		},
-		{
-			Path:    "/api/server/setup",
-			Handler: rooter.ResponseFunc(a.handlerServerSetup),
-		},
-		{
-			Path:    "/api/user/me",
-			Handler: rooter.ResponseFunc(a.handlerUserMe),
-		},
-		{
-			Path:    "/api/user/login",
-			Handler: rooter.ResponseFunc(a.handlerUserLogin),
-		},
-	}
-
-	rooter.RegisterRoutes(mux, routes, []rooter.Middleware{
+	rooter.RegisterRoutes(mux, a.GetRoutes(), []rooter.Middleware{
 		a.middlewareLogger,
 		a.middlewareRecovery,
 	})

@@ -25,6 +25,11 @@ var testCreateUserRequest = entity.CreateUserRequest{
 	Password:  "Password123",
 }
 
+var testUserLoginRequest = entity.UserLoginRequest{
+	Username: testCreateUserRequest.Username,
+	Password: testCreateUserRequest.Password,
+}
+
 func TestServerSetup(t *testing.T) {
 	c := container.NewMockable()
 	s := hub.NewService(&hubconfig.Config{RollbarToken: "FAKE_TOKEN"}, c)
@@ -37,7 +42,7 @@ func TestServerSetup(t *testing.T) {
 		{
 			Name:                   "success",
 			Method:                 http.MethodPost,
-			URL:                    "/api/server/setup",
+			URL:                    RouteServerSetup,
 			Body:                   bytes.NewReader(testCreateUserRequestBytes),
 			TargetStatusCode:       http.StatusOK,
 			SkipResponseBytesCheck: true,
@@ -45,7 +50,7 @@ func TestServerSetup(t *testing.T) {
 		{
 			Name:                "already_setup",
 			Method:              http.MethodPost,
-			URL:                 "/api/server/setup",
+			URL:                 RouteServerSetup,
 			Body:                bytes.NewReader(testCreateUserRequestBytes),
 			TargetStatusCode:    http.StatusOK,
 			TargetResponseBytes: responseServerAlreadySetup.Bytes(),
@@ -53,7 +58,7 @@ func TestServerSetup(t *testing.T) {
 		{
 			Name:                "no_body",
 			Method:              http.MethodPost,
-			URL:                 "/api/server/setup",
+			URL:                 RouteServerSetup,
 			Body:                nil,
 			TargetStatusCode:    http.StatusBadRequest,
 			TargetResponseBytes: rooter.ResponseBadRequest().Bytes(),
@@ -61,7 +66,7 @@ func TestServerSetup(t *testing.T) {
 		{
 			Name:   "server_error",
 			Method: http.MethodPost,
-			URL:    "/api/server/setup",
+			URL:    RouteServerSetup,
 			Body:   bytes.NewReader(testCreateUserRequestBytes),
 			RequestMod: func(r *http.Request) {
 				c.UserProviderError = errors.New("foobar")
@@ -82,14 +87,14 @@ func TestServerStatus(t *testing.T) {
 		{
 			Name:                   "success",
 			Method:                 http.MethodGet,
-			URL:                    "/api/server/status",
+			URL:                    RouteServerStatus,
 			TargetStatusCode:       http.StatusOK,
 			SkipResponseBytesCheck: true,
 		},
 		{
 			Name:   "server_error",
 			Method: http.MethodGet,
-			URL:    "/api/server/status",
+			URL:    RouteServerStatus,
 			RequestMod: func(r *http.Request) {
 				c.UserProviderError = errors.New("foobar")
 			},
@@ -111,7 +116,7 @@ func TestUserMe(t *testing.T) {
 		{
 			Name:   "success",
 			Method: http.MethodGet,
-			URL:    "/api/user/me",
+			URL:    RouteUserMe,
 			RequestMod: func(r *http.Request) {
 				r.AddCookie(&http.Cookie{
 					Name:  session.CookieName,
@@ -128,7 +133,7 @@ func TestUserMe(t *testing.T) {
 		{
 			Name:   "invalid_cookie",
 			Method: http.MethodGet,
-			URL:    "/api/user/me",
+			URL:    RouteUserMe,
 			RequestMod: func(r *http.Request) {
 				r.AddCookie(&http.Cookie{
 					Name:  session.CookieName,
@@ -141,7 +146,7 @@ func TestUserMe(t *testing.T) {
 		{
 			Name:   "server_error",
 			Method: http.MethodGet,
-			URL:    "/api/user/me",
+			URL:    RouteUserMe,
 			RequestMod: func(r *http.Request) {
 				r.AddCookie(&http.Cookie{
 					Name:  session.CookieName,
@@ -155,7 +160,7 @@ func TestUserMe(t *testing.T) {
 		{
 			Name:                "missing_cookie",
 			Method:              http.MethodGet,
-			URL:                 "/api/user/me",
+			URL:                 RouteUserMe,
 			TargetStatusCode:    http.StatusOK,
 			TargetResponseBytes: responseMissingValidSession.Bytes(),
 		},
@@ -170,12 +175,7 @@ func TestUserLogin(t *testing.T) {
 
 	userSession, _ := s.SetupServer(testCreateUserRequest)
 
-	loginRequest := entity.UserLoginRequest{
-		Username: testCreateUserRequest.Username,
-		Password: testCreateUserRequest.Password,
-	}
-
-	loginRequestBytes, _ := json.Marshal(loginRequest)
+	loginRequestBytes, _ := json.Marshal(testUserLoginRequest)
 	loginBadRequestBytes, _ := json.Marshal(entity.UserLoginRequest{
 		Username: "bad_username",
 		Password: "bad_password",
@@ -185,7 +185,7 @@ func TestUserLogin(t *testing.T) {
 		{
 			Name:             "success",
 			Method:           http.MethodPost,
-			URL:              "/api/user/login",
+			URL:              RouteUserLogin,
 			Body:             bytes.NewReader(loginRequestBytes),
 			TargetStatusCode: http.StatusOK,
 			TargetResponseBytes: rooter.Response{
@@ -197,7 +197,7 @@ func TestUserLogin(t *testing.T) {
 		{
 			Name:                "bad_login",
 			Method:              http.MethodPost,
-			URL:                 "/api/user/login",
+			URL:                 RouteUserLogin,
 			Body:                bytes.NewReader(loginBadRequestBytes),
 			TargetStatusCode:    http.StatusOK,
 			TargetResponseBytes: responseInvalidLogin.Bytes(),
@@ -205,7 +205,7 @@ func TestUserLogin(t *testing.T) {
 		{
 			Name:   "server_error",
 			Method: http.MethodPost,
-			URL:    "/api/user/login",
+			URL:    RouteUserLogin,
 			Body:   bytes.NewReader(loginRequestBytes),
 			RequestMod: func(r *http.Request) {
 				c.SessionProviderError = errors.New("foobar")
@@ -216,7 +216,7 @@ func TestUserLogin(t *testing.T) {
 		{
 			Name:                "no_body",
 			Method:              http.MethodPost,
-			URL:                 "/api/user/login",
+			URL:                 RouteUserLogin,
 			TargetStatusCode:    http.StatusBadRequest,
 			TargetResponseBytes: rooter.ResponseBadRequest().Bytes(),
 		},

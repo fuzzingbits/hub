@@ -8,6 +8,8 @@ type Route struct {
 	Handler    http.Handler
 	Params     []Param
 	Middleware []Middleware
+	Payload    interface{}
+	Response   interface{}
 }
 
 // Param is a route paramerter

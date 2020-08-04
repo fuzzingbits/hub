@@ -1,7 +1,6 @@
 package web
 
 import (
-	"fmt"
 	"net/http"
 	"testing"
 
@@ -41,11 +40,11 @@ func TestSinglePageAppHandler(t *testing.T) {
 			URL:                 "/",
 			TargetStatusCode:    http.StatusOK,
 			TargetResponseBytes: spaResponse,
-			CustomResponseChecker: func(r *http.Response) error {
+			CustomResponseChecker: func(t *testing.T, r *http.Response) {
 				targetCSP := "script-src 'self' 'sha256-QXZRmRPAsseuAgOGnvjVUJOnlHEzu25Ou1XhFOWnqyI='"
 				actualCSP := r.Header.Get("Content-Security-Policy")
 				if actualCSP != targetCSP {
-					return fmt.Errorf(
+					t.Fatalf(
 						"%s returned: %s expected: %s",
 						r.Request.URL.Path,
 						actualCSP,
@@ -56,14 +55,13 @@ func TestSinglePageAppHandler(t *testing.T) {
 				targetTestHeader := "testValue"
 				actualTestHeader := r.Header.Get("TestHeader")
 				if actualTestHeader != targetTestHeader {
-					return fmt.Errorf(
+					t.Fatalf(
 						"%s returned: %s expected: %s",
 						r.Request.URL.Path,
 						actualTestHeader,
 						targetTestHeader,
 					)
 				}
-				return nil
 			},
 		},
 	}
