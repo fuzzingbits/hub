@@ -31,7 +31,7 @@ clean: ## Remove all git ignored file
 
 dev-go: install-hooks dev-docker-up ## Start a dev instance of the Go Server
 	clear
-	@go run ops/builder/main.go
+	@go generate
 	@DEV_PROXY_TO_NUXT=true DEV_CLEAR_EXISTING_DATA=true go run main.go
 
 dev-ui: install-hooks ## Start a dev instance of the UI
@@ -47,7 +47,7 @@ dev-docker-down: install-hooks ## Remove the docker containers used for developm
 
 build-go:
 	@go install github.com/gobuffalo/packr/packr
-	@go run ops/builder/main.go
+	@go generate
 	packr build -o $(CURDIR)/var/$(PROJECT_NAME)
 	@ln -sf $(CURDIR)/var/$(PROJECT_NAME) $(GO_PATH)/bin/$(PROJECT_NAME)
 

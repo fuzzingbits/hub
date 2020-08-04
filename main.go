@@ -1,3 +1,4 @@
+//go:generate go run ./ops/builder
 package main
 
 import (
