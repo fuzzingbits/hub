@@ -63,6 +63,7 @@ func RegisterRoutes(mux *http.ServeMux, service *hub.Service) {
 
 	rooter.RegisterRoutes(mux, routes, []rooter.Middleware{
 		a.middlewareLogger,
+		a.middlewareRecovery,
 	})
 }
 

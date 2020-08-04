@@ -1,6 +1,8 @@
 package api
 
-import "net/http"
+import (
+	"net/http"
+)
 
 func (a *App) middlewareLogger(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -10,5 +12,20 @@ func (a *App) middlewareLogger(next http.Handler) http.Handler {
 			r.Method,
 			r.URL.Path,
 		)
+	})
+}
+
+func (a *App) middlewareRecovery(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if recovered := recover(); recovered != nil {
+				err, isErr := recovered.(error)
+				if isErr {
+					a.serverError(err, r).ServeHTTP(w, r)
+				}
+			}
+		}()
+
+		next.ServeHTTP(w, r)
 	})
 }
