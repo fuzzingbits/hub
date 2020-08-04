@@ -17,7 +17,7 @@ client.interceptors.response.use(
 	}
 );
 
-client.interceptors.request.use(function (config) {
+client.interceptors.request.use(function(config) {
 	return config;
 });
 

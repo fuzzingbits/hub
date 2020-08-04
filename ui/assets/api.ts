@@ -17,12 +17,11 @@ client.interceptors.response.use(
 	}
 );
 
-client.interceptors.request.use(function (config) {
+client.interceptors.request.use(function(config) {
 	return config;
 });
 
 class HubAPI {
-
 	public async serverStatus(): Promise<GenericResponse<types.ServerStatus | null>> {
 		const response = await client.get("/api/server/status");
 		return response.data;
@@ -42,7 +41,6 @@ class HubAPI {
 		const response = await client.get("/api/user/me");
 		return response.data;
 	}
-
 }
 
 export default new HubAPI();

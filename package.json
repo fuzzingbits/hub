@@ -3,7 +3,7 @@
 	"prettier": "./ui/.prettierrc.js",
 	"scripts": {
 		"build": "nuxt generate",
-		"fmt": "prettier *.js ui/** --write",
+		"fmt": "prettier *.{js,json} ui/**/*.{json,js,ts,vue,css} --write",
 		"dev": "nuxt"
 	},
 	"dependencies": {
