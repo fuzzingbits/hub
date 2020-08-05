@@ -68,6 +68,9 @@ func (a *App) GetRoutes() []rooter.Route {
 			Path:     RouteUserMe,
 			Handler:  rooter.ResponseFunc(a.handlerUserMe),
 			Response: entity.UserContext{},
+			Middleware: []rooter.Middleware{
+				a.middlewareRequireAuth,
+			},
 		},
 	}
 }
@@ -140,21 +143,10 @@ func (a *App) handlerServerSetup(w http.ResponseWriter, req *http.Request) roote
 }
 
 func (a *App) handlerUserMe(w http.ResponseWriter, req *http.Request) rooter.Response {
-	sessionCookie, err := req.Cookie(session.CookieName)
-	if err != nil {
-		return responseMissingValidSession
-	}
-
+	sessionCookie, _ := req.Cookie(session.CookieName)
 	token := sessionCookie.Value
 
-	userSession, err := a.Service.GetCurrentSession(token)
-	if err != nil {
-		if errors.Is(err, hub.ErrMissingValidSession) {
-			return responseMissingValidSession
-		}
-
-		return a.serverError(err, req)
-	}
+	userSession, _ := a.Service.GetCurrentSession(token)
 
 	return rooter.Response{
 		StatusCode: http.StatusOK,

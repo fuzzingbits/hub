@@ -140,8 +140,8 @@ func TestUserMe(t *testing.T) {
 					Value: "FAKE_COOKIE_VALUE",
 				})
 			},
-			TargetStatusCode:    http.StatusOK,
-			TargetResponseBytes: responseMissingValidSession.Bytes(),
+			TargetStatusCode:    http.StatusUnauthorized,
+			TargetResponseBytes: rooter.ResponseUnauthorized().Bytes(),
 		},
 		{
 			Name:   "server_error",
@@ -161,8 +161,8 @@ func TestUserMe(t *testing.T) {
 			Name:                "missing_cookie",
 			Method:              http.MethodGet,
 			URL:                 RouteUserMe,
-			TargetStatusCode:    http.StatusOK,
-			TargetResponseBytes: responseMissingValidSession.Bytes(),
+			TargetStatusCode:    http.StatusUnauthorized,
+			TargetResponseBytes: rooter.ResponseUnauthorized().Bytes(),
 		},
 	})
 }

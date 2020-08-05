@@ -46,6 +46,14 @@ func ResponseNotFound() Response {
 	}
 }
 
+// ResponseUnauthorized is a standard way of serving a 401
+func ResponseUnauthorized() Response {
+	return Response{
+		StatusCode: http.StatusUnauthorized,
+		Message:    "unauthorized",
+	}
+}
+
 // ResponseBadRequest is a standard way of serving a 400
 func ResponseBadRequest() Response {
 	return Response{
