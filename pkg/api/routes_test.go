@@ -53,7 +53,7 @@ func TestServerSetup(t *testing.T) {
 			URL:                 RouteServerSetup,
 			Body:                bytes.NewReader(testCreateUserRequestBytes),
 			TargetStatusCode:    http.StatusOK,
-			TargetResponseBytes: responseServerAlreadySetup.Bytes(),
+			TargetResponseBytes: ResponseServerAlreadySetup.Bytes(),
 		},
 		{
 			Name:                "no_body",
@@ -200,7 +200,7 @@ func TestUserLogin(t *testing.T) {
 			URL:                 RouteUserLogin,
 			Body:                bytes.NewReader(loginBadRequestBytes),
 			TargetStatusCode:    http.StatusOK,
-			TargetResponseBytes: responseInvalidLogin.Bytes(),
+			TargetResponseBytes: ResponseInvalidLogin.Bytes(),
 		},
 		{
 			Name:   "server_error",
