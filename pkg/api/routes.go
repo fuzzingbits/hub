@@ -79,7 +79,7 @@ func (a *App) handlerServerSetup(w http.ResponseWriter, req *http.Request) roote
 	var payload entity.CreateUserRequest
 	decoder := json.NewDecoder(req.Body)
 	if err := decoder.Decode(&payload); err != nil {
-		return rooter.ResponseBadRequest()
+		return rooter.ResponseBadRequest
 	}
 
 	userSession, err := a.Service.SetupServer(payload)
@@ -114,7 +114,7 @@ func (a *App) handlerUserLogin(w http.ResponseWriter, req *http.Request) rooter.
 	var loginRequest entity.UserLoginRequest
 	decoder := json.NewDecoder(req.Body)
 	if err := decoder.Decode(&loginRequest); err != nil {
-		return rooter.ResponseBadRequest()
+		return rooter.ResponseBadRequest
 	}
 
 	userSession, err := a.Service.Login(loginRequest)

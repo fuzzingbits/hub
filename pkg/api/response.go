@@ -36,7 +36,7 @@ var (
 func (a *App) generateErrorResponse(err error, r *http.Request) rooter.Response {
 	// Return early if it's a known error
 	if errors.Is(err, ErrUnauthorized) {
-		return rooter.ResponseUnauthorized()
+		return rooter.ResponseUnauthorized
 	}
 
 	// Return early if it's a known error
@@ -62,5 +62,5 @@ func (a *App) generateErrorResponse(err error, r *http.Request) rooter.Response 
 		err.Error(),
 	)
 
-	return rooter.ResponseInternalServerError()
+	return rooter.ResponseInternalServerError
 }

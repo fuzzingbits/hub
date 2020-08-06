@@ -61,7 +61,7 @@ func TestServerSetup(t *testing.T) {
 			URL:                 RouteServerSetup,
 			Body:                nil,
 			TargetStatusCode:    http.StatusBadRequest,
-			TargetResponseBytes: rooter.ResponseBadRequest().Bytes(),
+			TargetResponseBytes: rooter.ResponseBadRequest.Bytes(),
 		},
 		{
 			Name:   "server_error",
@@ -72,7 +72,7 @@ func TestServerSetup(t *testing.T) {
 				c.UserProviderError = errors.New("foobar")
 			},
 			TargetStatusCode:    http.StatusInternalServerError,
-			TargetResponseBytes: rooter.ResponseInternalServerError().Bytes(),
+			TargetResponseBytes: rooter.ResponseInternalServerError.Bytes(),
 		},
 	})
 }
@@ -99,7 +99,7 @@ func TestServerStatus(t *testing.T) {
 				c.UserProviderError = errors.New("foobar")
 			},
 			TargetStatusCode:    http.StatusInternalServerError,
-			TargetResponseBytes: rooter.ResponseInternalServerError().Bytes(),
+			TargetResponseBytes: rooter.ResponseInternalServerError.Bytes(),
 		},
 	})
 }
@@ -141,7 +141,7 @@ func TestUserMe(t *testing.T) {
 				})
 			},
 			TargetStatusCode:    http.StatusUnauthorized,
-			TargetResponseBytes: rooter.ResponseUnauthorized().Bytes(),
+			TargetResponseBytes: rooter.ResponseUnauthorized.Bytes(),
 		},
 		{
 			Name:   "server_error",
@@ -155,14 +155,14 @@ func TestUserMe(t *testing.T) {
 				c.SessionProviderError = errors.New("foobar")
 			},
 			TargetStatusCode:    http.StatusInternalServerError,
-			TargetResponseBytes: rooter.ResponseInternalServerError().Bytes(),
+			TargetResponseBytes: rooter.ResponseInternalServerError.Bytes(),
 		},
 		{
 			Name:                "missing_cookie",
 			Method:              http.MethodGet,
 			URL:                 RouteUserMe,
 			TargetStatusCode:    http.StatusUnauthorized,
-			TargetResponseBytes: rooter.ResponseUnauthorized().Bytes(),
+			TargetResponseBytes: rooter.ResponseUnauthorized.Bytes(),
 		},
 	})
 }
@@ -211,14 +211,14 @@ func TestUserLogin(t *testing.T) {
 				c.SessionProviderError = errors.New("foobar")
 			},
 			TargetStatusCode:    http.StatusInternalServerError,
-			TargetResponseBytes: rooter.ResponseInternalServerError().Bytes(),
+			TargetResponseBytes: rooter.ResponseInternalServerError.Bytes(),
 		},
 		{
 			Name:                "no_body",
 			Method:              http.MethodPost,
 			URL:                 RouteUserLogin,
 			TargetStatusCode:    http.StatusBadRequest,
-			TargetResponseBytes: rooter.ResponseBadRequest().Bytes(),
+			TargetResponseBytes: rooter.ResponseBadRequest.Bytes(),
 		},
 	})
 }

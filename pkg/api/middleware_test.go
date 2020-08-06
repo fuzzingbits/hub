@@ -35,7 +35,7 @@ func TestMiddlewareRecover(t *testing.T) {
 			Name:                "panic",
 			URL:                 "/",
 			TargetStatusCode:    http.StatusInternalServerError,
-			TargetResponseBytes: rooter.ResponseInternalServerError().Bytes(),
+			TargetResponseBytes: rooter.ResponseInternalServerError.Bytes(),
 		},
 	})
 }
