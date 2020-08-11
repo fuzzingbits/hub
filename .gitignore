@@ -5,7 +5,7 @@
 # Go
 debug.test
 __debug_bin
-*-packer.go
+*-packr.go
 
 # Nuxt
 /node_modules/
