@@ -42,6 +42,10 @@ export interface CreateUserRequest {
 	password: string;
 }
 
+export interface DeleteUserRequest {
+	UUID: string;
+}
+
 export interface UserLoginRequest {
 	username: string;
 	password: string;

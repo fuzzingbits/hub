@@ -19,6 +19,7 @@ var TypeScriptInterfaces = []interface{}{
 	entity.User{},
 	entity.UserSettings{},
 	entity.CreateUserRequest{},
+	entity.DeleteUserRequest{},
 	entity.UserLoginRequest{},
 }
 

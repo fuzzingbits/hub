@@ -62,6 +62,24 @@ var routeTestingFunctions = map[string]func(c *container.Mockable, s *hub.Servic
 			},
 		}
 	},
+	RouteUserDelete: func(c *container.Mockable, s *hub.Service, r *http.Request) RouteTestTarget {
+		userSession, _ := s.SetupServer(testCreateUserRequest)
+
+		r.AddCookie(&http.Cookie{
+			Name:  session.CookieName,
+			Value: userSession.Token,
+		})
+
+		userContext, _ := s.CreateUser(entity.CreateUserRequest{
+			Email: "foobar@example.com",
+		})
+
+		return RouteTestTarget{
+			Payload: entity.DeleteUserRequest{
+				UUID: userContext.User.UUID,
+			},
+		}
+	},
 }
 
 func TestRouteSuccessReturns(t *testing.T) {

@@ -52,6 +52,11 @@ type CreateUserRequest struct {
 	Password  string `json:"password"`
 }
 
+// DeleteUserRequest is the request for deleting a user
+type DeleteUserRequest struct {
+	UUID string `json:"UUID"`
+}
+
 // UserLoginRequest is the request for logging in
 type UserLoginRequest struct {
 	Username string `json:"username"`

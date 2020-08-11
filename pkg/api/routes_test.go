@@ -273,3 +273,71 @@ func TestUserLogin(t *testing.T) {
 		},
 	})
 }
+
+func TestUserDelete(t *testing.T) {
+	c := container.NewMockable()
+	s := hub.NewService(&hubconfig.Config{}, c)
+	mux := http.NewServeMux()
+	RegisterRoutes(mux, s)
+
+	userSession, _ := s.SetupServer(testCreateUserRequest)
+	userContext, _ := s.CreateUser(entity.CreateUserRequest{
+		Email: "foobar@example.com",
+	})
+	payloadBytes, _ := json.Marshal(entity.DeleteUserRequest{
+		UUID: userContext.User.UUID,
+	})
+
+	rootertest.Test(t, mux, []rootertest.TestCase{
+		{
+			Name:   "success",
+			Method: http.MethodPost,
+			URL:    RouteUserDelete,
+			Body:   bytes.NewReader(payloadBytes),
+			RequestMod: func(r *http.Request) {
+				r.AddCookie(&http.Cookie{
+					Name:  session.CookieName,
+					Value: userSession.Token,
+				})
+			},
+			TargetStatusCode:       http.StatusOK,
+			SkipResponseBytesCheck: true,
+		},
+		{
+			Name:   "not_found",
+			Method: http.MethodPost,
+			URL:    RouteUserDelete,
+			Body:   bytes.NewReader(payloadBytes),
+			RequestMod: func(r *http.Request) {
+				r.AddCookie(&http.Cookie{
+					Name:  session.CookieName,
+					Value: userSession.Token,
+				})
+			},
+			TargetStatusCode:    http.StatusOK,
+			TargetResponseBytes: ResponseRecordNotFound.Bytes(),
+		},
+		{
+			Name:   "no_body",
+			Method: http.MethodPost,
+			URL:    RouteUserDelete,
+			Body:   nil,
+			RequestMod: func(r *http.Request) {
+				r.AddCookie(&http.Cookie{
+					Name:  session.CookieName,
+					Value: userSession.Token,
+				})
+			},
+			TargetStatusCode:    http.StatusBadRequest,
+			TargetResponseBytes: rooter.ResponseBadRequest.Bytes(),
+		},
+		{
+			Name:                "no_auth",
+			Method:              http.MethodPost,
+			URL:                 RouteUserDelete,
+			Body:                nil,
+			TargetStatusCode:    http.StatusUnauthorized,
+			TargetResponseBytes: rooter.ResponseUnauthorized.Bytes(),
+		},
+	})
+}

@@ -31,6 +31,11 @@ var (
 		State:      false,
 		Message:    "Invlaid Login",
 	}
+	ResponseRecordNotFound = rooter.Response{
+		StatusCode: http.StatusOK,
+		State:      false,
+		Message:    "Record Not Found",
+	}
 )
 
 func (a *App) generateErrorResponse(err error, r *http.Request) rooter.Response {
@@ -42,6 +47,11 @@ func (a *App) generateErrorResponse(err error, r *http.Request) rooter.Response 
 	// Return early if it's a known error
 	if errors.Is(err, hub.ErrInvalidLogin) {
 		return ResponseInvalidLogin
+	}
+
+	// Return early if it's a known error
+	if errors.Is(err, hub.ErrRecordNotFound) {
+		return ResponseRecordNotFound
 	}
 
 	// Return early if it's a known error

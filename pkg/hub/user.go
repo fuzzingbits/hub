@@ -18,6 +18,9 @@ var ErrInvalidLogin = errors.New("Invalid Login")
 // ErrMissingValidSession is when there is no valid session
 var ErrMissingValidSession = errors.New("No Valid Session")
 
+// ErrRecordNotFound is when no record is found
+var ErrRecordNotFound = errors.New("Record not found")
+
 // CreateUser creates a User
 func (s *Service) CreateUser(request entity.CreateUserRequest) (entity.UserContext, error) {
 	userProvider, err := s.container.UserProvider()
@@ -49,6 +52,43 @@ func (s *Service) CreateUser(request entity.CreateUserRequest) (entity.UserConte
 		User:     reactor.DatabaseUserToEntity(dbUser),
 		Settings: userSettings,
 	}, nil
+}
+
+// DeleteUser deletes a user
+func (s *Service) DeleteUser(uuid string) error {
+	// Get the user provider
+	userProvider, err := s.container.UserProvider()
+	if err != nil {
+		return err
+	}
+
+	// Get the user settings provider
+	userSettingsProvider, err := s.container.UserSettingsProvider()
+	if err != nil {
+		return err
+	}
+
+	// Get the exiting user by the provided UUID
+	dbUser, err := userProvider.GetByUUID(uuid)
+	if err != nil {
+		if errors.Is(err, user.ErrNotFound) {
+			return ErrRecordNotFound
+		}
+
+		return err
+	}
+
+	// Delete the user
+	if err := userProvider.Delete(dbUser); err != nil {
+		return err
+	}
+
+	// Delete the user settings
+	if err := userSettingsProvider.Delete(uuid); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // GetCurrentSession gets the current session

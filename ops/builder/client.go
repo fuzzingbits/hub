@@ -52,12 +52,16 @@ func convertTypes(routes []rooter.Route) []Endpoint {
 			method = "post"
 			payloadType = reflect.TypeOf(route.Payload).Name()
 		}
+		returnType := ""
+		if route.Response != nil {
+			returnType = reflect.TypeOf(route.Response).Name()
+		}
 		endpoints = append(endpoints, Endpoint{
 			FunctionName: convertRouteName(route.Path),
 			URL:          route.Path,
 			Method:       method,
 			PayloadType:  payloadType,
-			ReturnType:   reflect.TypeOf(route.Response).Name(),
+			ReturnType:   returnType,
 		})
 	}
 

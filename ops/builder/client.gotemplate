@@ -23,7 +23,7 @@ client.interceptors.request.use(function(config) {
 
 class HubAPI {
 {{ range .Endpoints }}
-	public async {{ .FunctionName }}({{ if .PayloadType }}payload: types.{{ .PayloadType }}{{ end }}): Promise<GenericResponse<types.{{ .ReturnType }} | null>> {
+	public async {{ .FunctionName }}({{ if .PayloadType }}payload: types.{{ .PayloadType }}{{ end }}): Promise<GenericResponse<{{ if .ReturnType }}types.{{ .ReturnType }} | {{ end }}null>> {
 		const response = await client.{{ .Method }}("{{ .URL }}"{{ if .PayloadType }}, payload{{ end }});
 		return response.data;
 	}

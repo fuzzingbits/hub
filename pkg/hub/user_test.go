@@ -209,3 +209,76 @@ func TestLogin(t *testing.T) {
 		}
 	}
 }
+
+func TestDeleteUser(t *testing.T) {
+	testSetup := func() (*container.Mockable, *Service) {
+		c := container.NewMockable()
+		s := NewService(&hubconfig.Config{}, c)
+		_, err := s.SetupServer(standardTestCreateUserRequest)
+		if err != nil {
+			t.Fatalf("Failed to create user session: %s", err.Error())
+		}
+
+		return c, s
+	}
+
+	{ // Success
+		_, s := testSetup()
+		userContext, _ := s.CreateUser(entity.CreateUserRequest{Email: "foobar@example.com"})
+		if err := s.DeleteUser(userContext.User.UUID); err != nil {
+			t.Error(err)
+		}
+	}
+
+	{ // Error
+		c, s := testSetup()
+		userContext, _ := s.CreateUser(entity.CreateUserRequest{Email: "foobar@example.com"})
+		c.UserSettingsProviderValue.Provider.DeleteError = errors.New("foobar")
+		if err := s.DeleteUser(userContext.User.UUID); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		c, s := testSetup()
+		userContext, _ := s.CreateUser(entity.CreateUserRequest{Email: "foobar@example.com"})
+		c.UserProviderValue.Provider.DeleteError = errors.New("foobar")
+		if err := s.DeleteUser(userContext.User.UUID); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		_, s := testSetup()
+		if err := s.DeleteUser("fake-uuid"); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		c, s := testSetup()
+		userContext, _ := s.CreateUser(entity.CreateUserRequest{Email: "foobar@example.com"})
+		c.UserProviderValue.Provider.GetByIDError = errors.New("foobar")
+		if err := s.DeleteUser(userContext.User.UUID); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		c, s := testSetup()
+		userContext, _ := s.CreateUser(entity.CreateUserRequest{Email: "foobar@example.com"})
+		c.UserSettingsProviderError = errors.New("foobar")
+		if err := s.DeleteUser(userContext.User.UUID); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		c, s := testSetup()
+		userContext, _ := s.CreateUser(entity.CreateUserRequest{Email: "foobar@example.com"})
+		c.UserProviderError = errors.New("foobar")
+		if err := s.DeleteUser(userContext.User.UUID); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+}
