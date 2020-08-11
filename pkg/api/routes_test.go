@@ -167,6 +167,57 @@ func TestUserMe(t *testing.T) {
 	})
 }
 
+func TestUserNew(t *testing.T) {
+	c := container.NewMockable()
+	s := hub.NewService(&hubconfig.Config{}, c)
+	mux := http.NewServeMux()
+	RegisterRoutes(mux, s)
+
+	userSession, _ := s.SetupServer(testCreateUserRequest)
+	testCreateUserRequestBytes, _ := json.Marshal(entity.CreateUserRequest{
+		Email: "foobar@example.com",
+	})
+
+	rootertest.Test(t, mux, []rootertest.TestCase{
+		{
+			Name:   "create_user_error",
+			Method: http.MethodPost,
+			URL:    RouteUserNew,
+			Body:   bytes.NewReader(testCreateUserRequestBytes),
+			RequestMod: func(r *http.Request) {
+				r.AddCookie(&http.Cookie{
+					Name:  session.CookieName,
+					Value: userSession.Token,
+				})
+				c.UserProviderError = errors.New("foobar")
+			},
+			TargetStatusCode:       http.StatusInternalServerError,
+			SkipResponseBytesCheck: true,
+		},
+		{
+			Name:   "no_body",
+			Method: http.MethodPost,
+			URL:    RouteUserNew,
+			Body:   nil,
+			RequestMod: func(r *http.Request) {
+				r.AddCookie(&http.Cookie{
+					Name:  session.CookieName,
+					Value: userSession.Token,
+				})
+			},
+			TargetStatusCode:       http.StatusBadRequest,
+			SkipResponseBytesCheck: true,
+		},
+		{
+			Name:                   "no_auth",
+			Method:                 http.MethodPost,
+			URL:                    RouteUserNew,
+			TargetStatusCode:       http.StatusUnauthorized,
+			SkipResponseBytesCheck: true,
+		},
+	})
+}
+
 func TestUserLogin(t *testing.T) {
 	c := container.NewMockable()
 	s := hub.NewService(&hubconfig.Config{}, c)
