@@ -4,7 +4,7 @@ COPY . .
 RUN git clean -Xdf
 RUN make full-ui
 
-FROM golang:1.14-buster as goBuilder
+FROM golang:1.15-buster as goBuilder
 WORKDIR /project
 COPY . .
 RUN git clean -Xdf

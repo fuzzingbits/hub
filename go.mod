@@ -1,6 +1,6 @@
 module github.com/fuzzingbits/hub
 
-go 1.14
+go 1.15
 
 require (
 	github.com/gobuffalo/packr v1.30.1
