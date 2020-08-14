@@ -8,6 +8,7 @@ import (
 
 	"github.com/fuzzingbits/hub/pkg/api"
 	"github.com/fuzzingbits/hub/pkg/util/forge/rooter"
+	"github.com/fuzzingbits/hub/pkg/util/forge/typescript"
 )
 
 // ClientFileInput is the input struct to the client template
@@ -47,25 +48,32 @@ func convertTypes(routes []rooter.Route) []Endpoint {
 
 	for _, route := range routes {
 		method := "get"
-		payloadType := ""
-		if route.Payload != nil {
+
+		payloadType := convertType(route.Payload)
+		if payloadType != "" {
 			method = "post"
-			payloadType = reflect.TypeOf(route.Payload).Name()
 		}
-		returnType := ""
-		if route.Response != nil {
-			returnType = reflect.TypeOf(route.Response).Name()
-		}
+
 		endpoints = append(endpoints, Endpoint{
 			FunctionName: convertRouteName(route.Path),
 			URL:          route.Path,
 			Method:       method,
 			PayloadType:  payloadType,
-			ReturnType:   returnType,
+			ReturnType:   convertType(route.Response),
 		})
 	}
 
 	return endpoints
+}
+
+func convertType(v interface{}) string {
+	if v == nil {
+		return ""
+	}
+
+	rawTypeString := reflect.ValueOf(v).Type().String()
+
+	return typescript.TranslateReflectTypeString(rawTypeString)
 }
 
 func convertRouteName(path string) string {

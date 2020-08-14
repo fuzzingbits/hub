@@ -45,11 +45,6 @@ func Generate(goStructs []interface{}) []Interface {
 
 func genTsField(goFieldName string, goFieldType string, tag jsonFieldTag) Field {
 	tsField := Field{}
-	if strings.HasPrefix(goFieldType, "[]") {
-		tsField.Array = true
-		goFieldType = strings.TrimPrefix(goFieldType, "[]")
-	}
-
 	if strings.HasPrefix(goFieldType, "*") {
 		tsField.Null = true
 		goFieldType = strings.TrimPrefix(goFieldType, "*")
@@ -79,7 +74,12 @@ func getTsFieldType(goFieldType string, tag jsonFieldTag) string {
 		goFieldType = tag.TypeOverride
 	}
 
-	switch goFieldType {
+	return TranslateReflectTypeString(goFieldType)
+}
+
+// TranslateReflectTypeString does what is says it does
+func TranslateReflectTypeString(reflectTypeString string) string {
+	switch reflectTypeString {
 	case "interface {}":
 		return "any"
 	case "int":
@@ -92,7 +92,8 @@ func getTsFieldType(goFieldType string, tag jsonFieldTag) string {
 		return "string"
 	}
 
-	goFieldType = fieldTypeReplacer.ReplaceAllString(goFieldType, "")
+	re := regexp.MustCompile(`(?m)^(\[\])?(\w+\.)?(\w+)$`)
+	x := re.FindStringSubmatch(reflectTypeString)
 
-	return goFieldType
+	return x[3] + x[1]
 }

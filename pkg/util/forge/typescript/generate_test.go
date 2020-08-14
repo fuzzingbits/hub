@@ -62,9 +62,8 @@ func TestGenerate(t *testing.T) {
 							Optional: true,
 						},
 						{
-							Name:  "Roles",
-							Type:  "string",
-							Array: true,
+							Name: "Roles",
+							Type: "string[]",
 						},
 						{
 							Name: "CreatedAt",

@@ -28,9 +28,8 @@ func TestField_String(t *testing.T) {
 		{
 			name: "optional",
 			field: Field{
-				Name:  "name",
-				Array: true,
-				Type:  "string",
+				Name: "name",
+				Type: "string[]",
 			},
 			want: "name: string[]|null;",
 		},

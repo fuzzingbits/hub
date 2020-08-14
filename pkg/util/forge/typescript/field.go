@@ -1,6 +1,9 @@
 package typescript
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // Field represents a TypeScript Interface field
 type Field struct {
@@ -8,7 +11,6 @@ type Field struct {
 	Type     string
 	Optional bool
 	Null     bool
-	Array    bool
 }
 
 func (f Field) String() string {
@@ -20,8 +22,8 @@ func (f Field) String() string {
 	}
 
 	typeString := f.Type
-	if f.Array {
-		typeString += "[]|null"
+	if strings.HasSuffix(typeString, "[]") {
+		typeString += "|null"
 	} else if f.Null {
 		typeString += "|null"
 	}
