@@ -80,6 +80,16 @@ var routeTestingFunctions = map[string]func(c *container.Mockable, s *hub.Servic
 			},
 		}
 	},
+	RouteUserList: func(c *container.Mockable, s *hub.Service, r *http.Request) RouteTestTarget {
+		userSession, _ := s.SetupServer(testCreateUserRequest)
+
+		r.AddCookie(&http.Cookie{
+			Name:  session.CookieName,
+			Value: userSession.Token,
+		})
+
+		return RouteTestTarget{}
+	},
 }
 
 func TestRouteSuccessReturns(t *testing.T) {

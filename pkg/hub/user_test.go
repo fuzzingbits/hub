@@ -210,6 +210,39 @@ func TestLogin(t *testing.T) {
 	}
 }
 
+func TestListUsers(t *testing.T) {
+	c := container.NewMockable()
+	s := NewService(&hubconfig.Config{}, c)
+
+	_, _ = s.SetupServer(standardTestCreateUserRequest)
+	_, _ = s.CreateUser(entity.CreateUserRequest{Email: "foobar@example.com"})
+
+	{ // Success
+		allUsers, err := s.ListUsers()
+		if err != nil {
+			t.Error(err)
+		}
+
+		if len(allUsers) != 2 {
+			t.Errorf("Should bt 2 users, not %d", len(allUsers))
+		}
+	}
+
+	{ // Error
+		c.UserProviderValue.Provider.GetAllError = errors.New("foobar")
+		if _, err := s.ListUsers(); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		c.UserProviderError = errors.New("foobar")
+		if _, err := s.ListUsers(); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+}
+
 func TestDeleteUser(t *testing.T) {
 	testSetup := func() (*container.Mockable, *Service) {
 		c := container.NewMockable()

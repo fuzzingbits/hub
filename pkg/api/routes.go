@@ -16,6 +16,7 @@ const (
 	RouteUserMe       = "/api/user/me"
 	RouteUserLogin    = "/api/user/login"
 	RouteUserNew      = "/api/user/new"
+	RouteUserList     = "/api/user/list"
 	RouteUserDelete   = "/api/user/delete"
 )
 
@@ -68,6 +69,11 @@ func (a *App) GetRoutes() []rooter.Route {
 			Response: entity.UserContext{},
 		},
 		{
+			Path:     RouteUserList,
+			Handler:  rooter.ResponseFunc(a.handlerUserList),
+			Response: []entity.User{},
+		},
+		{
 			Path:     RouteUserDelete,
 			Handler:  rooter.ResponseFunc(a.handlerUserDelete),
 			Response: nil,
@@ -96,6 +102,25 @@ func (a *App) handlerUserDelete(w http.ResponseWriter, req *http.Request) rooter
 	return rooter.Response{
 		StatusCode: http.StatusOK,
 		State:      true,
+	}
+}
+
+func (a *App) handlerUserList(w http.ResponseWriter, req *http.Request) rooter.Response {
+	// Require login
+	_, err := a.authCheck(req)
+	if err != nil {
+		return a.generateErrorResponse(err, req)
+	}
+
+	users, err := a.Service.ListUsers()
+	if err != nil {
+		return a.generateErrorResponse(err, req)
+	}
+
+	return rooter.Response{
+		StatusCode: http.StatusOK,
+		State:      true,
+		Data:       users,
 	}
 }
 

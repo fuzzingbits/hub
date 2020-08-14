@@ -341,3 +341,51 @@ func TestUserDelete(t *testing.T) {
 		},
 	})
 }
+
+func TestUserList(t *testing.T) {
+	c := container.NewMockable()
+	s := hub.NewService(&hubconfig.Config{}, c)
+	mux := http.NewServeMux()
+	RegisterRoutes(mux, s)
+
+	userSession, _ := s.SetupServer(testCreateUserRequest)
+
+	rootertest.Test(t, mux, []rootertest.TestCase{
+		{
+			Name:   "success",
+			Method: http.MethodGet,
+			URL:    RouteUserList,
+			RequestMod: func(r *http.Request) {
+				r.AddCookie(&http.Cookie{
+					Name:  session.CookieName,
+					Value: userSession.Token,
+				})
+			},
+			TargetStatusCode:       http.StatusOK,
+			SkipResponseBytesCheck: true,
+		},
+		{
+			Name:   "service_error",
+			Method: http.MethodGet,
+			URL:    RouteUserList,
+			Body:   nil,
+			RequestMod: func(r *http.Request) {
+				r.AddCookie(&http.Cookie{
+					Name:  session.CookieName,
+					Value: userSession.Token,
+				})
+				c.UserProviderError = errors.New("foobar")
+			},
+			TargetStatusCode:    http.StatusInternalServerError,
+			TargetResponseBytes: rooter.ResponseInternalServerError.Bytes(),
+		},
+		{
+			Name:                "no_auth",
+			Method:              http.MethodGet,
+			URL:                 RouteUserList,
+			Body:                nil,
+			TargetStatusCode:    http.StatusUnauthorized,
+			TargetResponseBytes: rooter.ResponseUnauthorized.Bytes(),
+		},
+	})
+}

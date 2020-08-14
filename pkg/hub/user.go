@@ -21,6 +21,26 @@ var ErrMissingValidSession = errors.New("No Valid Session")
 // ErrRecordNotFound is when no record is found
 var ErrRecordNotFound = errors.New("Record not found")
 
+// ListUsers gets all users
+func (s *Service) ListUsers() ([]entity.User, error) {
+	userProvider, err := s.container.UserProvider()
+	if err != nil {
+		return nil, err
+	}
+
+	dbUsers, err := userProvider.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	entityUsers := []entity.User{}
+	for _, dbUser := range dbUsers {
+		entityUsers = append(entityUsers, reactor.DatabaseUserToEntity(dbUser))
+	}
+
+	return entityUsers, nil
+}
+
 // CreateUser creates a User
 func (s *Service) CreateUser(request entity.CreateUserRequest) (entity.UserContext, error) {
 	userProvider, err := s.container.UserProvider()
