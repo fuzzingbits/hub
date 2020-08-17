@@ -7,6 +7,7 @@ import (
 	"github.com/fuzzingbits/hub/pkg/provider/user"
 	"github.com/fuzzingbits/hub/pkg/reactor"
 	"github.com/fuzzingbits/hub/pkg/util/forge/codex"
+	"github.com/fuzzingbits/hub/pkg/util/forge/gol"
 	"github.com/google/uuid"
 
 	"github.com/fuzzingbits/hub/pkg/entity"
@@ -39,6 +40,45 @@ func (s *Service) ListUsers() ([]entity.User, error) {
 	}
 
 	return entityUsers, nil
+}
+
+// UpdateUser updates the full user context
+func (s *Service) UpdateUser(request entity.UpdateUserRequest) (entity.UserContext, error) {
+	userProvider, err := s.container.UserProvider()
+	if err != nil {
+		return entity.UserContext{}, err
+	}
+
+	userSettingsProvider, err := s.container.UserSettingsProvider()
+	if err != nil {
+		return entity.UserContext{}, err
+	}
+
+	dbUser, err := userProvider.GetByUUID(request.UUID)
+	if err != nil {
+		return entity.UserContext{}, err
+	}
+
+	userSettings, err := userSettingsProvider.GetByUUID(request.UUID)
+	if err != nil {
+		return entity.UserContext{}, err
+	}
+
+	// Apply the update data to the existing data
+	reactor.ApplyUserUpdateRequest(request, &dbUser, &userSettings)
+
+	if err := userProvider.Update(&dbUser); err != nil {
+		return entity.UserContext{}, err
+	}
+
+	if err := userSettingsProvider.Save(request.UUID, userSettings); err != nil {
+		return entity.UserContext{}, err
+	}
+
+	userContext, err := s.GetUserContextByUUID(request.UUID)
+	gol.PanicOnError(err)
+
+	return userContext, nil
 }
 
 // CreateUser creates a User

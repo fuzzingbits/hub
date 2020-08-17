@@ -14,6 +14,7 @@ import (
 var TypeScriptInterfaces = []interface{}{
 	rooter.Response{},
 	entity.CreateUserRequest{},
+	entity.UpdateUserRequest{},
 	entity.ServerStatus{},
 	entity.UserContext{},
 	entity.User{},

@@ -97,6 +97,67 @@ func TestGetCurrentSession(t *testing.T) {
 	}
 }
 
+func TestUpdateUser(t *testing.T) {
+	c := container.NewMockable()
+	s := NewService(&hubconfig.Config{}, c)
+
+	userSession, err := s.SetupServer(standardTestCreateUserRequest)
+	if err != nil {
+		t.Fatalf("Failed to create user session: %s", err.Error())
+	}
+
+	testUpdateUserRequest := entity.UpdateUserRequest{
+		UUID: userSession.Context.User.UUID,
+	}
+
+	{ // Success
+		if _, err := s.UpdateUser(testUpdateUserRequest); err != nil {
+			t.Error(err)
+		}
+	}
+
+	{ // Error
+		c.UserSettingsProviderValue.Provider.UpdateError = errors.New("foobar")
+		if _, err := s.UpdateUser(testUpdateUserRequest); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		c.UserProviderValue.Provider.UpdateError = errors.New("foobar")
+		if _, err := s.UpdateUser(testUpdateUserRequest); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		c.UserSettingsProviderValue.Provider.GetByIDError = errors.New("foobar")
+		if _, err := s.UpdateUser(testUpdateUserRequest); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		c.UserProviderValue.Provider.GetByIDError = errors.New("foobar")
+		if _, err := s.UpdateUser(testUpdateUserRequest); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		c.UserSettingsProviderError = errors.New("foobar")
+		if _, err := s.UpdateUser(testUpdateUserRequest); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		c.UserProviderError = errors.New("foobar")
+		if _, err := s.UpdateUser(testUpdateUserRequest); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+}
 func TestGetUserContextByUUID(t *testing.T) {
 	c := container.NewMockable()
 	s := NewService(&hubconfig.Config{}, c)

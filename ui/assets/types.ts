@@ -13,6 +13,16 @@ export interface CreateUserRequest {
 	password: string;
 }
 
+export interface UpdateUserRequest {
+	UUID: string;
+	firstName: string;
+	lastName: string;
+	email: string;
+	username: string;
+	password: string;
+	themeColor: string;
+}
+
 export interface ServerStatus {
 	setupRequired: boolean;
 }

@@ -39,3 +39,14 @@ func EntityToDatabaseUser(entityUser entity.User) entity.DatabaseUser {
 		LastName:  entityUser.LastName,
 	}
 }
+
+// ApplyUserUpdateRequest applies a request on to a user context
+func ApplyUserUpdateRequest(request entity.UpdateUserRequest, dbUser *entity.DatabaseUser, userSettings *entity.UserSettings) {
+	dbUser.FirstName = request.FirstName
+	dbUser.LastName = request.LastName
+	dbUser.Email = request.Email
+	dbUser.Username = request.Username
+	dbUser.Password = codex.Hash(request.Password, request.UUID)
+
+	userSettings.ThemeColor = request.ThemeColor
+}
