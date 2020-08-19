@@ -1,0 +1,27 @@
+form label {
+	display: block;
+	margin-bottom: var(--spacing-half);
+}
+
+form label:last-child {
+	margin: 0;
+}
+
+form input {
+	display: block;
+	width: 100%;
+	font-size: inherit;
+	-webkit-appearance: none;
+	border-radius: 0;
+	border: 0;
+	padding: var(--spacing-half);
+}
+
+form input[type="button"],
+form input[type="submit"],
+form button {
+	background: var(--primary);
+	color: var(--background);
+	font-weight: bold;
+	padding: var(--spacing-half) var(--spacing);
+}

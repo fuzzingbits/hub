@@ -21,12 +21,5 @@ export default Vue.extend({
 			return this.$store.state.user.session;
 		},
 	},
-	mounted() {
-		HubApi.serverStatus().then(response => {
-			if (response.data && response.data.setupRequired) {
-				this.$router.push("/setup");
-			}
-		});
-	},
 });
 </script>

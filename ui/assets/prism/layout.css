@@ -1,0 +1,51 @@
+#splash {
+	font-size: 2.5rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+}
+
+#body {
+	margin: var(--spacing) 0;
+}
+
+@media (min-width: 813px) {
+	#body {
+		margin: var(--spacing);
+	}
+}
+
+#header a {
+	padding: var(--spacing-half) var(--spacing);
+}
+
+#header,
+.card,
+#footer {
+	background: var(--background-accent);
+	padding: var(--spacing-double);
+}
+
+#body {
+	min-height: 200px;
+}
+
+.card {
+	max-width: 512px;
+	margin: auto;
+}
+
+a[href^="http"]:after {
+	content: "\f35d";
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+}
+
+a.nuxt-link-exact-active {
+	text-decoration: underline;
+}

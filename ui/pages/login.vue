@@ -1,16 +1,10 @@
 <template>
 	<form @submit.prevent="submit" id="setup-form">
-		<div>
-			<label>Username</label>
-			<input name="username" />
-		</div>
-		<div>
-			<label>Password</label>
-			<input name="password" />
-		</div>
-		<div>
-			<input type="submit" />
-		</div>
+		<h2>User Login</h2>
+		<p>This is for users to login.</p>
+		<label>Username <input name="username"/></label>
+		<label>Password <input name="password" type="password"/></label>
+		<label><input type="submit"/></label>
 	</form>
 </template>
 
@@ -29,16 +23,11 @@ export default Vue.extend({
 				password: formData.get("password") as string,
 			}).then(response => {
 				this.$store.commit("user/setState", response.data);
+				if (response.data) {
+					this.$router.push("/");
+				}
 			});
 		},
-	},
-	mounted() {
-		HubApi.serverStatus().then(response => {
-			if (response.data && response.data.setupRequired) {
-				this.$router.push("/setup");
-			}
-		});
-		console.log("This is the login page.");
 	},
 });
 </script>

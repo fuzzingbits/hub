@@ -1,6 +1,9 @@
+@import url("@fortawesome/fontawesome-free/css/all.css");
 @import url("./reset.css");
 @import url("./variables.css");
 @import url("./scroll.css");
+@import url("./form.css");
+@import url("./layout.css");
 
 body {
 	background: var(--background);
