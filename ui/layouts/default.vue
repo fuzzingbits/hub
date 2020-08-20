@@ -15,6 +15,7 @@
 				<nuxt-link v-if="!setupRequired" to="/">Home Page</nuxt-link>
 				<nuxt-link v-if="!setupRequired" to="/about">About</nuxt-link>
 				<nuxt-link v-if="!session && !setupRequired" to="/login">Login</nuxt-link>
+				<nuxt-link v-if="session && !setupRequired" to="/profile">Profile</nuxt-link>
 				<a v-if="session && !setupRequired" @click.prevent="logout" href="#">Logout</a>
 			</div>
 			<div id="body">

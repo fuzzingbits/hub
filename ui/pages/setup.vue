@@ -3,11 +3,11 @@
 		<form @submit.prevent="submit" id="setup-form">
 			<h2>Server Setup</h2>
 			<p>This is for first time setups only.</p>
-			<label>First Name <input name="firstName"/></label>
-			<label>Last Name <input name="lastName"/></label>
-			<label>Email <input name="email" type="email"/></label>
-			<label>Username <input name="username"/></label>
-			<label>Password <input name="password" type="password"/></label>
+			<label>First Name <input name="firstName" required/></label>
+			<label>Last Name <input name="lastName" required/></label>
+			<label>Email <input name="email" type="email" required/></label>
+			<label>Username <input name="username" required/></label>
+			<label>Password <input name="password" type="password" required/></label>
 			<PosterMessage :poster="formPoster" />
 			<label><input type="submit"/></label>
 		</form>

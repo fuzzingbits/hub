@@ -88,6 +88,7 @@ func (a *App) GetRoutes() []rooter.Route {
 		{
 			Path:     RouteUserUpdate,
 			Handler:  rooter.ResponseFunc(a.handlerUserUpdate),
+			Payload:  entity.UpdateUserRequest{},
 			Response: entity.UserContext{},
 		},
 	}
@@ -95,7 +96,7 @@ func (a *App) GetRoutes() []rooter.Route {
 
 func (a *App) handlerUserUpdate(w http.ResponseWriter, req *http.Request) rooter.Response {
 	// Require login
-	_, err := a.authCheck(req)
+	userSession, err := a.authCheck(req)
 	if err != nil {
 		return a.generateErrorResponse(err, req)
 	}
@@ -110,6 +111,12 @@ func (a *App) handlerUserUpdate(w http.ResponseWriter, req *http.Request) rooter
 	userContext, err := a.Service.UpdateUser(payload)
 	if err != nil {
 		return a.generateErrorResponse(err, req)
+	}
+
+	if userSession.Context.User.UUID == userContext.User.UUID {
+		if _, err := a.Service.SaveSession(userSession.Token, userContext); err != nil {
+			return a.generateErrorResponse(err, req)
+		}
 	}
 
 	return rooter.Response{

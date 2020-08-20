@@ -25,3 +25,8 @@ form button {
 	font-weight: bold;
 	padding: var(--spacing-half) var(--spacing);
 }
+
+form input[type="color"] {
+	padding: 0;
+	min-height: 32px;
+}

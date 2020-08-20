@@ -3,8 +3,8 @@
 		<form @submit.prevent="submit" id="setup-form">
 			<h2>User Login</h2>
 			<p>This is for users to login.</p>
-			<label>Username <input name="username"/></label>
-			<label>Password <input name="password" type="password"/></label>
+			<label>Username <input name="username" required/></label>
+			<label>Password <input name="password" type="password" required/></label>
 			<PosterMessage :poster="formPoster" />
 			<label><input type="submit"/></label>
 		</form>

@@ -54,18 +54,17 @@ type CreateUserRequest struct {
 
 // UpdateUserRequest is the request for updating users
 type UpdateUserRequest struct {
-	UUID       string `json:"UUID"`
+	UUID       string `json:"uuid"`
 	FirstName  string `json:"firstName"`
 	LastName   string `json:"lastName"`
 	Email      string `json:"email"`
 	Username   string `json:"username"`
-	Password   string `json:"password"`
 	ThemeColor string `json:"themeColor"`
 }
 
 // DeleteUserRequest is the request for deleting a user
 type DeleteUserRequest struct {
-	UUID string `json:"UUID"`
+	UUID string `json:"uuid"`
 }
 
 // UserLoginRequest is the request for logging in

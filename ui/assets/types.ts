@@ -14,12 +14,11 @@ export interface CreateUserRequest {
 }
 
 export interface UpdateUserRequest {
-	UUID: string;
+	uuid: string;
 	firstName: string;
 	lastName: string;
 	email: string;
 	username: string;
-	password: string;
 	themeColor: string;
 }
 
@@ -53,7 +52,7 @@ export interface CreateUserRequest {
 }
 
 export interface DeleteUserRequest {
-	UUID: string;
+	uuid: string;
 }
 
 export interface UserLoginRequest {

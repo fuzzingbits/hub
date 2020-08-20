@@ -90,8 +90,7 @@ var routeTestingFunctions = map[string]func(c *container.Mockable, s *hub.Servic
 
 		return RouteTestTarget{
 			Payload: entity.UpdateUserRequest{
-				UUID:     userSession.Context.User.UUID,
-				Password: testCreateUserRequest.Password,
+				UUID: userSession.Context.User.UUID,
 			},
 		}
 	},

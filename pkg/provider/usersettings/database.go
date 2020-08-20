@@ -2,6 +2,7 @@ package usersettings
 
 import (
 	"context"
+	"errors"
 
 	"github.com/fuzzingbits/hub/pkg/entity"
 	"go.mongodb.org/mongo-driver/bson"
@@ -53,10 +54,27 @@ func (d *DatabaseProvider) GetByUUID(uuid string) (entity.UserSettings, error) {
 
 // Save a UserSettings
 func (d *DatabaseProvider) Save(uuid string, userSettings entity.UserSettings) error {
-	d.Collection.InsertOne(context.TODO(), databaseUserSettings{
+	// Create the filter
+	filter := bson.M{"uuid": uuid}
+
+	results := d.Collection.FindOneAndReplace(context.TODO(), filter, databaseUserSettings{
 		UUID:         uuid,
 		UserSettings: userSettings,
 	})
+
+	if err := results.Err(); err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			if _, err := d.Collection.InsertOne(context.TODO(), databaseUserSettings{
+				UUID:         uuid,
+				UserSettings: userSettings,
+			}); err != nil {
+				return err
+			}
+
+			return nil
+		}
+		return err
+	}
 
 	return nil
 }

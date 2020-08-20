@@ -101,7 +101,7 @@ func (s *Service) CreateUser(request entity.CreateUserRequest) (entity.UserConte
 
 	// Setup new UserSettings with defaults
 	userSettings := entity.UserSettings{
-		ThemeColor: "tomato",
+		ThemeColor: "DeepSkyBlue",
 	}
 
 	if err := userSettingsProvider.Save(dbUser.UUID, userSettings); err != nil {
@@ -198,6 +198,28 @@ func (s *Service) GetUserContextByUUID(uuid string) (entity.UserContext, error) 
 	}, nil
 }
 
+// SaveSession saves a session
+func (s *Service) SaveSession(sessionID string, userContext entity.UserContext) (entity.Session, error) {
+	// Get the session provider
+	sessionProvider, err := s.container.SessionProvider()
+	if err != nil {
+		return entity.Session{}, err
+	}
+
+	// Build a new Session token
+	userSession := entity.Session{
+		Token:   sessionID,
+		Context: userContext,
+	}
+
+	// Save the session
+	if err := sessionProvider.Set(userSession.Token, userSession); err != nil {
+		return entity.Session{}, err
+	}
+
+	return userSession, nil
+}
+
 // Login attempts to create a session
 func (s *Service) Login(loginRequest entity.UserLoginRequest) (entity.Session, error) {
 	// Get the UserProvider
@@ -228,22 +250,5 @@ func (s *Service) Login(loginRequest entity.UserLoginRequest) (entity.Session, e
 		return entity.Session{}, err
 	}
 
-	// Get the session provider
-	sessionProvider, err := s.container.SessionProvider()
-	if err != nil {
-		return entity.Session{}, err
-	}
-
-	// Build a new Session token
-	userSession := entity.Session{
-		Token:   uuid.New().String(),
-		Context: userContext,
-	}
-
-	// Save the session
-	if err := sessionProvider.Set(userSession.Token, userSession); err != nil {
-		return entity.Session{}, err
-	}
-
-	return userSession, nil
+	return s.SaveSession(uuid.New().String(), userContext)
 }

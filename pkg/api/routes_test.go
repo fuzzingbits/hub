@@ -375,6 +375,21 @@ func TestUserUpdate(t *testing.T) {
 			SkipResponseBytesCheck: true,
 		},
 		{
+			Name:   "error_saving_session",
+			Method: http.MethodPost,
+			URL:    RouteUserUpdate,
+			Body:   bytes.NewReader(payloadBytes),
+			RequestMod: func(r *http.Request) {
+				r.AddCookie(&http.Cookie{
+					Name:  session.CookieName,
+					Value: userSession.Token,
+				})
+				c.SessionProviderValue.Provider.CreateError = errors.New("foobar")
+			},
+			TargetStatusCode:       http.StatusInternalServerError,
+			SkipResponseBytesCheck: true,
+		},
+		{
 			Name:   "not_found",
 			Method: http.MethodPost,
 			URL:    RouteUserUpdate,

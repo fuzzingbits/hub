@@ -46,7 +46,6 @@ func ApplyUserUpdateRequest(request entity.UpdateUserRequest, dbUser *entity.Dat
 	dbUser.LastName = request.LastName
 	dbUser.Email = request.Email
 	dbUser.Username = request.Username
-	dbUser.Password = codex.Hash(request.Password, request.UUID)
 
 	userSettings.ThemeColor = request.ThemeColor
 }

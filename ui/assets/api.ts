@@ -62,8 +62,8 @@ class HubAPI {
 		return response.data;
 	}
 
-	public async userUpdate(): Promise<GenericResponse<types.UserContext | null>> {
-		const response = await client.get("/api/user/update");
+	public async userUpdate(payload: types.UpdateUserRequest): Promise<GenericResponse<types.UserContext | null>> {
+		const response = await client.post("/api/user/update", payload);
 		return response.data;
 	}
 }
