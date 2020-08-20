@@ -1,4 +1,8 @@
 #splash {
+	padding: var(--spacing);
+}
+
+#splash .loading {
 	align-items: center;
 	background: var(--background);
 	bottom: 0;
@@ -19,6 +23,22 @@
 .fade-enter,
 .fade-leave-to {
 	opacity: 0;
+}
+
+.alert {
+	border: 1px solid green;
+	color: green;
+	padding: var(--spacing) var(--spacing-double);
+	margin-bottom: var(--spacing-half);
+}
+
+.alert:last-child {
+	margin-bottom: 0;
+}
+
+.alert.alert-danger {
+	color: tomato;
+	border: 1px solid tomato;
 }
 
 #body {

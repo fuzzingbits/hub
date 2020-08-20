@@ -8,6 +8,7 @@
 			<label>Email <input name="email" type="email"/></label>
 			<label>Username <input name="username"/></label>
 			<label>Password <input name="password" type="password"/></label>
+			<PosterMessage :poster="formPoster" />
 			<label><input type="submit"/></label>
 		</form>
 	</div>
@@ -17,8 +18,14 @@
 import Vue from "vue";
 import HubApi from "~/ui/assets/api";
 import * as types from "~/ui/assets/types";
+import Poster from "~/ui/assets/poster";
 
 export default Vue.extend({
+	data: function() {
+		return {
+			formPoster: new Poster(),
+		};
+	},
 	computed: {
 		serverStatus: function(): types.ServerStatus | null {
 			return this.$store.state.server.status;
@@ -26,6 +33,8 @@ export default Vue.extend({
 	},
 	methods: {
 		submit(): void {
+			this.formPoster.reset();
+
 			const form = document.querySelector("#setup-form") as HTMLFormElement;
 			const formData = new FormData(form);
 
@@ -35,15 +44,29 @@ export default Vue.extend({
 				email: formData.get("email") as string,
 				username: formData.get("username") as string,
 				password: formData.get("password") as string,
-			}).then(response => {
-				const serverStatus = this.serverStatus;
-				this.$store.commit("user/setState", response.data);
-				if (response.data && serverStatus) {
+			})
+				.then(response => {
+					this.formPoster.setResponse(response);
+					if (!response.state) {
+						return;
+					}
+
+					// Login the new user
+					this.$store.commit("user/setState", response.data);
+
+					// Update the server status
+					let serverStatus = this.serverStatus;
+					if (serverStatus) {
+						serverStatus.setupRequired = false;
+						this.$store.commit("server/setStatus", serverStatus);
+					}
+
+					// Redirect to the home page
 					this.$router.push("/");
-					serverStatus.setupRequired = false;
-				}
-				this.$store.commit("server/setStatus", serverStatus);
-			});
+				})
+				.catch(err => {
+					this.formPoster.handlerError(err);
+				});
 		},
 	},
 });

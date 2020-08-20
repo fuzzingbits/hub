@@ -2,7 +2,11 @@
 	<div>
 		<transition name="fade">
 			<div v-if="showSplash" id="splash">
-				<i class="fas fa-circle-notch fa-spin"></i>
+				<div v-if="userPoster.loading || serverPoster.loading" class="loading">
+					<i class="fas fa-circle-notch fa-spin"></i>
+				</div>
+				<PosterMessage :poster="userPoster" />
+				<PosterMessage :poster="serverPoster" />
 			</div>
 		</transition>
 		<div v-if="!showSplash" id="page">
@@ -30,20 +34,26 @@
 <script lang="ts">
 import Vue from "vue";
 import HubApi from "~/ui/assets/api";
+import Poster from "~/ui/assets/poster";
 import * as types from "~/ui/assets/types";
 export default Vue.extend({
 	data: function() {
 		return {
-			loadingUser: true,
-			loadingServer: true,
+			userPoster: new Poster(),
+			serverPoster: new Poster(),
 		};
 	},
 	computed: {
 		showSplash: function(): boolean {
-			return this.loading;
-		},
-		loading: function(): boolean {
-			return this.loadingUser || this.loadingServer;
+			if (this.userPoster.loading || this.serverPoster.loading) {
+				return true;
+			}
+
+			if (!this.userPoster.state || !this.serverPoster.state) {
+				return true;
+			}
+
+			return false;
 		},
 		session: function(): types.UserContext | null {
 			return this.$store.state.user.session;
@@ -66,31 +76,29 @@ export default Vue.extend({
 			this.$store.commit("user/setState", null);
 		},
 		checkForLogin() {
+			this.userPoster.reset(true);
 			HubApi.userMe()
 				.then(response => {
 					this.$store.commit("user/setState", response.data);
+					this.userPoster.setResponse(response);
 				})
 				.catch(err => {
-					console.error("ajax error: " + err);
+					this.userPoster.handlerError(err);
 				})
-				.finally(() => {
-					setTimeout(() => {
-						this.loadingUser = false;
-					}, 1000);
-				});
+				.finally(() => {});
 		},
 		checkServerStatus() {
 			HubApi.serverStatus()
 				.then(response => {
 					this.$store.commit("server/setStatus", response.data);
+					this.serverPoster.setResponse(response);
 
 					if (response.data && response.data.setupRequired) {
 						this.$router.push("/setup");
 					}
-					this.loadingServer = false;
 				})
 				.catch(err => {
-					console.error("ajax error: " + err);
+					this.serverPoster.handlerError(err);
 				});
 		},
 	},

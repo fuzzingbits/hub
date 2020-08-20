@@ -5,6 +5,7 @@
 			<p>This is for users to login.</p>
 			<label>Username <input name="username"/></label>
 			<label>Password <input name="password" type="password"/></label>
+			<PosterMessage :poster="formPoster" />
 			<label><input type="submit"/></label>
 		</form>
 	</div>
@@ -13,22 +14,40 @@
 <script lang="ts">
 import Vue from "vue";
 import HubApi from "~/ui/assets/api";
+import Poster from "~/ui/assets/poster";
 
 export default Vue.extend({
+	data: function() {
+		return {
+			formPoster: new Poster(),
+		};
+	},
 	methods: {
 		submit(): void {
+			this.formPoster.reset();
+
 			const form = document.querySelector("#setup-form") as HTMLFormElement;
 			const formData = new FormData(form);
 
 			HubApi.userLogin({
 				username: formData.get("username") as string,
 				password: formData.get("password") as string,
-			}).then(response => {
-				this.$store.commit("user/setState", response.data);
-				if (response.data) {
+			})
+				.then(response => {
+					this.formPoster.setResponse(response);
+					if (!response.state) {
+						return;
+					}
+
+					// Login the user
+					this.$store.commit("user/setState", response.data);
+
+					// Redirect to the home page
 					this.$router.push("/");
-				}
-			});
+				})
+				.catch(err => {
+					this.formPoster.handlerError(err);
+				});
 		},
 	},
 });

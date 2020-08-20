@@ -14,6 +14,9 @@ export default {
 	build: {
 		extractCSS: true,
 	},
+	components: {
+		dirs: ["~/ui/components"],
+	},
 	buildModules: ["@nuxt/typescript-build"],
 	head: {
 		title: "Hub",
