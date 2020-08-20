@@ -31,11 +31,20 @@ func (a *App) authCheck(r *http.Request) (entity.Session, error) {
 }
 
 func createLoginCookie(w http.ResponseWriter, userSession entity.Session) {
-	// Set the session cookie
 	http.SetCookie(w, &http.Cookie{
-		Name:    session.CookieName,
-		Value:   userSession.Token,
-		Expires: time.Now().Add(session.Duration),
-		Path:    "/",
+		Name:     session.CookieName,
+		Value:    userSession.Token,
+		Expires:  time.Now().Add(session.Duration),
+		Path:     "/",
+		HttpOnly: true,
+	})
+}
+
+func deleteLoginCookie(w http.ResponseWriter) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     session.CookieName,
+		Expires:  time.Unix(0, 0),
+		Path:     "/",
+		HttpOnly: true,
 	})
 }

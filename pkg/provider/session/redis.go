@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/gob"
 	"encoding/hex"
-	"errors"
 
 	"github.com/fuzzingbits/hub/pkg/entity"
 	"github.com/gomodule/redigo/redis"
@@ -26,7 +25,7 @@ func (p *RedisProvider) Get(token string) (entity.Session, error) {
 
 	resultBytes, ok := result.([]byte)
 	if !ok {
-		return entity.Session{}, errors.New("no session found")
+		return entity.Session{}, ErrNotFound
 	}
 
 	sessionBytes, err := hex.DecodeString(string(resultBytes))

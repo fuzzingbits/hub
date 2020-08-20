@@ -90,6 +90,9 @@ var routeTestingFunctions = map[string]func(c *container.Mockable, s *hub.Servic
 
 		return RouteTestTarget{}
 	},
+	RouteUserLogout: func(c *container.Mockable, s *hub.Service, r *http.Request) RouteTestTarget {
+		return RouteTestTarget{}
+	},
 }
 
 func TestRouteSuccessReturns(t *testing.T) {

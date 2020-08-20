@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/fuzzingbits/hub/pkg/entity"
@@ -15,6 +16,7 @@ const (
 	RouteServerSetup  = "/api/server/setup"
 	RouteUserMe       = "/api/user/me"
 	RouteUserLogin    = "/api/user/login"
+	RouteUserLogout   = "/api/user/logout"
 	RouteUserNew      = "/api/user/new"
 	RouteUserList     = "/api/user/list"
 	RouteUserDelete   = "/api/user/delete"
@@ -62,6 +64,10 @@ func (a *App) GetRoutes() []rooter.Route {
 			Handler:  rooter.ResponseFunc(a.handlerUserLogin),
 			Response: entity.UserContext{},
 			Payload:  entity.UserLoginRequest{},
+		},
+		{
+			Path:    RouteUserLogout,
+			Handler: rooter.ResponseFunc(a.handlerUserLogout),
 		},
 		{
 			Path:     RouteUserMe,
@@ -187,6 +193,14 @@ func (a *App) handlerServerSetup(w http.ResponseWriter, req *http.Request) roote
 func (a *App) handlerUserMe(w http.ResponseWriter, req *http.Request) rooter.Response {
 	userSession, err := a.authCheck(req)
 	if err != nil {
+		if errors.Is(err, ErrUnauthorized) {
+			deleteLoginCookie(w)
+			return rooter.Response{
+				StatusCode: http.StatusOK,
+				State:      true,
+			}
+		}
+
 		return a.generateErrorResponse(err, req)
 	}
 
@@ -194,6 +208,15 @@ func (a *App) handlerUserMe(w http.ResponseWriter, req *http.Request) rooter.Res
 		StatusCode: http.StatusOK,
 		State:      true,
 		Data:       userSession.Context,
+	}
+}
+
+func (a *App) handlerUserLogout(w http.ResponseWriter, req *http.Request) rooter.Response {
+	deleteLoginCookie(w)
+
+	return rooter.Response{
+		StatusCode: http.StatusOK,
+		State:      true,
 	}
 }
 

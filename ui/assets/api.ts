@@ -42,6 +42,11 @@ class HubAPI {
 		return response.data;
 	}
 
+	public async userLogout(): Promise<GenericResponse<null>> {
+		const response = await client.get("/api/user/logout");
+		return response.data;
+	}
+
 	public async userMe(): Promise<GenericResponse<types.UserContext | null>> {
 		const response = await client.get("/api/user/me");
 		return response.data;
