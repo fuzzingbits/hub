@@ -3,8 +3,6 @@ package session
 import (
 	"errors"
 	"time"
-
-	"github.com/fuzzingbits/hub/pkg/entity"
 )
 
 // Duration is the default session experation
@@ -18,8 +16,8 @@ var ErrNotFound = errors.New("Not Found")
 
 // Provider is the Session Provider
 type Provider interface {
-	// Get a session by token
-	Get(token string) (entity.Session, error)
+	// Get a user UUID by token
+	Get(token string) (string, error)
 	// Set a session by token
-	Set(token string, session entity.Session) error
+	Set(token string, userUUI string) error
 }

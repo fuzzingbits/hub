@@ -195,7 +195,7 @@ func TestUserNew(t *testing.T) {
 					Name:  session.CookieName,
 					Value: userSession.Token,
 				})
-				c.UserProviderError = errors.New("foobar")
+				c.UserProviderValue.Provider.CreateError = errors.New("foobar")
 			},
 			TargetStatusCode:       http.StatusInternalServerError,
 			SkipResponseBytesCheck: true,
@@ -399,7 +399,7 @@ func TestUserUpdate(t *testing.T) {
 					Name:  session.CookieName,
 					Value: userSession.Token,
 				})
-				c.UserProviderError = errors.New("foobar")
+				c.UserProviderValue.Provider.UpdateError = errors.New("foobar")
 			},
 			TargetStatusCode:       http.StatusInternalServerError,
 			SkipResponseBytesCheck: true,
@@ -461,7 +461,7 @@ func TestUserList(t *testing.T) {
 					Name:  session.CookieName,
 					Value: userSession.Token,
 				})
-				c.UserProviderError = errors.New("foobar")
+				c.UserProviderValue.Provider.GetAllError = errors.New("foobar")
 			},
 			TargetStatusCode:    http.StatusInternalServerError,
 			TargetResponseBytes: rooter.ResponseInternalServerError.Bytes(),

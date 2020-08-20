@@ -3,7 +3,6 @@ package session
 import (
 	"errors"
 
-	"github.com/fuzzingbits/hub/pkg/entity"
 	"github.com/fuzzingbits/hub/pkg/util/forge/mockableprovider"
 )
 
@@ -13,20 +12,20 @@ type Mockable struct {
 }
 
 // Get a session by token
-func (p *Mockable) Get(token string) (entity.Session, error) {
+func (p *Mockable) Get(token string) (string, error) {
 	result, err := p.Provider.GetByID(token)
 	if err != nil {
 		if errors.Is(err, mockableprovider.ErrNotFound) {
-			return entity.Session{}, ErrNotFound
+			return "", ErrNotFound
 		}
 
-		return entity.Session{}, err
+		return "", err
 	}
 
-	return result.(entity.Session), nil
+	return result.(string), nil
 }
 
 // Set a session by token
-func (p *Mockable) Set(token string, session entity.Session) error {
-	return p.Provider.Create(token, session)
+func (p *Mockable) Set(token string, userUUID string) error {
+	return p.Provider.Create(token, userUUID)
 }

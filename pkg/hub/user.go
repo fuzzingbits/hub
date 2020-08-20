@@ -158,7 +158,7 @@ func (s *Service) GetCurrentSession(token string) (entity.Session, error) {
 		return entity.Session{}, err
 	}
 
-	userSession, err := sessionProvider.Get(token)
+	userUUID, err := sessionProvider.Get(token)
 	if err != nil {
 		if errors.Is(err, session.ErrNotFound) {
 			return entity.Session{}, ErrMissingValidSession
@@ -167,7 +167,19 @@ func (s *Service) GetCurrentSession(token string) (entity.Session, error) {
 		return entity.Session{}, err
 	}
 
-	return userSession, nil
+	userContext, err := s.GetUserContextByUUID(userUUID)
+	if err != nil {
+		if errors.Is(err, ErrRecordNotFound) {
+			return entity.Session{}, ErrMissingValidSession
+		}
+
+		return entity.Session{}, err
+	}
+
+	return entity.Session{
+		Token:   token,
+		Context: userContext,
+	}, nil
 }
 
 // GetUserContextByUUID by UUID and get the full conext
@@ -182,18 +194,22 @@ func (s *Service) GetUserContextByUUID(uuid string) (entity.UserContext, error) 
 		return entity.UserContext{}, err
 	}
 
-	user, err := userProvider.GetByUUID(uuid)
+	databaseUser, err := userProvider.GetByUUID(uuid)
 	if err != nil {
+		if errors.Is(err, user.ErrNotFound) {
+			return entity.UserContext{}, ErrRecordNotFound
+		}
+
 		return entity.UserContext{}, err
 	}
 
-	userSettings, err := userSettingsProvider.GetByUUID(user.UUID)
+	userSettings, err := userSettingsProvider.GetByUUID(databaseUser.UUID)
 	if err != nil {
 		return entity.UserContext{}, err
 	}
 
 	return entity.UserContext{
-		User:     reactor.DatabaseUserToEntity(user),
+		User:     reactor.DatabaseUserToEntity(databaseUser),
 		Settings: userSettings,
 	}, nil
 }
@@ -213,7 +229,7 @@ func (s *Service) SaveSession(sessionID string, userContext entity.UserContext) 
 	}
 
 	// Save the session
-	if err := sessionProvider.Set(userSession.Token, userSession); err != nil {
+	if err := sessionProvider.Set(userSession.Token, userContext.User.UUID); err != nil {
 		return entity.Session{}, err
 	}
 

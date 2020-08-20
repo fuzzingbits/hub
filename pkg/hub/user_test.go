@@ -77,6 +77,21 @@ func TestGetCurrentSession(t *testing.T) {
 	}
 
 	{ // Error
+		invalidRealToken := "INVALID_REAL_TOKEN"
+		c.SessionProviderValue.Set(invalidRealToken, "not a real user UUID")
+		if _, err := s.GetCurrentSession(invalidRealToken); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		c.UserProviderValue.Provider.GetByIDError = errors.New("foobar")
+		if _, err := s.GetCurrentSession(userSession.Token); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
 		if _, err := s.GetCurrentSession("INVALID_TOKEN"); err == nil {
 			t.Errorf("there should have been an error")
 		}
@@ -176,6 +191,12 @@ func TestGetUserContextByUUID(t *testing.T) {
 	{ // Error
 		c.UserSettingsProviderValue.Provider.GetByIDError = errors.New("foobar")
 		if _, err := s.GetUserContextByUUID(userSession.Context.User.UUID); err == nil {
+			t.Errorf("there should have been an error")
+		}
+	}
+
+	{ // Error
+		if _, err := s.GetUserContextByUUID("fake uuid"); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}

@@ -1,11 +1,6 @@
 package session
 
 import (
-	"bytes"
-	"encoding/gob"
-	"encoding/hex"
-
-	"github.com/fuzzingbits/hub/pkg/entity"
 	"github.com/gomodule/redigo/redis"
 )
 
@@ -15,44 +10,23 @@ type RedisProvider struct {
 }
 
 // Get a session by token
-func (p *RedisProvider) Get(token string) (entity.Session, error) {
-	var session entity.Session
-
+func (p *RedisProvider) Get(token string) (string, error) {
 	result, err := p.Connection.Do("GET", token)
 	if err != nil {
-		return entity.Session{}, err
+		return "", err
 	}
 
 	resultBytes, ok := result.([]byte)
 	if !ok {
-		return entity.Session{}, ErrNotFound
+		return "", ErrNotFound
 	}
 
-	sessionBytes, err := hex.DecodeString(string(resultBytes))
-	if err != nil {
-		return entity.Session{}, err
-	}
-
-	decoder := gob.NewDecoder(bytes.NewBuffer(sessionBytes))
-	if err := decoder.Decode(&session); err != nil {
-		return entity.Session{}, err
-	}
-
-	return session, nil
+	return string(resultBytes), nil
 }
 
 // Set a session by token
-func (p *RedisProvider) Set(token string, session entity.Session) error {
-	var sessionBytes bytes.Buffer
-
-	encoder := gob.NewEncoder(&sessionBytes)
-	if err := encoder.Encode(session); err != nil {
-		return err
-	}
-
-	sessionString := hex.EncodeToString(sessionBytes.Bytes())
-
-	if _, err := p.Connection.Do("SETEX", token, Duration.Seconds(), sessionString); err != nil {
+func (p *RedisProvider) Set(token string, userUUID string) error {
+	if _, err := p.Connection.Do("SETEX", token, Duration.Seconds(), userUUID); err != nil {
 		return err
 	}
 
