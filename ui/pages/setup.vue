@@ -55,11 +55,10 @@ export default Vue.extend({
 					this.$store.commit("user/setState", response.data);
 
 					// Update the server status
-					let serverStatus = this.serverStatus;
-					if (serverStatus) {
-						serverStatus.setupRequired = false;
-						this.$store.commit("server/setStatus", serverStatus);
-					}
+					let serverStatus: types.ServerStatus = {
+						setupRequired: false,
+					};
+					this.$store.commit("server/setStatus", serverStatus);
 
 					// Redirect to the home page
 					this.$router.push("/");

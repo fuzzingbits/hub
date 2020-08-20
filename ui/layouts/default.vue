@@ -84,8 +84,7 @@ export default Vue.extend({
 				})
 				.catch(err => {
 					this.userPoster.handlerError(err);
-				})
-				.finally(() => {});
+				});
 		},
 		checkServerStatus() {
 			HubApi.serverStatus()
