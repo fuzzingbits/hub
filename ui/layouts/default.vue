@@ -1,19 +1,20 @@
 <template>
 	<div>
-		<div v-if="showSplash" id="splash">
-			<i class="fas fa-circle-notch fa-spin"></i>
-		</div>
+		<transition name="fade">
+			<div v-if="showSplash" id="splash">
+				<i class="fas fa-circle-notch fa-spin"></i>
+			</div>
+		</transition>
 		<div v-if="!showSplash" id="page">
 			<div id="header">
 				<nuxt-link v-if="setupRequired" to="/setup">Setup</nuxt-link>
 				<nuxt-link v-if="!setupRequired" to="/">Home Page</nuxt-link>
 				<nuxt-link v-if="!setupRequired" to="/about">About</nuxt-link>
 				<nuxt-link v-if="!session && !setupRequired" to="/login">Login</nuxt-link>
+				<a v-if="session && !setupRequired" @click.prevent="logout" href="#">Logout</a>
 			</div>
 			<div id="body">
-				<div class="card">
-					<nuxt />
-				</div>
+				<nuxt />
 			</div>
 			<div id="footer">
 				<p>
@@ -60,17 +61,22 @@ export default Vue.extend({
 		},
 	},
 	methods: {
+		logout() {
+			HubApi.userLogout();
+			this.$store.commit("user/setState", null);
+		},
 		checkForLogin() {
 			HubApi.userMe()
 				.then(response => {
 					this.$store.commit("user/setState", response.data);
-					this.loadingUser = false;
 				})
 				.catch(err => {
 					console.error("ajax error: " + err);
 				})
 				.finally(() => {
-					this.loadingUser = false;
+					setTimeout(() => {
+						this.loadingUser = false;
+					}, 1000);
 				});
 		},
 		checkServerStatus() {

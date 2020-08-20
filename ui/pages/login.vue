@@ -1,11 +1,13 @@
 <template>
-	<form @submit.prevent="submit" id="setup-form">
-		<h2>User Login</h2>
-		<p>This is for users to login.</p>
-		<label>Username <input name="username"/></label>
-		<label>Password <input name="password" type="password"/></label>
-		<label><input type="submit"/></label>
-	</form>
+	<div class="card">
+		<form @submit.prevent="submit" id="setup-form">
+			<h2>User Login</h2>
+			<p>This is for users to login.</p>
+			<label>Username <input name="username"/></label>
+			<label>Password <input name="password" type="password"/></label>
+			<label><input type="submit"/></label>
+		</form>
+	</div>
 </template>
 
 <script lang="ts">

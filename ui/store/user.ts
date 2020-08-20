@@ -10,6 +10,8 @@ export const mutations = {
 
 		if (target && target.userSettings.themeColor) {
 			document.documentElement.style.setProperty("--primary", target.userSettings.themeColor);
+		} else {
+			document.documentElement.style.removeProperty("--primary");
 		}
 	},
 };
