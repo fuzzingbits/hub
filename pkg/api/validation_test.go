@@ -80,6 +80,21 @@ var routeTestingFunctions = map[string]func(c *container.Mockable, s *hub.Servic
 			},
 		}
 	},
+	RouteUserUpdate: func(c *container.Mockable, s *hub.Service, r *http.Request) RouteTestTarget {
+		userSession, _ := s.SetupServer(testCreateUserRequest)
+
+		r.AddCookie(&http.Cookie{
+			Name:  session.CookieName,
+			Value: userSession.Token,
+		})
+
+		return RouteTestTarget{
+			Payload: entity.UpdateUserRequest{
+				UUID:     userSession.Context.User.UUID,
+				Password: testCreateUserRequest.Password,
+			},
+		}
+	},
 	RouteUserList: func(c *container.Mockable, s *hub.Service, r *http.Request) RouteTestTarget {
 		userSession, _ := s.SetupServer(testCreateUserRequest)
 

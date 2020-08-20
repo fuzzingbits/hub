@@ -20,6 +20,7 @@ const (
 	RouteUserNew      = "/api/user/new"
 	RouteUserList     = "/api/user/list"
 	RouteUserDelete   = "/api/user/delete"
+	RouteUserUpdate   = "/api/user/update"
 )
 
 // App for the REST API
@@ -84,6 +85,37 @@ func (a *App) GetRoutes() []rooter.Route {
 			Handler:  rooter.ResponseFunc(a.handlerUserDelete),
 			Response: nil,
 		},
+		{
+			Path:     RouteUserUpdate,
+			Handler:  rooter.ResponseFunc(a.handlerUserUpdate),
+			Response: entity.UserContext{},
+		},
+	}
+}
+
+func (a *App) handlerUserUpdate(w http.ResponseWriter, req *http.Request) rooter.Response {
+	// Require login
+	_, err := a.authCheck(req)
+	if err != nil {
+		return a.generateErrorResponse(err, req)
+	}
+
+	// Get the payload
+	var payload entity.UpdateUserRequest
+	decoder := json.NewDecoder(req.Body)
+	if err := decoder.Decode(&payload); err != nil {
+		return rooter.ResponseBadRequest
+	}
+
+	userContext, err := a.Service.UpdateUser(payload)
+	if err != nil {
+		return a.generateErrorResponse(err, req)
+	}
+
+	return rooter.Response{
+		StatusCode: http.StatusOK,
+		State:      true,
+		Data:       userContext,
 	}
 }
 

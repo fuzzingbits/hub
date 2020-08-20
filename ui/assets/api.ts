@@ -61,6 +61,11 @@ class HubAPI {
 		const response = await client.get("/api/user/delete");
 		return response.data;
 	}
+
+	public async userUpdate(): Promise<GenericResponse<types.UserContext | null>> {
+		const response = await client.get("/api/user/update");
+		return response.data;
+	}
 }
 
 export default new HubAPI();
