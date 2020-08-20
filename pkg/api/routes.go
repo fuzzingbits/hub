@@ -122,6 +122,7 @@ func (a *App) handlerUserUpdate(w http.ResponseWriter, req *http.Request) rooter
 	return rooter.Response{
 		StatusCode: http.StatusOK,
 		State:      true,
+		Message:    "User Updated Successfully",
 		Data:       userContext,
 	}
 }

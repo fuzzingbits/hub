@@ -101,7 +101,7 @@ func (s *Service) CreateUser(request entity.CreateUserRequest) (entity.UserConte
 
 	// Setup new UserSettings with defaults
 	userSettings := entity.UserSettings{
-		ThemeColor: "DeepSkyBlue",
+		ThemeColor: "#00bfff",
 	}
 
 	if err := userSettingsProvider.Save(dbUser.UUID, userSettings); err != nil {

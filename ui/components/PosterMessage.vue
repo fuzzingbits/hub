@@ -6,6 +6,7 @@
 			'alert-danger': !poster.state,
 		}"
 	>
+		<i @click="poster.reset()" class="close fas fa-times"></i>
 		{{ poster.message }}
 	</div>
 </template>

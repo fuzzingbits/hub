@@ -32,6 +32,7 @@
 .alert {
 	border: 1px solid green;
 	color: green;
+	position: relative;
 	padding: var(--spacing) var(--spacing-double);
 	margin-bottom: var(--spacing-half);
 }
@@ -43,6 +44,13 @@
 .alert.alert-danger {
 	color: tomato;
 	border: 1px solid tomato;
+}
+
+.alert .close {
+	position: absolute;
+	top: var(--spacing-half);
+	right: var(--spacing);
+	cursor: pointer;
 }
 
 #body {

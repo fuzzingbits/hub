@@ -58,9 +58,6 @@ export default Vue.extend({
 
 					// Login the user
 					this.$store.commit("user/setState", response.data);
-
-					// Redirect to the home page
-					this.$router.push("/");
 				})
 				.catch(err => {
 					this.formPoster.handlerError(err);
