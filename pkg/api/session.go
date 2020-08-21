@@ -37,6 +37,7 @@ func createLoginCookie(w http.ResponseWriter, userSession entity.Session) {
 		Expires:  time.Now().Add(session.Duration),
 		Path:     "/",
 		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
 	})
 }
 
@@ -46,5 +47,6 @@ func deleteLoginCookie(w http.ResponseWriter) {
 		Expires:  time.Unix(0, 0),
 		Path:     "/",
 		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
 	})
 }

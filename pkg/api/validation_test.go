@@ -19,7 +19,8 @@ import (
 )
 
 type RouteTestTarget struct {
-	Payload interface{}
+	Payload           interface{}
+	SkipResponseCheck bool
 }
 
 var routeTestingFunctions = map[string]func(c *container.Mockable, s *hub.Service, r *http.Request) RouteTestTarget{
@@ -107,6 +108,11 @@ var routeTestingFunctions = map[string]func(c *container.Mockable, s *hub.Servic
 	RouteUserLogout: func(c *container.Mockable, s *hub.Service, r *http.Request) RouteTestTarget {
 		return RouteTestTarget{}
 	},
+	RouteFavicon: func(c *container.Mockable, s *hub.Service, r *http.Request) RouteTestTarget {
+		return RouteTestTarget{
+			SkipResponseCheck: true,
+		}
+	},
 }
 
 func TestRouteSuccessReturns(t *testing.T) {
@@ -169,6 +175,10 @@ func TestRouteSuccessReturns(t *testing.T) {
 						response.Body.Close()
 						if err != nil {
 							t.Fatal(err)
+						}
+
+						if routeTestTarget.SkipResponseCheck {
+							return
 						}
 
 						// Just json.Unmarshal the response into a standard rootResponse

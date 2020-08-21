@@ -26,7 +26,8 @@ export default {
 		link: [
 			{
 				rel: "icon",
-				href: "/favicon.png",
+				href: "/favicon.svg",
+				type: "image/svg+xml",
 			},
 			{
 				rel: "apple-touch-icon",

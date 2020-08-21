@@ -104,6 +104,38 @@ func TestServerStatus(t *testing.T) {
 	})
 }
 
+func TestFavicon(t *testing.T) {
+	c := container.NewMockable()
+	s := hub.NewService(&hubconfig.Config{}, c)
+	mux := http.NewServeMux()
+	RegisterRoutes(mux, s)
+
+	userSession, _ := s.SetupServer(testCreateUserRequest)
+
+	rootertest.Test(t, mux, []rootertest.TestCase{
+		{
+			Name:                   "success",
+			Method:                 http.MethodGet,
+			URL:                    RouteFavicon,
+			TargetStatusCode:       http.StatusOK,
+			SkipResponseBytesCheck: true,
+		},
+		{
+			Name:   "server_error",
+			Method: http.MethodGet,
+			URL:    RouteFavicon,
+			RequestMod: func(r *http.Request) {
+				r.AddCookie(&http.Cookie{
+					Name:  session.CookieName,
+					Value: userSession.Token,
+				})
+			},
+			TargetStatusCode:       http.StatusOK,
+			SkipResponseBytesCheck: true,
+		},
+	})
+}
+
 func TestUserMe(t *testing.T) {
 	c := container.NewMockable()
 	s := hub.NewService(&hubconfig.Config{}, c)

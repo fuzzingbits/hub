@@ -10,6 +10,8 @@ type Route struct {
 	Middleware []Middleware
 	Payload    interface{}
 	Response   interface{}
+	// Extra Config
+	ExcludeFromTypeScript bool
 }
 
 // Param is a route paramerter

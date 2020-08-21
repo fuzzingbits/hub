@@ -47,6 +47,10 @@ func convertTypes(routes []rooter.Route) []Endpoint {
 	endpoints := []Endpoint{}
 
 	for _, route := range routes {
+		if route.ExcludeFromTypeScript {
+			continue
+		}
+
 		method := "get"
 
 		payloadType := convertType(route.Payload)

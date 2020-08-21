@@ -13,5 +13,7 @@ export const mutations = {
 		} else {
 			document.documentElement.style.removeProperty("--primary");
 		}
+
+		(document.querySelector("link[rel='icon']") as HTMLLinkElement).href = "/favicon.svg?" + new Date().getTime();
 	},
 };
