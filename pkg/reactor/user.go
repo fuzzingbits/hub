@@ -44,5 +44,6 @@ func ApplyUserUpdateRequest(request entity.UpdateUserRequest, dbUser *entity.Dat
 	dbUser.LastName = request.LastName
 	dbUser.Email = request.Email
 
-	userSettings.ThemeColor = request.ThemeColor
+	userSettings.ThemeColorDark = request.ThemeColorDark
+	userSettings.ThemeColorLight = request.ThemeColorLight
 }

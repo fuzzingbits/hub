@@ -17,7 +17,8 @@ export interface UpdateUserRequest {
 	firstName: string;
 	lastName: string;
 	email: string;
-	themeColor: string;
+	themeColorLight: string;
+	themeColorDark: string;
 }
 
 export interface ServerStatus {
@@ -37,7 +38,8 @@ export interface User {
 }
 
 export interface UserSettings {
-	themeColor: string;
+	themeColorLight: string;
+	themeColorDark: string;
 }
 
 export interface CreateUserRequest {

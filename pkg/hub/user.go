@@ -13,8 +13,11 @@ import (
 	"github.com/fuzzingbits/hub/pkg/entity"
 )
 
-// DefaultThemeColor for new users
-var DefaultThemeColor = "#00bfff"
+// DefaultThemeColorLight for new users
+var DefaultThemeColorLight = "#0057ad"
+
+// DefaultThemeColorDark for new users
+var DefaultThemeColorDark = "#00bfff"
 
 // ErrInvalidLogin is when the login credentials are incorrect
 var ErrInvalidLogin = errors.New("Invalid Login")
@@ -104,7 +107,8 @@ func (s *Service) CreateUser(request entity.CreateUserRequest) (entity.UserConte
 
 	// Setup new UserSettings with defaults
 	userSettings := entity.UserSettings{
-		ThemeColor: DefaultThemeColor,
+		ThemeColorLight: DefaultThemeColorLight,
+		ThemeColorDark:  DefaultThemeColorDark,
 	}
 
 	if err := userSettingsProvider.Save(dbUser.UUID, userSettings); err != nil {

@@ -38,7 +38,8 @@ func (d DatabaseUser) TableName() string {
 
 // UserSettings for a User
 type UserSettings struct {
-	ThemeColor string `json:"themeColor"`
+	ThemeColorLight string `json:"themeColorLight"`
+	ThemeColorDark  string `json:"themeColorDark"`
 }
 
 // CreateUserRequest is the request for creating users
@@ -51,11 +52,12 @@ type CreateUserRequest struct {
 
 // UpdateUserRequest is the request for updating users
 type UpdateUserRequest struct {
-	UUID       string `json:"uuid"`
-	FirstName  string `json:"firstName"`
-	LastName   string `json:"lastName"`
-	Email      string `json:"email"`
-	ThemeColor string `json:"themeColor"`
+	UUID            string `json:"uuid"`
+	FirstName       string `json:"firstName"`
+	LastName        string `json:"lastName"`
+	Email           string `json:"email"`
+	ThemeColorLight string `json:"themeColorLight"`
+	ThemeColorDark  string `json:"themeColorDark"`
 }
 
 // DeleteUserRequest is the request for deleting a user

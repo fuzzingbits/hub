@@ -7,7 +7,8 @@
 			<label>First Name <input :value="session.user.firstName" name="firstName" required/></label>
 			<label>Last Name <input :value="session.user.lastName" name="lastName" required/></label>
 			<label>Email <input :value="session.user.email" name="email" required/></label>
-			<label>Theme Color <input :value="session.userSettings.themeColor" name="themeColor" type="color" @input="changeColor" required/></label>
+			<label>Light Theme Color <input :value="session.userSettings.themeColorLight" name="themeColorLight" type="color" @input="changeColor" required/></label>
+			<label>Dark Theme Color <input :value="session.userSettings.themeColorDark" name="themeColorDark" type="color" @input="changeColor" required/></label>
 			<PosterMessage :poster="formPoster" />
 			<label><input type="submit" value="Submit Update"/></label>
 		</form>
@@ -33,7 +34,10 @@ export default Vue.extend({
 	},
 	methods: {
 		changeColor(e: any) {
-			document.documentElement.style.setProperty("--primary", e.target.value);
+			const form = document.querySelector("#profile-form") as HTMLFormElement;
+			const formData = new FormData(form);
+			document.documentElement.style.setProperty("--primary-light", formData.get("themeColorLight") as string);
+			document.documentElement.style.setProperty("--primary-dark", formData.get("themeColorDark") as string);
 		},
 		submit(): void {
 			this.formPoster.reset();
@@ -46,7 +50,8 @@ export default Vue.extend({
 				firstName: formData.get("firstName") as string,
 				lastName: formData.get("lastName") as string,
 				email: formData.get("email") as string,
-				themeColor: formData.get("themeColor") as string,
+				themeColorLight: formData.get("themeColorLight") as string,
+				themeColorDark: formData.get("themeColorDark") as string,
 			})
 				.then(response => {
 					this.formPoster.setResponse(response);
