@@ -1,4 +1,6 @@
-export default {
+import { NuxtConfig } from "@nuxt/types";
+
+const config: NuxtConfig = {
 	mode: "spa",
 	generate: {
 		fallback: "200.html",
@@ -44,3 +46,5 @@ export default {
 		],
 	},
 };
+
+export default config;

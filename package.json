@@ -2,12 +2,13 @@
 	"private": true,
 	"prettier": "./ui/.prettierrc.js",
 	"scripts": {
-		"build": "nuxt generate",
+		"build": "nuxt-ts generate",
 		"fmt": "prettier *.{js,json} ui/**/*.{json,js,ts,vue,css} --write",
-		"dev": "nuxt"
+		"dev": "nuxt-ts"
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-free": "^5.14.0",
+		"@nuxt/typescript-runtime": "^1.0.0",
 		"@types/md5": "^2.2.0",
 		"axios": "^0.20.0",
 		"md5": "^2.3.0",
