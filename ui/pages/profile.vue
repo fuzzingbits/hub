@@ -9,7 +9,7 @@
 			<label>Email <input :value="session.user.email" name="email" required/></label>
 			<label>Theme Color <input :value="session.userSettings.themeColor" name="themeColor" type="color" @input="changeColor" required/></label>
 			<PosterMessage :poster="formPoster" />
-			<label><input type="submit"/></label>
+			<label><input type="submit" value="Submit Update"/></label>
 		</form>
 	</div>
 </template>

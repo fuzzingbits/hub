@@ -6,7 +6,7 @@
 			<label>Email <input name="email" type="email" required/></label>
 			<label>Password <input name="password" type="password" required/></label>
 			<PosterMessage :poster="formPoster" />
-			<label><input type="submit"/></label>
+			<label><input type="submit" value="Login"/></label>
 		</form>
 	</div>
 </template>
