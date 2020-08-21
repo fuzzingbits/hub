@@ -248,7 +248,7 @@ func (s *Service) Login(loginRequest entity.UserLoginRequest) (entity.Session, e
 	}
 
 	// Query the user that we are trying to login as
-	potentialUser, err := userProvider.GetByUsername(loginRequest.Username)
+	potentialUser, err := userProvider.GetByEmail(loginRequest.Email)
 	if err != nil {
 		if errors.Is(err, user.ErrNotFound) {
 			return entity.Session{}, ErrInvalidLogin

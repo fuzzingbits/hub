@@ -6,7 +6,6 @@
 			<label>First Name <input name="firstName" required/></label>
 			<label>Last Name <input name="lastName" required/></label>
 			<label>Email <input name="email" type="email" required/></label>
-			<label>Username <input name="username" required/></label>
 			<label>Password <input name="password" type="password" required/></label>
 			<PosterMessage :poster="formPoster" />
 			<label><input type="submit"/></label>
@@ -42,7 +41,6 @@ export default Vue.extend({
 				firstName: formData.get("firstName") as string,
 				lastName: formData.get("lastName") as string,
 				email: formData.get("email") as string,
-				username: formData.get("username") as string,
 				password: formData.get("password") as string,
 			})
 				.then(response => {

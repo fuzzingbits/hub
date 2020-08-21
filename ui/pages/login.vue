@@ -3,7 +3,7 @@
 		<form @submit.prevent="submit" id="setup-form">
 			<h2>User Login</h2>
 			<p>This is for users to login.</p>
-			<label>Username <input name="username" required/></label>
+			<label>Email <input name="email" type="email" required/></label>
 			<label>Password <input name="password" type="password" required/></label>
 			<PosterMessage :poster="formPoster" />
 			<label><input type="submit"/></label>
@@ -30,7 +30,7 @@ export default Vue.extend({
 			const formData = new FormData(form);
 
 			HubApi.userLogin({
-				username: formData.get("username") as string,
+				email: formData.get("email") as string,
 				password: formData.get("password") as string,
 			})
 				.then(response => {

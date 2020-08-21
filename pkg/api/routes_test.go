@@ -20,13 +20,12 @@ import (
 var testCreateUserRequest = entity.CreateUserRequest{
 	FirstName: "Testy",
 	LastName:  "McTestPants",
-	Username:  "testy",
 	Email:     "testy@example.com",
 	Password:  "Password123",
 }
 
 var testUserLoginRequest = entity.UserLoginRequest{
-	Username: testCreateUserRequest.Username,
+	Email:    testCreateUserRequest.Email,
 	Password: testCreateUserRequest.Password,
 }
 
@@ -266,7 +265,7 @@ func TestUserLogin(t *testing.T) {
 
 	loginRequestBytes, _ := json.Marshal(testUserLoginRequest)
 	loginBadRequestBytes, _ := json.Marshal(entity.UserLoginRequest{
-		Username: "bad_username",
+		Email:    "bad_email",
 		Password: "bad_password",
 	})
 

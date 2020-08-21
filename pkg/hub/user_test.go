@@ -12,13 +12,12 @@ import (
 var standardTestCreateUserRequest = entity.CreateUserRequest{
 	FirstName: "Testy",
 	LastName:  "McTestPants",
-	Username:  "testy",
 	Email:     "testy@example.com",
 	Password:  "Password123",
 }
 
 var standardTestLoginRequest = entity.UserLoginRequest{
-	Username: standardTestCreateUserRequest.Username,
+	Email:    standardTestCreateUserRequest.Email,
 	Password: standardTestCreateUserRequest.Password,
 }
 
@@ -261,7 +260,7 @@ func TestLogin(t *testing.T) {
 
 	{ // Error
 		if _, err := s.Login(entity.UserLoginRequest{
-			Username: standardTestLoginRequest.Username,
+			Email:    standardTestLoginRequest.Email,
 			Password: "INVLAID_PASSWORD",
 		}); err == nil {
 			t.Errorf("there should have been an error")
@@ -270,7 +269,7 @@ func TestLogin(t *testing.T) {
 
 	{ // Error
 		if _, err := s.Login(entity.UserLoginRequest{
-			Username: "INVALID_USERNAME",
+			Email:    "INVALID_EMAIL",
 			Password: "INVLAID_PASSWORD",
 		}); err == nil {
 			t.Errorf("there should have been an error")
@@ -278,7 +277,7 @@ func TestLogin(t *testing.T) {
 	}
 
 	{ // Error
-		c.UserProviderValue.GetByUsernameError = errors.New("foobar")
+		c.UserProviderValue.GetByEmailError = errors.New("foobar")
 		if _, err := s.Login(standardTestLoginRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}

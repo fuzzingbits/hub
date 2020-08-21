@@ -15,7 +15,6 @@ type UserContext struct {
 // User for Hub Users
 type User struct {
 	UUID      string `json:"uuid"`
-	Username  string `json:"username"`
 	Password  string `json:"-"`
 	Email     string `json:"email"`
 	FirstName string `json:"firstName"`
@@ -26,7 +25,6 @@ type User struct {
 type DatabaseUser struct {
 	ID        uint   `gorm:"primary_key"`
 	UUID      string `gorm:"size:36;not null"`
-	Username  string `gorm:"size:32;not null"`
 	Password  string `gorm:"size:64;not null"`
 	Email     string `gorm:"size:64;not null"`
 	FirstName string `gorm:"size:64;not null"`
@@ -48,7 +46,6 @@ type CreateUserRequest struct {
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 	Email     string `json:"email"`
-	Username  string `json:"username"`
 	Password  string `json:"password"`
 }
 
@@ -58,7 +55,6 @@ type UpdateUserRequest struct {
 	FirstName  string `json:"firstName"`
 	LastName   string `json:"lastName"`
 	Email      string `json:"email"`
-	Username   string `json:"username"`
 	ThemeColor string `json:"themeColor"`
 }
 
@@ -69,6 +65,6 @@ type DeleteUserRequest struct {
 
 // UserLoginRequest is the request for logging in
 type UserLoginRequest struct {
-	Username string `json:"username"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }

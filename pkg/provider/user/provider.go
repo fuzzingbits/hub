@@ -13,8 +13,8 @@ var ErrNotFound = errors.New("User Not Found")
 type Provider interface {
 	// GetByUUID gets a User by UUID
 	GetByUUID(uuid string) (entity.DatabaseUser, error)
-	// GetByUsername gets a user by username
-	GetByUsername(username string) (entity.DatabaseUser, error)
+	// GetByEmail gets a user by email
+	GetByEmail(email string) (entity.DatabaseUser, error)
 	// GetAll Users
 	GetAll() ([]entity.DatabaseUser, error)
 	// Update a User

@@ -9,7 +9,6 @@ export interface CreateUserRequest {
 	firstName: string;
 	lastName: string;
 	email: string;
-	username: string;
 	password: string;
 }
 
@@ -18,7 +17,6 @@ export interface UpdateUserRequest {
 	firstName: string;
 	lastName: string;
 	email: string;
-	username: string;
 	themeColor: string;
 }
 
@@ -33,7 +31,6 @@ export interface UserContext {
 
 export interface User {
 	uuid: string;
-	username: string;
 	email: string;
 	firstName: string;
 	lastName: string;
@@ -47,7 +44,6 @@ export interface CreateUserRequest {
 	firstName: string;
 	lastName: string;
 	email: string;
-	username: string;
 	password: string;
 }
 
@@ -56,6 +52,6 @@ export interface DeleteUserRequest {
 }
 
 export interface UserLoginRequest {
-	username: string;
+	email: string;
 	password: string;
 }

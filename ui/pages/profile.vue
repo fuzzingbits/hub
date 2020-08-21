@@ -4,11 +4,10 @@
 			<h2>Update Profile</h2>
 			<p>This is for users to update their profile.</p>
 			<input type="hidden" name="uuid" :value="session.user.uuid" />
-			<label>firstName <input :value="session.user.firstName" name="firstName" required/></label>
-			<label>lastName <input :value="session.user.lastName" name="lastName" required/></label>
-			<label>email <input :value="session.user.email" name="email" required/></label>
-			<label>username <input :value="session.user.username" name="username" required/></label>
-			<label>themeColor <input :value="session.userSettings.themeColor" name="themeColor" type="color" @input="changeColor" required/></label>
+			<label>First Name <input :value="session.user.firstName" name="firstName" required/></label>
+			<label>Last Name <input :value="session.user.lastName" name="lastName" required/></label>
+			<label>Email <input :value="session.user.email" name="email" required/></label>
+			<label>Theme Color <input :value="session.userSettings.themeColor" name="themeColor" type="color" @input="changeColor" required/></label>
 			<PosterMessage :poster="formPoster" />
 			<label><input type="submit"/></label>
 		</form>
@@ -47,7 +46,6 @@ export default Vue.extend({
 				firstName: formData.get("firstName") as string,
 				lastName: formData.get("lastName") as string,
 				email: formData.get("email") as string,
-				username: formData.get("username") as string,
 				themeColor: formData.get("themeColor") as string,
 			})
 				.then(response => {

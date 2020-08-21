@@ -12,7 +12,6 @@ func DatabaseUserToEntity(dbUser entity.DatabaseUser) entity.User {
 		UUID:      dbUser.UUID,
 		FirstName: dbUser.FirstName,
 		LastName:  dbUser.LastName,
-		Username:  dbUser.Username,
 		Email:     dbUser.Email,
 	}
 }
@@ -26,7 +25,6 @@ func CreateUserRequestToDBUser(request entity.CreateUserRequest) entity.Database
 		FirstName: request.FirstName,
 		LastName:  request.LastName,
 		Email:     request.Email,
-		Username:  request.Username,
 		Password:  password,
 	}
 }
@@ -45,7 +43,6 @@ func ApplyUserUpdateRequest(request entity.UpdateUserRequest, dbUser *entity.Dat
 	dbUser.FirstName = request.FirstName
 	dbUser.LastName = request.LastName
 	dbUser.Email = request.Email
-	dbUser.Username = request.Username
 
 	userSettings.ThemeColor = request.ThemeColor
 }

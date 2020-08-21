@@ -9,8 +9,8 @@ import (
 
 // Mockable user.Provider
 type Mockable struct {
-	Provider           *mockableprovider.Provider
-	GetByUsernameError error
+	Provider        *mockableprovider.Provider
+	GetByEmailError error
 }
 
 // GetByUUID gets a user by UUID
@@ -29,10 +29,10 @@ func (m *Mockable) GetByUUID(uuid string) (entity.DatabaseUser, error) {
 	return user, nil
 }
 
-// GetByUsername gets a user by username
-func (m *Mockable) GetByUsername(username string) (entity.DatabaseUser, error) {
-	if m.GetByUsernameError != nil {
-		return entity.DatabaseUser{}, m.GetByUsernameError
+// GetByEmail gets a user by email
+func (m *Mockable) GetByEmail(email string) (entity.DatabaseUser, error) {
+	if m.GetByEmailError != nil {
+		return entity.DatabaseUser{}, m.GetByEmailError
 	}
 
 	items, err := m.Provider.GetAll()
@@ -42,7 +42,7 @@ func (m *Mockable) GetByUsername(username string) (entity.DatabaseUser, error) {
 
 	for _, item := range items {
 		user, _ := item.(entity.DatabaseUser)
-		if user.Username == username {
+		if user.Email == email {
 			return user, nil
 		}
 	}

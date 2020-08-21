@@ -45,7 +45,7 @@ func (s *Service) SetupServer(createUserRequest entity.CreateUserRequest) (entit
 	}
 
 	return s.Login(entity.UserLoginRequest{
-		Username: createUserRequest.Username,
+		Email:    createUserRequest.Email,
 		Password: createUserRequest.Password,
 	})
 }

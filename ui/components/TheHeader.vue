@@ -127,7 +127,7 @@ export default Vue.extend({
 	margin: calc((var(--header-height) - var(--image-size)) / 2) var(--spacing);
 }
 
-@media (min-width: 813px) {
+@media (min-width: 768px) {
 	#header {
 		height: var(--header-height);
 	}
@@ -153,6 +153,7 @@ export default Vue.extend({
 	#menu a {
 		line-height: var(--header-height);
 		padding: 0 var(--spacing);
+		float: left;
 	}
 
 	#activity {
@@ -165,7 +166,7 @@ export default Vue.extend({
 	}
 }
 
-@media (max-width: 812px) {
+@media (max-width: 767px) {
 	#brand {
 		text-align: center;
 	}
