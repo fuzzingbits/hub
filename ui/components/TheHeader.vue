@@ -46,6 +46,7 @@ export default Vue.extend({
 		logout() {
 			HubApi.userLogout();
 			this.$store.commit("user/setState", null);
+			this.$router.push("/");
 		},
 	},
 	computed: {
