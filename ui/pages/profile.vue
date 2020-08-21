@@ -40,7 +40,7 @@ export default Vue.extend({
 			document.documentElement.style.setProperty("--primary-dark", formData.get("themeColorDark") as string);
 		},
 		submit(): void {
-			this.formPoster.reset();
+			this.formPoster.reset(true);
 
 			const form = document.querySelector("#profile-form") as HTMLFormElement;
 			const formData = new FormData(form);

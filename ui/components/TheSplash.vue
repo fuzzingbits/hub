@@ -62,7 +62,7 @@ export default Vue.extend({
 				});
 		},
 		checkServerStatus() {
-			this.serverPoster.reset();
+			this.serverPoster.reset(true);
 			HubApi.serverStatus()
 				.then(response => {
 					this.$store.commit("server/setStatus", response.data);

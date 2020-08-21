@@ -24,7 +24,7 @@ export default Vue.extend({
 	},
 	methods: {
 		submit(): void {
-			this.formPoster.reset();
+			this.formPoster.reset(true);
 
 			const form = document.querySelector("#setup-form") as HTMLFormElement;
 			const formData = new FormData(form);
