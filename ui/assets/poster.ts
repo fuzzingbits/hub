@@ -10,6 +10,10 @@ class Poster {
 	public loading = false;
 	public message = "";
 
+	public constructor(startLoading = false) {
+		this.loading = startLoading;
+	}
+
 	public setResponse(response: types.Response) {
 		// Complete the request
 		this.loading = false;
