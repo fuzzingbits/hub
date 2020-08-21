@@ -1,6 +1,8 @@
+	// ---- Auto Generated Functions BEGIN ---- //
 {{ range .Endpoints }}
 	public async {{ .FunctionName }}({{ if .PayloadType }}payload: types.{{ .PayloadType }}{{ end }}): Promise<GenericResponse<{{ if .ReturnType }}types.{{ .ReturnType }} | {{ end }}null>> {
 		const response = await client.{{ .Method }}("{{ .URL }}"{{ if .PayloadType }}, payload{{ end }});
 		return response.data;
 	}
 {{ end }}
+	// ---- Auto Generated Functions END ---- //
