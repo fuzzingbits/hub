@@ -22,6 +22,8 @@ client.interceptors.request.use(function(config) {
 });
 
 class HubAPI {
+	// ---- Auto Generated Functions BEGIN ---- //
+
 	public async serverStatus(): Promise<GenericResponse<types.ServerStatus | null>> {
 		const response = await client.get("/api/server/status");
 		return response.data;
@@ -66,6 +68,8 @@ class HubAPI {
 		const response = await client.post("/api/user/update", payload);
 		return response.data;
 	}
+
+	// ---- Auto Generated Functions END ---- //
 }
 
 export default new HubAPI();

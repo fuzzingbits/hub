@@ -1,33 +1,6 @@
-import axios, { AxiosResponse } from "axios";
-import * as types from "./types";
-
-interface GenericResponse<T> extends types.Response {
-	data: T;
-}
-
-const client = axios.create();
-client.interceptors.response.use(
-	(response: AxiosResponse<any>): AxiosResponse<any> => {
-		const contentType = response.headers["content-type"] as string;
-		if (!contentType.includes("application/json")) {
-			throw "not a json response";
-		}
-
-		return response;
-	}
-);
-
-client.interceptors.request.use(function(config) {
-	return config;
-});
-
-class HubAPI {
 {{ range .Endpoints }}
 	public async {{ .FunctionName }}({{ if .PayloadType }}payload: types.{{ .PayloadType }}{{ end }}): Promise<GenericResponse<{{ if .ReturnType }}types.{{ .ReturnType }} | {{ end }}null>> {
 		const response = await client.{{ .Method }}("{{ .URL }}"{{ if .PayloadType }}, payload{{ end }});
 		return response.data;
 	}
 {{ end }}
-}
-
-export default new HubAPI();

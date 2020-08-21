@@ -1,8 +1,10 @@
 package main
 
 import (
-	"os"
+	"bytes"
+	"io/ioutil"
 	"reflect"
+	"regexp"
 	"strings"
 	"text/template"
 
@@ -26,17 +28,29 @@ type Endpoint struct {
 }
 
 func buildClientFile() error {
+	a := &api.App{}
+
+	fileName := "./ui/assets/api.ts"
+	apiFilePlaceholderFinder := regexp.MustCompile(`\/\/ ---- Auto Generated Functions BEGIN ---- \/\/\n([\S\s]*)\n\t\/\/ ---- Auto Generated Functions END ---- \/\/`)
+
 	clientTemplate := template.Must(template.ParseFiles("ops/builder/client.gotemplate"))
-	clientFile, err := os.OpenFile("./ui/assets/api.ts", os.O_CREATE|os.O_WRONLY, os.ModePerm)
+	fileBytes, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		return err
-
 	}
-	defer clientFile.Close()
-	a := &api.App{}
-	if err := clientTemplate.Execute(clientFile, ClientFileInput{
+
+	tsFunctions := bytes.NewBuffer([]byte{})
+	if err := clientTemplate.Execute(tsFunctions, ClientFileInput{
 		Endpoints: convertTypes(a.GetRoutes()),
 	}); err != nil {
+		return err
+	}
+
+	results := apiFilePlaceholderFinder.FindSubmatch(fileBytes)
+	newFileBytes := bytes.Replace(fileBytes, results[1], tsFunctions.Bytes(), -1)
+	// newFileBytes := apiFilePlaceholderFinder.ReplaceAll(fileBytes, tsFunctions.Bytes())
+
+	if err := ioutil.WriteFile(fileName, newFileBytes, 0644); err != nil {
 		return err
 	}
 
