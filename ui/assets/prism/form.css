@@ -23,6 +23,7 @@ form button {
 	background: var(--primary);
 	color: var(--background);
 	font-weight: bold;
+	cursor: pointer;
 	padding: var(--spacing-half) var(--spacing);
 }
 

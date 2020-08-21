@@ -79,6 +79,8 @@ a.nuxt-link-exact-active {
 }
 
 .card {
+	background: var(--background-accent);
+	padding: var(--spacing-double);
 	max-width: 512px;
 	margin: auto;
 }

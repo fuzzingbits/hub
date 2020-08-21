@@ -53,10 +53,6 @@ export default Vue.extend({
 		},
 	},
 	methods: {
-		logout() {
-			HubApi.userLogout();
-			this.$store.commit("user/setState", null);
-		},
 		checkForLogin() {
 			this.userPoster.reset(true);
 			HubApi.userMe()

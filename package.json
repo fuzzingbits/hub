@@ -8,7 +8,9 @@
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-free": "^5.14.0",
+		"@types/md5": "^2.2.0",
 		"axios": "^0.20.0",
+		"md5": "^2.3.0",
 		"nuxt": "^2.14.3"
 	},
 	"devDependencies": {
