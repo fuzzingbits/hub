@@ -13,6 +13,7 @@ import (
 	"github.com/fuzzingbits/hub/pkg/entity"
 )
 
+// DefaultThemeColor for new users
 var DefaultThemeColor = "#00bfff"
 
 // ErrInvalidLogin is when the login credentials are incorrect
