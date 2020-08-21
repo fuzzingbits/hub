@@ -41,10 +41,6 @@ export default Vue.extend({
 			return false;
 		},
 		showSplash: function(): boolean {
-			if (this.userPoster.loading || this.serverPoster.loading) {
-				return true;
-			}
-
 			if (!this.userPoster.state || !this.serverPoster.state) {
 				return true;
 			}
@@ -105,5 +101,6 @@ export default Vue.extend({
 	position: fixed;
 	right: 0;
 	top: 0;
+	z-index: 100;
 }
 </style>
