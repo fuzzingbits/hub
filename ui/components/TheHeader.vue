@@ -88,6 +88,11 @@ export default Vue.extend({
 			return serverStatus.setupRequired;
 		},
 	},
+	watch: {
+		$route() {
+			this.hideMobileMenu = true;
+		},
+	},
 });
 </script>
 
