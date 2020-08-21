@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import time from "./time";
 import * as types from "./types";
 
 interface GenericResponse<T> extends types.Response {
@@ -6,6 +7,7 @@ interface GenericResponse<T> extends types.Response {
 }
 
 const client = axios.create();
+
 client.interceptors.response.use(
 	(response: AxiosResponse<any>): AxiosResponse<any> => {
 		const contentType = response.headers["content-type"] as string;
@@ -18,6 +20,7 @@ client.interceptors.response.use(
 );
 
 client.interceptors.request.use(function(config) {
+	config.timeout = time.SECOND * 6;
 	return config;
 });
 

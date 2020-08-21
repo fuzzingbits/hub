@@ -53,8 +53,8 @@ func getServer(app App) *http.Server {
 	return &http.Server{
 		Addr:         app.Config.Listen,
 		Handler:      mux,
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 5 * time.Second,
+		ReadTimeout:  5 * time.Second,
 	}
 }
 
