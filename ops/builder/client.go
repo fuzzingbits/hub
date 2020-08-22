@@ -31,7 +31,7 @@ func buildClientFile() error {
 	a := &api.App{}
 
 	fileName := "./ui/assets/api.ts"
-	apiFilePlaceholderFinder := regexp.MustCompile(`\/\/ ---- Auto Generated Functions BEGIN ---- \/\/\n([\S\s]*)\t\/\/ ---- Auto Generated Functions END ---- \/\/`)
+	apiFilePlaceholderFinder := regexp.MustCompile(`\t\/\/ ---- Auto Generated Functions BEGIN ---- \/\/\n([\S\s]*)\t\/\/ ---- Auto Generated Functions END ---- \/\/\n`)
 
 	clientTemplate := template.Must(template.ParseFiles("ops/builder/client.gotemplate"))
 	fileBytes, err := ioutil.ReadFile(fileName)
