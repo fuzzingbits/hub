@@ -45,13 +45,7 @@ a.nuxt-link-exact-active {
 
 #body {
 	min-height: 200px;
-	margin: var(--spacing) 0;
-}
-
-@media (min-width: 813px) {
-	#body {
-		margin: var(--spacing);
-	}
+	margin: var(--spacing);
 }
 
 .alert {
