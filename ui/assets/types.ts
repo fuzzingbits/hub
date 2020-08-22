@@ -57,3 +57,27 @@ export interface UserLoginRequest {
 	email: string;
 	password: string;
 }
+
+export interface Planner {
+	userUUID: string;
+	date: string;
+	updated: string;
+	created: string;
+	priorities: string[]|null;
+	accomplishments: string[]|null;
+	tasksToday: PlannerTask[]|null;
+	tasksTomorrow: PlannerTask[]|null;
+	schedule: PlannerEvent[]|null;
+}
+
+export interface PlannerTask {
+	value: string;
+	completed: boolean;
+}
+
+export interface PlannerEvent {
+	value: string;
+	end: string;
+	start: string;
+	color: string;
+}
