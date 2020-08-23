@@ -1,33 +1,54 @@
-export interface Response {
-	state: boolean;
-	message: string;
-	data: any;
-	extraData: any;
+export interface Habit {
+	name: string;
+	sunday: boolean;
+	monday: boolean;
+	tuesday: boolean;
+	wednesday: boolean;
+	thursday: boolean;
+	friday: boolean;
+	saturday: boolean;
 }
 
-export interface CreateUserRequest {
-	firstName: string;
-	lastName: string;
-	email: string;
-	password: string;
+export interface HabitStore {
+	userUUID: string;
+	habits: Habit[]|null;
 }
 
-export interface UpdateUserRequest {
-	uuid: string;
-	firstName: string;
-	lastName: string;
-	email: string;
-	themeColorLight: string;
-	themeColorDark: string;
+export interface Planner {
+	userUUID: string;
+	date: string;
+	priorities: string[]|null;
+	accomplishments: string[]|null;
+	tasksToday: PlannerTask[]|null;
+	tasksTomorrow: PlannerTask[]|null;
+	schedule: PlannerEvent[]|null;
+}
+
+export interface PlannerEvent {
+	name: string;
+	start: string;
+	end: string;
+	color: string;
+}
+
+export interface PlannerTask {
+	name: string;
+	completed: boolean;
 }
 
 export interface ServerStatus {
 	setupRequired: boolean;
 }
 
-export interface UserContext {
-	user: User;
-	userSettings: UserSettings;
+export interface Task {
+	uuid: string;
+	userUUID: string;
+	category: string;
+	name: string;
+	note: string;
+	dueDate: string;
+	completed: boolean;
+	allowedToBeCompletedEarly: boolean;
 }
 
 export interface User {
@@ -37,19 +58,19 @@ export interface User {
 	lastName: string;
 }
 
-export interface UserSettings {
-	themeColorLight: string;
-	themeColorDark: string;
+export interface UserContext {
+	user: User;
+	userSettings: UserSettings;
 }
 
-export interface CreateUserRequest {
+export interface UserCreateRequest {
 	firstName: string;
 	lastName: string;
 	email: string;
 	password: string;
 }
 
-export interface DeleteUserRequest {
+export interface UserDeleteRequest {
 	uuid: string;
 }
 
@@ -58,26 +79,23 @@ export interface UserLoginRequest {
 	password: string;
 }
 
-export interface Planner {
-	userUUID: string;
-	date: string;
-	updated: string;
-	created: string;
-	priorities: string[]|null;
-	accomplishments: string[]|null;
-	tasksToday: PlannerTask[]|null;
-	tasksTomorrow: PlannerTask[]|null;
-	schedule: PlannerEvent[]|null;
+export interface UserSettings {
+	themeColorLight: string;
+	themeColorDark: string;
 }
 
-export interface PlannerTask {
-	value: string;
-	completed: boolean;
+export interface UserUpdateRequest {
+	uuid: string;
+	firstName: string;
+	lastName: string;
+	email: string;
+	themeColorLight: string;
+	themeColorDark: string;
 }
 
-export interface PlannerEvent {
-	value: string;
-	end: string;
-	start: string;
-	color: string;
+export interface Response {
+	state: boolean;
+	message: string;
+	data: any;
+	extraData: any;
 }

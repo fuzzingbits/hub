@@ -6,8 +6,6 @@ import "time"
 type Planner struct {
 	UserUUID        string         `json:"userUUID"`
 	Date            string         `json:"date"`
-	Updated         time.Time      `json:"updated"`
-	Created         time.Time      `json:"created"`
 	Priorities      []string       `json:"priorities"`
 	Accomplishments []string       `json:"accomplishments"`
 	TasksToday      []PlannerTask  `json:"tasksToday"`
@@ -17,14 +15,14 @@ type Planner struct {
 
 // PlannerEvent that exists in a schedule
 type PlannerEvent struct {
-	Value string    `json:"value"`
-	End   time.Time `json:"end"`
+	Name  string    `json:"name"`
 	Start time.Time `json:"start"`
+	End   time.Time `json:"end"`
 	Color string    `json:"color"`
 }
 
 // PlannerTask as part of a plan
 type PlannerTask struct {
-	Value     string `json:"value"`
+	Name      string `json:"name"`
 	Completed bool   `json:"completed"`
 }

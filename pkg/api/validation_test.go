@@ -29,18 +29,18 @@ var routeTestingFunctions = map[string]func(c *container.Mockable, s *hub.Servic
 	},
 	RouteServerSetup: func(c *container.Mockable, s *hub.Service, r *http.Request) RouteTestTarget {
 		return RouteTestTarget{
-			Payload: testCreateUserRequest,
+			Payload: testUserCreateRequest,
 		}
 	},
 	RouteUserLogin: func(c *container.Mockable, s *hub.Service, r *http.Request) RouteTestTarget {
-		s.SetupServer(testCreateUserRequest)
+		s.SetupServer(testUserCreateRequest)
 
 		return RouteTestTarget{
 			Payload: testUserLoginRequest,
 		}
 	},
 	RouteUserMe: func(c *container.Mockable, s *hub.Service, r *http.Request) RouteTestTarget {
-		userSession, _ := s.SetupServer(testCreateUserRequest)
+		userSession, _ := s.SetupServer(testUserCreateRequest)
 
 		r.AddCookie(&http.Cookie{
 			Name:  session.CookieName,
@@ -50,7 +50,7 @@ var routeTestingFunctions = map[string]func(c *container.Mockable, s *hub.Servic
 		return RouteTestTarget{}
 	},
 	RouteUserNew: func(c *container.Mockable, s *hub.Service, r *http.Request) RouteTestTarget {
-		userSession, _ := s.SetupServer(testCreateUserRequest)
+		userSession, _ := s.SetupServer(testUserCreateRequest)
 
 		r.AddCookie(&http.Cookie{
 			Name:  session.CookieName,
@@ -58,31 +58,31 @@ var routeTestingFunctions = map[string]func(c *container.Mockable, s *hub.Servic
 		})
 
 		return RouteTestTarget{
-			Payload: entity.CreateUserRequest{
+			Payload: entity.UserCreateRequest{
 				Email: "john@example.com",
 			},
 		}
 	},
 	RouteUserDelete: func(c *container.Mockable, s *hub.Service, r *http.Request) RouteTestTarget {
-		userSession, _ := s.SetupServer(testCreateUserRequest)
+		userSession, _ := s.SetupServer(testUserCreateRequest)
 
 		r.AddCookie(&http.Cookie{
 			Name:  session.CookieName,
 			Value: userSession.Token,
 		})
 
-		userContext, _ := s.CreateUser(entity.CreateUserRequest{
+		userContext, _ := s.CreateUser(entity.UserCreateRequest{
 			Email: "foobar@example.com",
 		})
 
 		return RouteTestTarget{
-			Payload: entity.DeleteUserRequest{
+			Payload: entity.UserDeleteRequest{
 				UUID: userContext.User.UUID,
 			},
 		}
 	},
 	RouteUserUpdate: func(c *container.Mockable, s *hub.Service, r *http.Request) RouteTestTarget {
-		userSession, _ := s.SetupServer(testCreateUserRequest)
+		userSession, _ := s.SetupServer(testUserCreateRequest)
 
 		r.AddCookie(&http.Cookie{
 			Name:  session.CookieName,
@@ -90,13 +90,13 @@ var routeTestingFunctions = map[string]func(c *container.Mockable, s *hub.Servic
 		})
 
 		return RouteTestTarget{
-			Payload: entity.UpdateUserRequest{
+			Payload: entity.UserUpdateRequest{
 				UUID: userSession.Context.User.UUID,
 			},
 		}
 	},
 	RouteUserList: func(c *container.Mockable, s *hub.Service, r *http.Request) RouteTestTarget {
-		userSession, _ := s.SetupServer(testCreateUserRequest)
+		userSession, _ := s.SetupServer(testUserCreateRequest)
 
 		r.AddCookie(&http.Cookie{
 			Name:  session.CookieName,

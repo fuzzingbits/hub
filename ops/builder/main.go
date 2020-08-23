@@ -12,19 +12,21 @@ import (
 
 // TypeScriptInterfaces written to `ui/assets/types.ts`
 var TypeScriptInterfaces = []interface{}{
-	rooter.Response{},
-	entity.CreateUserRequest{},
-	entity.UpdateUserRequest{},
-	entity.ServerStatus{},
-	entity.UserContext{},
-	entity.User{},
-	entity.UserSettings{},
-	entity.CreateUserRequest{},
-	entity.DeleteUserRequest{},
-	entity.UserLoginRequest{},
+	entity.Habit{},
+	entity.HabitStore{},
 	entity.Planner{},
-	entity.PlannerTask{},
 	entity.PlannerEvent{},
+	entity.PlannerTask{},
+	entity.ServerStatus{},
+	entity.Task{},
+	entity.User{},
+	entity.UserContext{},
+	entity.UserCreateRequest{},
+	entity.UserDeleteRequest{},
+	entity.UserLoginRequest{},
+	entity.UserSettings{},
+	entity.UserUpdateRequest{},
+	rooter.Response{},
 }
 
 func main() {

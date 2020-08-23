@@ -52,13 +52,13 @@ func (a *App) GetRoutes() []rooter.Route {
 		{
 			Path:     RouteServerSetup,
 			Handler:  rooter.ResponseFunc(a.handlerServerSetup),
-			Payload:  entity.CreateUserRequest{},
+			Payload:  entity.UserCreateRequest{},
 			Response: entity.UserContext{},
 		},
 		{
 			Path:     RouteUserNew,
 			Handler:  rooter.ResponseFunc(a.handlerUserNew),
-			Payload:  entity.CreateUserRequest{},
+			Payload:  entity.UserCreateRequest{},
 			Response: entity.UserContext{},
 		},
 		{
@@ -89,7 +89,7 @@ func (a *App) GetRoutes() []rooter.Route {
 		{
 			Path:     RouteUserUpdate,
 			Handler:  rooter.ResponseFunc(a.handlerUserUpdate),
-			Payload:  entity.UpdateUserRequest{},
+			Payload:  entity.UserUpdateRequest{},
 			Response: entity.UserContext{},
 		},
 		{
@@ -121,7 +121,7 @@ func (a *App) handlerUserUpdate(w http.ResponseWriter, req *http.Request) rooter
 	}
 
 	// Get the payload
-	var payload entity.UpdateUserRequest
+	var payload entity.UserUpdateRequest
 	decoder := json.NewDecoder(req.Body)
 	if err := decoder.Decode(&payload); err != nil {
 		return rooter.ResponseBadRequest
@@ -154,7 +154,7 @@ func (a *App) handlerUserDelete(w http.ResponseWriter, req *http.Request) rooter
 	}
 
 	// Get the payload
-	var payload entity.DeleteUserRequest
+	var payload entity.UserDeleteRequest
 	decoder := json.NewDecoder(req.Body)
 	if err := decoder.Decode(&payload); err != nil {
 		return rooter.ResponseBadRequest
@@ -197,7 +197,7 @@ func (a *App) handlerUserNew(w http.ResponseWriter, req *http.Request) rooter.Re
 	}
 
 	// Get the payload
-	var payload entity.CreateUserRequest
+	var payload entity.UserCreateRequest
 	decoder := json.NewDecoder(req.Body)
 	if err := decoder.Decode(&payload); err != nil {
 		return rooter.ResponseBadRequest
@@ -229,7 +229,7 @@ func (a *App) handlerServerStatus(w http.ResponseWriter, req *http.Request) root
 }
 
 func (a *App) handlerServerSetup(w http.ResponseWriter, req *http.Request) rooter.Response {
-	var payload entity.CreateUserRequest
+	var payload entity.UserCreateRequest
 	decoder := json.NewDecoder(req.Body)
 	if err := decoder.Decode(&payload); err != nil {
 		return rooter.ResponseBadRequest

@@ -42,16 +42,16 @@ type UserSettings struct {
 	ThemeColorDark  string `json:"themeColorDark"`
 }
 
-// CreateUserRequest is the request for creating users
-type CreateUserRequest struct {
+// UserCreateRequest is the request for creating users
+type UserCreateRequest struct {
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 	Email     string `json:"email"`
 	Password  string `json:"password"`
 }
 
-// UpdateUserRequest is the request for updating users
-type UpdateUserRequest struct {
+// UserUpdateRequest is the request for updating users
+type UserUpdateRequest struct {
 	UUID            string `json:"uuid"`
 	FirstName       string `json:"firstName"`
 	LastName        string `json:"lastName"`
@@ -60,8 +60,8 @@ type UpdateUserRequest struct {
 	ThemeColorDark  string `json:"themeColorDark"`
 }
 
-// DeleteUserRequest is the request for deleting a user
-type DeleteUserRequest struct {
+// UserDeleteRequest is the request for deleting a user
+type UserDeleteRequest struct {
 	UUID string `json:"uuid"`
 }
 

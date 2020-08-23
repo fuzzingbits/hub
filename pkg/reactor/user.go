@@ -16,8 +16,8 @@ func DatabaseUserToEntity(dbUser entity.DatabaseUser) entity.User {
 	}
 }
 
-// CreateUserRequestToDBUser does with it says
-func CreateUserRequestToDBUser(request entity.CreateUserRequest) entity.DatabaseUser {
+// UserCreateRequestToDBUser does with it says
+func UserCreateRequestToDBUser(request entity.UserCreateRequest) entity.DatabaseUser {
 	newUUID := uuid.New().String()
 	password := codex.Hash(request.Password, newUUID)
 	return entity.DatabaseUser{
@@ -39,7 +39,7 @@ func EntityToDatabaseUser(entityUser entity.User) entity.DatabaseUser {
 }
 
 // ApplyUserUpdateRequest applies a request on to a user context
-func ApplyUserUpdateRequest(request entity.UpdateUserRequest, dbUser *entity.DatabaseUser, userSettings *entity.UserSettings) {
+func ApplyUserUpdateRequest(request entity.UserUpdateRequest, dbUser *entity.DatabaseUser, userSettings *entity.UserSettings) {
 	dbUser.FirstName = request.FirstName
 	dbUser.LastName = request.LastName
 	dbUser.Email = request.Email

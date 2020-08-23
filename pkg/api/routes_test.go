@@ -17,7 +17,7 @@ import (
 )
 
 // Insert test data
-var testCreateUserRequest = entity.CreateUserRequest{
+var testUserCreateRequest = entity.UserCreateRequest{
 	FirstName: "Testy",
 	LastName:  "McTestPants",
 	Email:     "testy@example.com",
@@ -25,8 +25,8 @@ var testCreateUserRequest = entity.CreateUserRequest{
 }
 
 var testUserLoginRequest = entity.UserLoginRequest{
-	Email:    testCreateUserRequest.Email,
-	Password: testCreateUserRequest.Password,
+	Email:    testUserCreateRequest.Email,
+	Password: testUserCreateRequest.Password,
 }
 
 func TestServerSetup(t *testing.T) {
@@ -35,14 +35,14 @@ func TestServerSetup(t *testing.T) {
 	mux := http.NewServeMux()
 	RegisterRoutes(mux, s)
 
-	testCreateUserRequestBytes, _ := json.Marshal(testCreateUserRequest)
+	testUserCreateRequestBytes, _ := json.Marshal(testUserCreateRequest)
 
 	rootertest.Test(t, mux, []rootertest.TestCase{
 		{
 			Name:                   "success",
 			Method:                 http.MethodPost,
 			URL:                    RouteServerSetup,
-			Body:                   bytes.NewReader(testCreateUserRequestBytes),
+			Body:                   bytes.NewReader(testUserCreateRequestBytes),
 			TargetStatusCode:       http.StatusOK,
 			SkipResponseBytesCheck: true,
 		},
@@ -50,7 +50,7 @@ func TestServerSetup(t *testing.T) {
 			Name:                "already_setup",
 			Method:              http.MethodPost,
 			URL:                 RouteServerSetup,
-			Body:                bytes.NewReader(testCreateUserRequestBytes),
+			Body:                bytes.NewReader(testUserCreateRequestBytes),
 			TargetStatusCode:    http.StatusOK,
 			TargetResponseBytes: ResponseServerAlreadySetup.Bytes(),
 		},
@@ -66,7 +66,7 @@ func TestServerSetup(t *testing.T) {
 			Name:   "server_error",
 			Method: http.MethodPost,
 			URL:    RouteServerSetup,
-			Body:   bytes.NewReader(testCreateUserRequestBytes),
+			Body:   bytes.NewReader(testUserCreateRequestBytes),
 			RequestMod: func(r *http.Request) {
 				c.UserProviderError = errors.New("foobar")
 			},
@@ -126,7 +126,7 @@ func TestUserMe(t *testing.T) {
 	mux := http.NewServeMux()
 	RegisterRoutes(mux, s)
 
-	userSession, _ := s.SetupServer(testCreateUserRequest)
+	userSession, _ := s.SetupServer(testUserCreateRequest)
 
 	rootertest.Test(t, mux, []rootertest.TestCase{
 		{
@@ -195,8 +195,8 @@ func TestUserNew(t *testing.T) {
 	mux := http.NewServeMux()
 	RegisterRoutes(mux, s)
 
-	userSession, _ := s.SetupServer(testCreateUserRequest)
-	testCreateUserRequestBytes, _ := json.Marshal(entity.CreateUserRequest{
+	userSession, _ := s.SetupServer(testUserCreateRequest)
+	testUserCreateRequestBytes, _ := json.Marshal(entity.UserCreateRequest{
 		Email: "foobar@example.com",
 	})
 
@@ -205,7 +205,7 @@ func TestUserNew(t *testing.T) {
 			Name:   "create_user_error",
 			Method: http.MethodPost,
 			URL:    RouteUserNew,
-			Body:   bytes.NewReader(testCreateUserRequestBytes),
+			Body:   bytes.NewReader(testUserCreateRequestBytes),
 			RequestMod: func(r *http.Request) {
 				r.AddCookie(&http.Cookie{
 					Name:  session.CookieName,
@@ -246,7 +246,7 @@ func TestUserLogin(t *testing.T) {
 	mux := http.NewServeMux()
 	RegisterRoutes(mux, s)
 
-	userSession, _ := s.SetupServer(testCreateUserRequest)
+	userSession, _ := s.SetupServer(testUserCreateRequest)
 
 	loginRequestBytes, _ := json.Marshal(testUserLoginRequest)
 	loginBadRequestBytes, _ := json.Marshal(entity.UserLoginRequest{
@@ -302,11 +302,11 @@ func TestUserDelete(t *testing.T) {
 	mux := http.NewServeMux()
 	RegisterRoutes(mux, s)
 
-	userSession, _ := s.SetupServer(testCreateUserRequest)
-	userContext, _ := s.CreateUser(entity.CreateUserRequest{
+	userSession, _ := s.SetupServer(testUserCreateRequest)
+	userContext, _ := s.CreateUser(entity.UserCreateRequest{
 		Email: "foobar@example.com",
 	})
-	payloadBytes, _ := json.Marshal(entity.DeleteUserRequest{
+	payloadBytes, _ := json.Marshal(entity.UserDeleteRequest{
 		UUID: userContext.User.UUID,
 	})
 
@@ -370,8 +370,8 @@ func TestUserUpdate(t *testing.T) {
 	mux := http.NewServeMux()
 	RegisterRoutes(mux, s)
 
-	userSession, _ := s.SetupServer(testCreateUserRequest)
-	payloadBytes, _ := json.Marshal(entity.UpdateUserRequest{
+	userSession, _ := s.SetupServer(testUserCreateRequest)
+	payloadBytes, _ := json.Marshal(entity.UserUpdateRequest{
 		UUID: userSession.Context.User.UUID,
 	})
 
@@ -451,7 +451,7 @@ func TestUserList(t *testing.T) {
 	mux := http.NewServeMux()
 	RegisterRoutes(mux, s)
 
-	userSession, _ := s.SetupServer(testCreateUserRequest)
+	userSession, _ := s.SetupServer(testUserCreateRequest)
 
 	rootertest.Test(t, mux, []rootertest.TestCase{
 		{

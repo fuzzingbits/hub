@@ -38,11 +38,11 @@ func TestSetupServer(t *testing.T) {
 		c := container.NewMockable()
 		s := NewService(&hubconfig.Config{}, c)
 
-		if _, err := s.SetupServer(standardTestCreateUserRequest); err != nil {
+		if _, err := s.SetupServer(standardTestUserCreateRequest); err != nil {
 			t.Error(err)
 		}
 
-		if _, err := s.SetupServer(standardTestCreateUserRequest); err == nil {
+		if _, err := s.SetupServer(standardTestUserCreateRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}
@@ -52,14 +52,14 @@ func TestSetupServer(t *testing.T) {
 
 	{ // Error
 		c.UserProviderValue.Provider.CreateError = errors.New("foobar")
-		if _, err := s.SetupServer(standardTestCreateUserRequest); err == nil {
+		if _, err := s.SetupServer(standardTestUserCreateRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}
 
 	{ // Error
 		c.UserProviderError = errors.New("foobar")
-		if _, err := s.SetupServer(standardTestCreateUserRequest); err == nil {
+		if _, err := s.SetupServer(standardTestUserCreateRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}

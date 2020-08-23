@@ -49,7 +49,7 @@ func (s *Service) ListUsers() ([]entity.User, error) {
 }
 
 // UpdateUser updates the full user context
-func (s *Service) UpdateUser(request entity.UpdateUserRequest) (entity.UserContext, error) {
+func (s *Service) UpdateUser(request entity.UserUpdateRequest) (entity.UserContext, error) {
 	userProvider, err := s.container.UserProvider()
 	if err != nil {
 		return entity.UserContext{}, err
@@ -88,7 +88,7 @@ func (s *Service) UpdateUser(request entity.UpdateUserRequest) (entity.UserConte
 }
 
 // CreateUser creates a User
-func (s *Service) CreateUser(request entity.CreateUserRequest) (entity.UserContext, error) {
+func (s *Service) CreateUser(request entity.UserCreateRequest) (entity.UserContext, error) {
 	userProvider, err := s.container.UserProvider()
 	if err != nil {
 		return entity.UserContext{}, err
@@ -99,7 +99,7 @@ func (s *Service) CreateUser(request entity.CreateUserRequest) (entity.UserConte
 		return entity.UserContext{}, err
 	}
 
-	dbUser := reactor.CreateUserRequestToDBUser(request)
+	dbUser := reactor.UserCreateRequestToDBUser(request)
 
 	if err := userProvider.Create(&dbUser); err != nil {
 		return entity.UserContext{}, err

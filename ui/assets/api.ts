@@ -32,12 +32,12 @@ class HubAPI {
 		return response.data;
 	}
 
-	public async serverSetup(payload: types.CreateUserRequest): Promise<GenericResponse<types.UserContext | null>> {
+	public async serverSetup(payload: types.UserCreateRequest): Promise<GenericResponse<types.UserContext | null>> {
 		const response = await client.post("/api/server/setup", payload);
 		return response.data;
 	}
 
-	public async userNew(payload: types.CreateUserRequest): Promise<GenericResponse<types.UserContext | null>> {
+	public async userNew(payload: types.UserCreateRequest): Promise<GenericResponse<types.UserContext | null>> {
 		const response = await client.post("/api/user/new", payload);
 		return response.data;
 	}
@@ -67,7 +67,7 @@ class HubAPI {
 		return response.data;
 	}
 
-	public async userUpdate(payload: types.UpdateUserRequest): Promise<GenericResponse<types.UserContext | null>> {
+	public async userUpdate(payload: types.UserUpdateRequest): Promise<GenericResponse<types.UserContext | null>> {
 		const response = await client.post("/api/user/update", payload);
 		return response.data;
 	}

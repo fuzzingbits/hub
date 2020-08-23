@@ -29,7 +29,7 @@ func (s *Service) GetServerStatus() (entity.ServerStatus, error) {
 }
 
 // SetupServer sets up the server
-func (s *Service) SetupServer(createUserRequest entity.CreateUserRequest) (entity.Session, error) {
+func (s *Service) SetupServer(createUserRequest entity.UserCreateRequest) (entity.Session, error) {
 	serverStatus, err := s.GetServerStatus()
 	if err != nil {
 		return entity.Session{}, err

@@ -9,7 +9,7 @@ import (
 	"github.com/fuzzingbits/hub/pkg/hubconfig"
 )
 
-var standardTestCreateUserRequest = entity.CreateUserRequest{
+var standardTestUserCreateRequest = entity.UserCreateRequest{
 	FirstName: "Testy",
 	LastName:  "McTestPants",
 	Email:     "testy@example.com",
@@ -17,8 +17,8 @@ var standardTestCreateUserRequest = entity.CreateUserRequest{
 }
 
 var standardTestLoginRequest = entity.UserLoginRequest{
-	Email:    standardTestCreateUserRequest.Email,
-	Password: standardTestCreateUserRequest.Password,
+	Email:    standardTestUserCreateRequest.Email,
+	Password: standardTestUserCreateRequest.Password,
 }
 
 func TestCreateUser(t *testing.T) {
@@ -26,35 +26,35 @@ func TestCreateUser(t *testing.T) {
 	s := NewService(&hubconfig.Config{}, c)
 
 	{ // Success
-		if _, err := s.CreateUser(standardTestCreateUserRequest); err != nil {
+		if _, err := s.CreateUser(standardTestUserCreateRequest); err != nil {
 			t.Error(err)
 		}
 	}
 
 	{ // Error
 		c.UserSettingsProviderValue.Provider.UpdateError = errors.New("foobar")
-		if _, err := s.CreateUser(standardTestCreateUserRequest); err == nil {
+		if _, err := s.CreateUser(standardTestUserCreateRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}
 
 	{ // Error
 		c.UserProviderValue.Provider.CreateError = errors.New("foobar")
-		if _, err := s.CreateUser(standardTestCreateUserRequest); err == nil {
+		if _, err := s.CreateUser(standardTestUserCreateRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}
 
 	{ // Error
 		c.UserSettingsProviderError = errors.New("foobar")
-		if _, err := s.CreateUser(standardTestCreateUserRequest); err == nil {
+		if _, err := s.CreateUser(standardTestUserCreateRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}
 
 	{ // Error
 		c.UserProviderError = errors.New("foobar")
-		if _, err := s.CreateUser(standardTestCreateUserRequest); err == nil {
+		if _, err := s.CreateUser(standardTestUserCreateRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}
@@ -64,7 +64,7 @@ func TestGetCurrentSession(t *testing.T) {
 	c := container.NewMockable()
 	s := NewService(&hubconfig.Config{}, c)
 
-	userSession, err := s.SetupServer(standardTestCreateUserRequest)
+	userSession, err := s.SetupServer(standardTestUserCreateRequest)
 	if err != nil {
 		t.Fatalf("Failed to create user session: %s", err.Error())
 	}
@@ -115,59 +115,59 @@ func TestUpdateUser(t *testing.T) {
 	c := container.NewMockable()
 	s := NewService(&hubconfig.Config{}, c)
 
-	userSession, err := s.SetupServer(standardTestCreateUserRequest)
+	userSession, err := s.SetupServer(standardTestUserCreateRequest)
 	if err != nil {
 		t.Fatalf("Failed to create user session: %s", err.Error())
 	}
 
-	testUpdateUserRequest := entity.UpdateUserRequest{
+	testUserUpdateRequest := entity.UserUpdateRequest{
 		UUID: userSession.Context.User.UUID,
 	}
 
 	{ // Success
-		if _, err := s.UpdateUser(testUpdateUserRequest); err != nil {
+		if _, err := s.UpdateUser(testUserUpdateRequest); err != nil {
 			t.Error(err)
 		}
 	}
 
 	{ // Error
 		c.UserSettingsProviderValue.Provider.UpdateError = errors.New("foobar")
-		if _, err := s.UpdateUser(testUpdateUserRequest); err == nil {
+		if _, err := s.UpdateUser(testUserUpdateRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}
 
 	{ // Error
 		c.UserProviderValue.Provider.UpdateError = errors.New("foobar")
-		if _, err := s.UpdateUser(testUpdateUserRequest); err == nil {
+		if _, err := s.UpdateUser(testUserUpdateRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}
 
 	{ // Error
 		c.UserSettingsProviderValue.Provider.GetByIDError = errors.New("foobar")
-		if _, err := s.UpdateUser(testUpdateUserRequest); err == nil {
+		if _, err := s.UpdateUser(testUserUpdateRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}
 
 	{ // Error
 		c.UserProviderValue.Provider.GetByIDError = errors.New("foobar")
-		if _, err := s.UpdateUser(testUpdateUserRequest); err == nil {
+		if _, err := s.UpdateUser(testUserUpdateRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}
 
 	{ // Error
 		c.UserSettingsProviderError = errors.New("foobar")
-		if _, err := s.UpdateUser(testUpdateUserRequest); err == nil {
+		if _, err := s.UpdateUser(testUserUpdateRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}
 
 	{ // Error
 		c.UserProviderError = errors.New("foobar")
-		if _, err := s.UpdateUser(testUpdateUserRequest); err == nil {
+		if _, err := s.UpdateUser(testUserUpdateRequest); err == nil {
 			t.Errorf("there should have been an error")
 		}
 	}
@@ -176,7 +176,7 @@ func TestGetUserContextByUUID(t *testing.T) {
 	c := container.NewMockable()
 	s := NewService(&hubconfig.Config{}, c)
 
-	userSession, err := s.SetupServer(standardTestCreateUserRequest)
+	userSession, err := s.SetupServer(standardTestUserCreateRequest)
 	if err != nil {
 		t.Fatalf("Failed to create user session: %s", err.Error())
 	}
@@ -226,7 +226,7 @@ func TestLogin(t *testing.T) {
 	c := container.NewMockable()
 	s := NewService(&hubconfig.Config{}, c)
 
-	_, err := s.SetupServer(standardTestCreateUserRequest)
+	_, err := s.SetupServer(standardTestUserCreateRequest)
 	if err != nil {
 		t.Fatalf("Failed to create user session: %s", err.Error())
 	}
@@ -295,8 +295,8 @@ func TestListUsers(t *testing.T) {
 	c := container.NewMockable()
 	s := NewService(&hubconfig.Config{}, c)
 
-	_, _ = s.SetupServer(standardTestCreateUserRequest)
-	_, _ = s.CreateUser(entity.CreateUserRequest{Email: "foobar@example.com"})
+	_, _ = s.SetupServer(standardTestUserCreateRequest)
+	_, _ = s.CreateUser(entity.UserCreateRequest{Email: "foobar@example.com"})
 
 	{ // Success
 		allUsers, err := s.ListUsers()
@@ -328,7 +328,7 @@ func TestDeleteUser(t *testing.T) {
 	testSetup := func() (*container.Mockable, *Service) {
 		c := container.NewMockable()
 		s := NewService(&hubconfig.Config{}, c)
-		_, err := s.SetupServer(standardTestCreateUserRequest)
+		_, err := s.SetupServer(standardTestUserCreateRequest)
 		if err != nil {
 			t.Fatalf("Failed to create user session: %s", err.Error())
 		}
@@ -338,7 +338,7 @@ func TestDeleteUser(t *testing.T) {
 
 	{ // Success
 		_, s := testSetup()
-		userContext, _ := s.CreateUser(entity.CreateUserRequest{Email: "foobar@example.com"})
+		userContext, _ := s.CreateUser(entity.UserCreateRequest{Email: "foobar@example.com"})
 		if err := s.DeleteUser(userContext.User.UUID); err != nil {
 			t.Error(err)
 		}
@@ -346,7 +346,7 @@ func TestDeleteUser(t *testing.T) {
 
 	{ // Error
 		c, s := testSetup()
-		userContext, _ := s.CreateUser(entity.CreateUserRequest{Email: "foobar@example.com"})
+		userContext, _ := s.CreateUser(entity.UserCreateRequest{Email: "foobar@example.com"})
 		c.UserSettingsProviderValue.Provider.DeleteError = errors.New("foobar")
 		if err := s.DeleteUser(userContext.User.UUID); err == nil {
 			t.Errorf("there should have been an error")
@@ -355,7 +355,7 @@ func TestDeleteUser(t *testing.T) {
 
 	{ // Error
 		c, s := testSetup()
-		userContext, _ := s.CreateUser(entity.CreateUserRequest{Email: "foobar@example.com"})
+		userContext, _ := s.CreateUser(entity.UserCreateRequest{Email: "foobar@example.com"})
 		c.UserProviderValue.Provider.DeleteError = errors.New("foobar")
 		if err := s.DeleteUser(userContext.User.UUID); err == nil {
 			t.Errorf("there should have been an error")
@@ -371,7 +371,7 @@ func TestDeleteUser(t *testing.T) {
 
 	{ // Error
 		c, s := testSetup()
-		userContext, _ := s.CreateUser(entity.CreateUserRequest{Email: "foobar@example.com"})
+		userContext, _ := s.CreateUser(entity.UserCreateRequest{Email: "foobar@example.com"})
 		c.UserProviderValue.Provider.GetByIDError = errors.New("foobar")
 		if err := s.DeleteUser(userContext.User.UUID); err == nil {
 			t.Errorf("there should have been an error")
@@ -380,7 +380,7 @@ func TestDeleteUser(t *testing.T) {
 
 	{ // Error
 		c, s := testSetup()
-		userContext, _ := s.CreateUser(entity.CreateUserRequest{Email: "foobar@example.com"})
+		userContext, _ := s.CreateUser(entity.UserCreateRequest{Email: "foobar@example.com"})
 		c.UserSettingsProviderError = errors.New("foobar")
 		if err := s.DeleteUser(userContext.User.UUID); err == nil {
 			t.Errorf("there should have been an error")
@@ -389,7 +389,7 @@ func TestDeleteUser(t *testing.T) {
 
 	{ // Error
 		c, s := testSetup()
-		userContext, _ := s.CreateUser(entity.CreateUserRequest{Email: "foobar@example.com"})
+		userContext, _ := s.CreateUser(entity.UserCreateRequest{Email: "foobar@example.com"})
 		c.UserProviderError = errors.New("foobar")
 		if err := s.DeleteUser(userContext.User.UUID); err == nil {
 			t.Errorf("there should have been an error")
