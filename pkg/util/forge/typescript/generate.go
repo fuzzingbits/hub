@@ -67,8 +67,6 @@ func getTsFieldName(goFieldName string, tag jsonFieldTag) string {
 	return goFieldName
 }
 
-var fieldTypeReplacer = regexp.MustCompile(`(^[\w]+\.)`)
-
 func getTsFieldType(goFieldType string, tag jsonFieldTag) string {
 	if tag.TypeOverride != "" {
 		goFieldType = tag.TypeOverride

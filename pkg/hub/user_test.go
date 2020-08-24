@@ -77,7 +77,7 @@ func TestGetCurrentSession(t *testing.T) {
 
 	{ // Error
 		invalidRealToken := "INVALID_REAL_TOKEN"
-		c.SessionProviderValue.Set(invalidRealToken, "not a real user UUID")
+		_ = c.SessionProviderValue.Set(invalidRealToken, "not a real user UUID")
 		if _, err := s.GetCurrentSession(invalidRealToken); err == nil {
 			t.Errorf("there should have been an error")
 		}

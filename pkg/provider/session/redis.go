@@ -37,7 +37,9 @@ func (p *RedisProvider) Set(token string, userUUID string) error {
 // AutoMigrate the data connection
 func (p *RedisProvider) AutoMigrate(clearExitstingData bool) error {
 	if clearExitstingData {
-		p.Connection.Do("FLUSHALL")
+		if _, err := p.Connection.Do("FLUSHALL"); err != nil {
+			return err
+		}
 	}
 
 	return nil

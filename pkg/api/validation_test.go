@@ -33,7 +33,7 @@ var routeTestingFunctions = map[string]func(c *container.Mockable, s *hub.Servic
 		}
 	},
 	RouteUserLogin: func(c *container.Mockable, s *hub.Service, r *http.Request) RouteTestTarget {
-		s.SetupServer(testUserCreateRequest)
+		_, _ = s.SetupServer(testUserCreateRequest)
 
 		return RouteTestTarget{
 			Payload: testUserLoginRequest,

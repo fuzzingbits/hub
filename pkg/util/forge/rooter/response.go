@@ -24,7 +24,7 @@ func (s Response) Bytes() []byte {
 func (s Response) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(s.StatusCode)
-	w.Write(s.Bytes())
+	_, _ = w.Write(s.Bytes())
 }
 
 // ResponseHandler is a simpler than http.HandlerFunc for enforcing the proper usage of Response

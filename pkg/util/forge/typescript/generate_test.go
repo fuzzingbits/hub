@@ -21,6 +21,9 @@ type TestUser struct {
 }
 
 func TestGenerate(t *testing.T) {
+	// Unexported fields should not be used
+	_ = TestUser{}.secret
+
 	type args struct {
 		goStructs []interface{}
 	}
