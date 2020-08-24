@@ -14,28 +14,6 @@ export interface HabitStore {
 	habits: Habit[]|null;
 }
 
-export interface Planner {
-	userUUID: string;
-	date: string;
-	priorities: string[]|null;
-	accomplishments: string[]|null;
-	tasksToday: PlannerTask[]|null;
-	tasksTomorrow: PlannerTask[]|null;
-	schedule: PlannerEvent[]|null;
-}
-
-export interface PlannerEvent {
-	name: string;
-	start: string;
-	end: string;
-	color: string;
-}
-
-export interface PlannerTask {
-	name: string;
-	completed: boolean;
-}
-
 export interface ServerStatus {
 	setupRequired: boolean;
 }
@@ -43,12 +21,13 @@ export interface ServerStatus {
 export interface Task {
 	uuid: string;
 	userUUID: string;
-	category: string;
 	name: string;
 	note: string;
 	dueDate: string;
 	completed: boolean;
-	allowedToBeCompletedEarly: boolean;
+	createdAt: string;
+	deletedAt: string|null;
+	canBeCompletedEarly: boolean;
 }
 
 export interface User {

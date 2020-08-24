@@ -5,6 +5,7 @@ import (
 
 	"github.com/fuzzingbits/hub/pkg/hubconfig"
 	"github.com/fuzzingbits/hub/pkg/provider/session"
+	"github.com/fuzzingbits/hub/pkg/provider/task"
 	"github.com/fuzzingbits/hub/pkg/provider/user"
 	"github.com/fuzzingbits/hub/pkg/provider/usersettings"
 	"github.com/gomodule/redigo/redis"
@@ -22,26 +23,34 @@ type Container interface {
 	SessionProvider() (session.Provider, error)
 	// UserSettingsProvider safely builds and returns the Provider
 	UserSettingsProvider() (usersettings.Provider, error)
+	// TaskProvider safely builds and returns the Provider
+	TaskProvider() (task.Provider, error)
 }
 
 // Production is our production container for our external connections
 type Production struct {
 	config *hubconfig.Config
-	// Providers
-	userProvider         *user.DatabaseProvider
-	userSettingsProvider *usersettings.DatabaseProvider
-	sessionProvider      *session.RedisProvider
-	// Clients
-	mariaClient *gorm.DB
-	mongoClient *mongo.Client
-	redisClient redis.Conn
-	// Mutex Locks
-	userProviderMutex         *sync.Mutex
+	// Maria Client
+	mariaClient      *gorm.DB
+	mariaClientMutex *sync.Mutex
+	// Mongo Client
+	mongoClient      *mongo.Client
+	mongoClientMutex *sync.Mutex
+	// Redis Client
+	redisClient      redis.Conn
+	redisClientMutex *sync.Mutex
+	// User Provider
+	userProvider      *user.DatabaseProvider
+	userProviderMutex *sync.Mutex
+	// User Settings Provider
+	userSettingsProvider      *usersettings.DatabaseProvider
 	userSettingsProviderMutex *sync.Mutex
-	sessionProviderMutex      *sync.Mutex
-	mariaClientMutex          *sync.Mutex
-	mongoClientMutex          *sync.Mutex
-	redisClientMutex          *sync.Mutex
+	// Session Provider
+	sessionProvider      *session.RedisProvider
+	sessionProviderMutex *sync.Mutex
+	// Task Provider
+	taskProvider      *task.DatabaseProvider
+	taskProviderMutex *sync.Mutex
 }
 
 // NewProduction builds a container with all of the config
@@ -51,6 +60,7 @@ func NewProduction(hubConfig *hubconfig.Config) Container {
 		userProviderMutex:         &sync.Mutex{},
 		userSettingsProviderMutex: &sync.Mutex{},
 		sessionProviderMutex:      &sync.Mutex{},
+		taskProviderMutex:         &sync.Mutex{},
 		mariaClientMutex:          &sync.Mutex{},
 		mongoClientMutex:          &sync.Mutex{},
 		redisClientMutex:          &sync.Mutex{},
@@ -71,10 +81,15 @@ func (c *Production) AutoMigrate(clearExitstingData bool) error {
 		return err
 	}
 
+	if _, err := c.TaskProvider(); err != nil {
+		return err
+	}
+
 	if err := autoMigrateAll([]dataProvider{
 		c.userProvider,
 		c.userSettingsProvider,
 		c.sessionProvider,
+		c.taskProvider,
 	}, clearExitstingData); err != nil {
 		return err
 	}

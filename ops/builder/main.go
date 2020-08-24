@@ -14,9 +14,6 @@ import (
 var TypeScriptInterfaces = []interface{}{
 	entity.Habit{},
 	entity.HabitStore{},
-	entity.Planner{},
-	entity.PlannerEvent{},
-	entity.PlannerTask{},
 	entity.ServerStatus{},
 	entity.Task{},
 	entity.User{},
