@@ -1,12 +1,10 @@
 package mockableprovider
 
 import (
-	"errors"
 	"sync"
-)
 
-// ErrNotFound is an Not Found Error
-var ErrNotFound = errors.New("Not Found")
+	"github.com/fuzzingbits/hub/pkg/entity"
+)
 
 // Provider is a mockable provider
 type Provider struct {
@@ -77,7 +75,7 @@ func (p *Provider) GetByID(id string) (interface{}, error) {
 
 	item, found := p.store[id]
 	if !found {
-		return nil, ErrNotFound
+		return nil, entity.ErrRecordNotFound
 	}
 
 	return item, nil

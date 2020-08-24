@@ -1,13 +1,8 @@
 package user
 
 import (
-	"errors"
-
 	"github.com/fuzzingbits/hub/pkg/entity"
 )
-
-// ErrNotFound is when a user can not be found by the provided UUID
-var ErrNotFound = errors.New("User Not Found")
 
 // Provider is for working with User data
 type Provider interface {

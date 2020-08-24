@@ -1,8 +1,6 @@
 package session
 
 import (
-	"errors"
-
 	"github.com/fuzzingbits/hub/pkg/util/forge/mockableprovider"
 )
 
@@ -15,10 +13,6 @@ type Mockable struct {
 func (p *Mockable) Get(token string) (string, error) {
 	result, err := p.Provider.GetByID(token)
 	if err != nil {
-		if errors.Is(err, mockableprovider.ErrNotFound) {
-			return "", ErrNotFound
-		}
-
 		return "", err
 	}
 

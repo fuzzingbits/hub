@@ -1,8 +1,6 @@
 package user
 
 import (
-	"errors"
-
 	"github.com/fuzzingbits/hub/pkg/entity"
 	"github.com/fuzzingbits/hub/pkg/util/forge/mockableprovider"
 )
@@ -17,10 +15,6 @@ type Mockable struct {
 func (m *Mockable) GetByUUID(uuid string) (entity.DatabaseUser, error) {
 	item, err := m.Provider.GetByID(uuid)
 	if err != nil {
-		if errors.Is(err, mockableprovider.ErrNotFound) {
-			return entity.DatabaseUser{}, ErrNotFound
-		}
-
 		return entity.DatabaseUser{}, err
 	}
 
@@ -47,7 +41,7 @@ func (m *Mockable) GetByEmail(email string) (entity.DatabaseUser, error) {
 		}
 	}
 
-	return entity.DatabaseUser{}, ErrNotFound
+	return entity.DatabaseUser{}, entity.ErrRecordNotFound
 }
 
 // GetAll Users

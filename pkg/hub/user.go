@@ -3,8 +3,6 @@ package hub
 import (
 	"errors"
 
-	"github.com/fuzzingbits/hub/pkg/provider/session"
-	"github.com/fuzzingbits/hub/pkg/provider/user"
 	"github.com/fuzzingbits/hub/pkg/reactor"
 	"github.com/fuzzingbits/hub/pkg/util/forge/codex"
 	"github.com/fuzzingbits/hub/pkg/util/forge/gol"
@@ -24,9 +22,6 @@ var ErrInvalidLogin = errors.New("Invalid Login")
 
 // ErrMissingValidSession is when there is no valid session
 var ErrMissingValidSession = errors.New("No Valid Session")
-
-// ErrRecordNotFound is when no record is found
-var ErrRecordNotFound = errors.New("Record not found")
 
 // ListUsers gets all users
 func (s *Service) ListUsers() ([]entity.User, error) {
@@ -138,10 +133,6 @@ func (s *Service) DeleteUser(uuid string) error {
 	// Get the exiting user by the provided UUID
 	dbUser, err := userProvider.GetByUUID(uuid)
 	if err != nil {
-		if errors.Is(err, user.ErrNotFound) {
-			return ErrRecordNotFound
-		}
-
 		return err
 	}
 
@@ -167,7 +158,7 @@ func (s *Service) GetCurrentSession(token string) (entity.Session, error) {
 
 	userUUID, err := sessionProvider.Get(token)
 	if err != nil {
-		if errors.Is(err, session.ErrNotFound) {
+		if errors.Is(err, entity.ErrRecordNotFound) {
 			return entity.Session{}, ErrMissingValidSession
 		}
 
@@ -176,7 +167,7 @@ func (s *Service) GetCurrentSession(token string) (entity.Session, error) {
 
 	userContext, err := s.GetUserContextByUUID(userUUID)
 	if err != nil {
-		if errors.Is(err, ErrRecordNotFound) {
+		if errors.Is(err, entity.ErrRecordNotFound) {
 			return entity.Session{}, ErrMissingValidSession
 		}
 
@@ -203,10 +194,6 @@ func (s *Service) GetUserContextByUUID(uuid string) (entity.UserContext, error) 
 
 	databaseUser, err := userProvider.GetByUUID(uuid)
 	if err != nil {
-		if errors.Is(err, user.ErrNotFound) {
-			return entity.UserContext{}, ErrRecordNotFound
-		}
-
 		return entity.UserContext{}, err
 	}
 
@@ -254,7 +241,7 @@ func (s *Service) Login(loginRequest entity.UserLoginRequest) (entity.Session, e
 	// Query the user that we are trying to login as
 	potentialUser, err := userProvider.GetByEmail(loginRequest.Email)
 	if err != nil {
-		if errors.Is(err, user.ErrNotFound) {
+		if errors.Is(err, entity.ErrRecordNotFound) {
 			return entity.Session{}, ErrInvalidLogin
 		}
 

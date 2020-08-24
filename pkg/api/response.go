@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/fuzzingbits/hub/pkg/entity"
 	"github.com/fuzzingbits/hub/pkg/hub"
 	"github.com/fuzzingbits/hub/pkg/util/forge/rooter"
 	"github.com/rollbar/rollbar-go"
@@ -50,7 +51,7 @@ func (a *App) generateErrorResponse(err error, r *http.Request) rooter.Response 
 	}
 
 	// Return early if it's a known error
-	if errors.Is(err, hub.ErrRecordNotFound) {
+	if errors.Is(err, entity.ErrRecordNotFound) {
 		return ResponseRecordNotFound
 	}
 

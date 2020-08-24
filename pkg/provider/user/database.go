@@ -31,7 +31,7 @@ func (d *DatabaseProvider) GetByUUID(uuid string) (entity.DatabaseUser, error) {
 
 	if err := d.Database.Where("`uuid` = ?", uuid).First(&dbUser).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
-			return entity.DatabaseUser{}, ErrNotFound
+			return entity.DatabaseUser{}, entity.ErrRecordNotFound
 		}
 
 		return entity.DatabaseUser{}, err
@@ -46,7 +46,7 @@ func (d *DatabaseProvider) GetByEmail(email string) (entity.DatabaseUser, error)
 
 	if err := d.Database.Where("`email` = ?", email).First(&dbUser).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
-			return entity.DatabaseUser{}, ErrNotFound
+			return entity.DatabaseUser{}, entity.ErrRecordNotFound
 		}
 
 		return entity.DatabaseUser{}, err

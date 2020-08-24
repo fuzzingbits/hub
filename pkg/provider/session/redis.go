@@ -1,6 +1,7 @@
 package session
 
 import (
+	"github.com/fuzzingbits/hub/pkg/entity"
 	"github.com/gomodule/redigo/redis"
 )
 
@@ -18,7 +19,7 @@ func (p *RedisProvider) Get(token string) (string, error) {
 
 	resultBytes, ok := result.([]byte)
 	if !ok {
-		return "", ErrNotFound
+		return "", entity.ErrRecordNotFound
 	}
 
 	return string(resultBytes), nil
