@@ -16,6 +16,7 @@ var TypeScriptInterfaces = []interface{}{
 	entity.HabitStore{},
 	entity.ServerStatus{},
 	entity.Task{},
+	entity.TaskCreateRequest{},
 	entity.User{},
 	entity.UserContext{},
 	entity.UserCreateRequest{},

@@ -30,6 +30,14 @@ export interface Task {
 	canBeCompletedEarly: boolean;
 }
 
+export interface TaskCreateRequest {
+	name: string;
+	note: string;
+	dueDate: string;
+	completed: boolean;
+	canBeCompletedEarly: boolean;
+}
+
 export interface User {
 	uuid: string;
 	email: string;

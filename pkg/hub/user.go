@@ -35,12 +35,9 @@ func (s *Service) ListUsers() ([]entity.User, error) {
 		return nil, err
 	}
 
-	entityUsers := []entity.User{}
-	for _, dbUser := range dbUsers {
-		entityUsers = append(entityUsers, reactor.DatabaseUserToEntity(dbUser))
-	}
+	users := reactor.DatabaseUsersToEntity(dbUsers)
 
-	return entityUsers, nil
+	return users, nil
 }
 
 // UpdateUser updates the full user context

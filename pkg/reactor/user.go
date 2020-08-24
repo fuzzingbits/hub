@@ -16,6 +16,16 @@ func DatabaseUserToEntity(dbUser entity.DatabaseUser) entity.User {
 	}
 }
 
+// DatabaseUsersToEntity does what it says
+func DatabaseUsersToEntity(dbUsers []entity.DatabaseUser) []entity.User {
+	users := []entity.User{}
+	for _, dbUser := range dbUsers {
+		users = append(users, DatabaseUserToEntity(dbUser))
+	}
+
+	return users
+}
+
 // UserCreateRequestToDBUser does with it says
 func UserCreateRequestToDBUser(request entity.UserCreateRequest) entity.DatabaseUser {
 	newUUID := uuid.New().String()

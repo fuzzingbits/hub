@@ -33,3 +33,12 @@ type DatabaseTask struct {
 func (d DatabaseTask) TableName() string {
 	return "task"
 }
+
+// TaskCreateRequest is a create task request
+type TaskCreateRequest struct {
+	Name                string `json:"name"`
+	Note                string `json:"note"`
+	DueDate             string `json:"dueDate"`
+	Completed           bool   `json:"completed"`
+	CanBeCompletedEarly bool   `json:"canBeCompletedEarly"`
+}
