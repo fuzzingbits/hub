@@ -1,4 +1,5 @@
 import * as types from "~/ui/assets/types";
+
 export const state = () => ({
 	status: null as types.ServerStatus | null,
 });

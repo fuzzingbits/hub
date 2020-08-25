@@ -8,6 +8,7 @@
 import Vue from "vue";
 import HubApi from "~/ui/assets/api";
 import * as types from "~/ui/assets/types";
+
 export default Vue.extend({
 	computed: {
 		fullName: function(): string {
