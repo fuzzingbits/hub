@@ -16,7 +16,7 @@ func DatabaseTaskToEntity(dbTask entity.DatabaseTask) entity.Task {
 		DeletedAt:           dbTask.DeletedAt,
 		DueDate:             dbTask.DueDate,
 		Name:                dbTask.Name,
-		Note:                dbTask.Note,
+		Notes:               dbTask.Notes,
 		UserUUID:            dbTask.UserUUID,
 		UUID:                dbTask.UUID,
 	}
@@ -41,7 +41,7 @@ func TaskCreateRequestToDatabaseTask(request entity.TaskCreateRequest, loggedInU
 		DeletedAt:           nil,
 		DueDate:             request.DueDate,
 		Name:                request.Name,
-		Note:                request.Note,
+		Notes:               request.Notes,
 		UserUUID:            loggedInUser.User.UUID,
 		UUID:                uuid.New().String(),
 	}

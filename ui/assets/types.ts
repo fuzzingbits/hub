@@ -22,7 +22,7 @@ export interface Task {
 	uuid: string;
 	userUUID: string;
 	name: string;
-	note: string;
+	notes: string;
 	dueDate: string;
 	completed: boolean;
 	createdAt: string;
@@ -32,9 +32,8 @@ export interface Task {
 
 export interface TaskCreateRequest {
 	name: string;
-	note: string;
+	notes: string;
 	dueDate: string;
-	completed: boolean;
 	canBeCompletedEarly: boolean;
 }
 

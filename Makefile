@@ -32,7 +32,7 @@ clean: ## Remove all git ignored file
 dev-go: install-hooks dev-docker-up ## Start a dev instance of the Go Server
 	clear
 	@go generate
-	@DEV_PROXY_TO_NUXT=true DEV_CLEAR_EXISTING_DATA=true go run main.go
+	@go run main.go
 
 dev-ui: install-hooks ## Start a dev instance of the UI
 	clear

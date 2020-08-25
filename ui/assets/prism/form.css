@@ -1,13 +1,29 @@
-form label {
+form > label {
 	display: block;
+	font-weight: bold;
 	margin-bottom: var(--spacing-half);
 }
 
-form label:last-child {
+form > label label {
+	font-weight: normal;
+}
+
+form > label:last-child {
 	margin: 0;
 }
 
-form input {
+form textarea {
+	resize: vertical;
+	height: 8rem;
+}
+
+form textarea,
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form input[type="color"],
+form input[type="button"],
+form input[type="submit"] {
 	display: block;
 	width: 100%;
 	font-size: inherit;

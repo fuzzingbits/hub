@@ -7,7 +7,7 @@ type Task struct {
 	UUID                string     `json:"uuid"`
 	UserUUID            string     `json:"userUUID"`
 	Name                string     `json:"name"`
-	Note                string     `json:"note"`
+	Notes               string     `json:"notes"`
 	DueDate             string     `json:"dueDate"`
 	Completed           bool       `json:"completed"`
 	CreatedAt           time.Time  `json:"createdAt"`
@@ -21,7 +21,7 @@ type DatabaseTask struct {
 	UUID                string     `gorm:"size:36;not null"`
 	UserUUID            string     `gorm:"size:36;not null"`
 	Name                string     `gorm:"size:128;not null"`
-	Note                string     `gorm:"type:longtext;not null"`
+	Notes               string     `gorm:"type:longtext;not null"`
 	DueDate             string     `gorm:"size:10;not null"`
 	Completed           bool       `gorm:"not null"`
 	CreatedAt           time.Time  `gorm:"not null"`
@@ -37,8 +37,7 @@ func (d DatabaseTask) TableName() string {
 // TaskCreateRequest is a create task request
 type TaskCreateRequest struct {
 	Name                string `json:"name"`
-	Note                string `json:"note"`
+	Notes               string `json:"notes"`
 	DueDate             string `json:"dueDate"`
-	Completed           bool   `json:"completed"`
 	CanBeCompletedEarly bool   `json:"canBeCompletedEarly"`
 }

@@ -1,6 +1,6 @@
 <template>
 	<div class="card">
-		<form @submit.prevent="submit" id="setup-form">
+		<form @submit.prevent="submit" id="page-form">
 			<h2>Server Setup</h2>
 			<p>This is for first time setups only.</p>
 			<label>First Name <input name="firstName" required/></label>
@@ -34,7 +34,7 @@ export default Vue.extend({
 		submit(): void {
 			this.formPoster.reset(true);
 
-			const form = document.querySelector("#setup-form") as HTMLFormElement;
+			const form = document.querySelector("#page-form") as HTMLFormElement;
 			const formData = new FormData(form);
 
 			HubApi.serverSetup({
