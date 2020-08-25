@@ -3,8 +3,8 @@
 		<form @submit.prevent="submit" id="page-form">
 			<h2>Server Setup</h2>
 			<p>This is for first time setups only.</p>
-			<label>First Name <input name="firstName" required/></label>
-			<label>Last Name <input name="lastName" required/></label>
+			<label>First Name <input name="firstName" type="text" required/></label>
+			<label>Last Name <input name="lastName" type="text" required/></label>
 			<label>Email <input name="email" type="email" required/></label>
 			<label>Password <input name="password" type="password" required/></label>
 			<PosterMessage :poster="formPoster" />
