@@ -1,40 +1,5 @@
-export interface Habit {
-	name: string;
-	sunday: boolean;
-	monday: boolean;
-	tuesday: boolean;
-	wednesday: boolean;
-	thursday: boolean;
-	friday: boolean;
-	saturday: boolean;
-}
-
-export interface HabitStore {
-	userUUID: string;
-	habits: Habit[]|null;
-}
-
 export interface ServerStatus {
 	setupRequired: boolean;
-}
-
-export interface Task {
-	uuid: string;
-	userUUID: string;
-	name: string;
-	notes: string;
-	dueDate: string;
-	completed: boolean;
-	createdAt: string;
-	deletedAt: string|null;
-	canBeCompletedEarly: boolean;
-}
-
-export interface TaskCreateRequest {
-	name: string;
-	notes: string;
-	dueDate: string;
-	canBeCompletedEarly: boolean;
 }
 
 export interface User {

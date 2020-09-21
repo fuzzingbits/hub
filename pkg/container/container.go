@@ -5,7 +5,6 @@ import (
 
 	"github.com/fuzzingbits/hub/pkg/hubconfig"
 	"github.com/fuzzingbits/hub/pkg/provider/session"
-	"github.com/fuzzingbits/hub/pkg/provider/task"
 	"github.com/fuzzingbits/hub/pkg/provider/user"
 	"github.com/fuzzingbits/hub/pkg/provider/usersettings"
 	"github.com/gomodule/redigo/redis"
@@ -23,8 +22,6 @@ type Container interface {
 	SessionProvider() (session.Provider, error)
 	// UserSettingsProvider safely builds and returns the Provider
 	UserSettingsProvider() (usersettings.Provider, error)
-	// TaskProvider safely builds and returns the Provider
-	TaskProvider() (task.Provider, error)
 }
 
 // Production is our production container for our external connections
@@ -48,9 +45,6 @@ type Production struct {
 	// Session Provider
 	sessionProvider      *session.RedisProvider
 	sessionProviderMutex *sync.Mutex
-	// Task Provider
-	taskProvider      *task.DatabaseProvider
-	taskProviderMutex *sync.Mutex
 }
 
 // NewProduction builds a container with all of the config
@@ -60,7 +54,6 @@ func NewProduction(hubConfig *hubconfig.Config) Container {
 		userProviderMutex:         &sync.Mutex{},
 		userSettingsProviderMutex: &sync.Mutex{},
 		sessionProviderMutex:      &sync.Mutex{},
-		taskProviderMutex:         &sync.Mutex{},
 		mariaClientMutex:          &sync.Mutex{},
 		mongoClientMutex:          &sync.Mutex{},
 		redisClientMutex:          &sync.Mutex{},
@@ -81,15 +74,10 @@ func (c *Production) AutoMigrate(clearExitstingData bool) error {
 		return err
 	}
 
-	if _, err := c.TaskProvider(); err != nil {
-		return err
-	}
-
 	if err := autoMigrateAll([]dataProvider{
 		c.userProvider,
 		c.userSettingsProvider,
 		c.sessionProvider,
-		c.taskProvider,
 	}, clearExitstingData); err != nil {
 		return err
 	}
