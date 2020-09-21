@@ -101,8 +101,8 @@ func getRootHandler(app App) http.Handler {
 
 func (app App) autoMigrate() {
 	var lastError error
-	maxTryCount := 5
-	postFailureWait := time.Second * 30
+	maxTryCount := 20
+	postFailureWait := time.Second * 15
 
 	for tryCount := 1; tryCount <= maxTryCount; tryCount++ {
 		if lastError = app.Container.AutoMigrate(app.Config.DevClearExitstingData); lastError != nil {
