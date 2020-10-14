@@ -1,7 +1,6 @@
 -include .env
 export
 
-# SHELL := /bin/bash -O globstar
 GO_PATH := $(shell go env GOPATH 2> /dev/null)
 MODULE := $(shell awk '/^module/ {print $$2}' go.mod)
 NAMESPACE := $(shell awk -F "/" '/^module/ {print $$(NF-1)}' go.mod)
@@ -82,13 +81,7 @@ install-hooks:
 pipeline: full post-lint
 
 loc:
-	@echo -n "Go:"
-	@wc -l **/*.go | tail -n 1 | awk '{print " " $$1}'
-	@echo -n "TypeScript:"
-	@wc -l ui/**/*.ts | tail -n 1 | awk '{print " " $$1}'
-	@echo -n "Vue:"
-	@wc -l ui/**/*.vue | tail -n 1 | awk '{print " " $$1}'
-	@echo -n "CSS:"
-	@wc -l ui/**/*.css | tail -n 1 | awk '{print " " $$1}'
-	@echo -n "Total:"
-	@wc -l **/*.go ui/**/*.ts ui/**/*.vue ui/**/*.css | tail -n 1 | awk '{print " " $$1}'
+	@find . -name '*.go' | xargs wc -l | tail -n 1 | awk '{print "Go: " $$1}'
+	@find ./ui -name '*.ts' | xargs wc -l | tail -n 1 | awk '{print "TS: " $$1}'
+	@find ./ui -name '*.vue' | xargs wc -l | tail -n 1 | awk '{print "Vue: " $$1}'
+	@find ./ui -name '*.css' | xargs wc -l | tail -n 1 | awk '{print "CSS: " $$1}'
