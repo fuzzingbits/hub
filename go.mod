@@ -8,6 +8,6 @@ require (
 	github.com/google/uuid v1.1.2
 	github.com/jinzhu/gorm v1.9.16
 	github.com/rollbar/rollbar-go v1.2.0
-	go.mongodb.org/mongo-driver v1.4.1
+	go.mongodb.org/mongo-driver v1.4.2
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381
 )
