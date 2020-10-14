@@ -1,7 +1,7 @@
 -include .env
 export
 
-SHELL := /bin/bash -O globstar
+# SHELL := /bin/bash -O globstar
 GO_PATH := $(shell go env GOPATH 2> /dev/null)
 MODULE := $(shell awk '/^module/ {print $$2}' go.mod)
 NAMESPACE := $(shell awk -F "/" '/^module/ {print $$(NF-1)}' go.mod)
@@ -11,7 +11,7 @@ PATH := $(GO_PATH)/bin:$(PATH)
 help:
 	@echo "Makefile targets:"
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' Makefile \
-	| sed -n 's/^\(.*\): \(.*\)##\(.*\)/\t\1 :: \3/p' \
+	| sed -n 's/^\(.*\): \(.*\)##\(.*\)/    \1 :: \3/p' \
 	| column -t -c 1  -s '::'
 
 full: clean full-ui full-go ## Do a full build
