@@ -1,7 +1,7 @@
 import { NuxtConfig } from "@nuxt/types";
 
 const config: NuxtConfig = {
-	mode: "spa",
+	ssr: false,
 	generate: {
 		fallback: "200.html",
 		exclude: [/^.*$/],
