@@ -7,7 +7,7 @@
 		"dev": "nuxt-ts"
 	},
 	"dependencies": {
-		"@fortawesome/fontawesome-free": "^5.15.0",
+		"@fortawesome/fontawesome-free": "^5.15.1",
 		"@nuxt/typescript-runtime": "^2.0.0",
 		"@types/md5": "^2.2.0",
 		"axios": "^0.20.0",
