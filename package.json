@@ -9,7 +9,7 @@
 	"dependencies": {
 		"@fortawesome/fontawesome-free": "^5.15.2",
 		"@nuxt/typescript-runtime": "^2.0.1",
-		"@types/md5": "^2.2.1",
+		"@types/md5": "^2.3.0",
 		"axios": "^0.21.1",
 		"md5": "^2.3.0",
 		"nuxt": "^2.14.12"
