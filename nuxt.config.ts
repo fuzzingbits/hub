@@ -16,9 +16,9 @@ const config: NuxtConfig = {
 	build: {
 		extractCSS: true,
 	},
-	components: {
-		dirs: ["~/ui/components"],
-	},
+	components: [
+		"~/ui/components"
+	],
 	buildModules: ["@nuxt/typescript-build"],
 	head: {
 		title: "Hub",
