@@ -1,87 +1,67 @@
--include .env
-export
+.PHONY: help docker build build-npm build-go lint lint-npm lint-go test test-go test-npm clean clean-full copy-config post-lint
 
+SHELL=/bin/bash -o pipefail
+
+.DEFAULT_GOAL := help
 GO_PATH := $(shell go env GOPATH 2> /dev/null)
-MODULE := $(shell awk '/^module/ {print $$2}' go.mod)
-NAMESPACE := $(shell awk -F "/" '/^module/ {print $$(NF-1)}' go.mod)
-PROJECT_NAME := $(shell awk -F "/" '/^module/ {print $$(NF)}' go.mod)
 PATH := $(GO_PATH)/bin:$(PATH)
 
-help:
-	@echo "Makefile targets:"
+help: ## Display general help about this command
+	@echo 'Makefile targets:'
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' Makefile \
 	| sed -n 's/^\(.*\): \(.*\)##\(.*\)/    \1 :: \3/p' \
 	| column -t -c 1  -s '::'
 
-full: clean full-ui full-go ## Do a full build
+docker:
+	docker build -t fuzzingbits/hub:latest .
 
-full-go: lint-go test-go build-go
+build: build-npm build-go ## Build the application
 
-full-ui: lint-ui build-ui
-
-docker: clean ## Build the Docker Image
-	docker build -t $(NAMESPACE)/$(PROJECT_NAME):latest .
-
-publish: docker ## Build and publish the Docker Image
-	docker push $(NAMESPACE)/$(PROJECT_NAME):latest
-
-clean: ## Remove all git ignored file
-	git clean -Xdf --exclude="!/.env"
-
-dev-go: install-hooks dev-docker-up ## Start a dev instance of the Go Server
-	clear
-	@go generate
-	@go run main.go
-
-dev-ui: install-hooks ## Start a dev instance of the UI
-	clear
-	[ -d ./node_modules ] || npm install
-	npm run dev
-
-dev-docker-up: install-hooks ## Start the docker containers used for development
-	docker-compose -f ops/hub_dev/docker-compose.yml up -d
-
-dev-docker-down: install-hooks ## Remove the docker containers used for development
-	docker-compose -f ops/hub_dev/docker-compose.yml down
+build-npm:
+	npm install
+	npm run build
 
 build-go:
-	@go install github.com/gobuffalo/packr/packr
+	@cd ; go get github.com/gobuffalo/packr/packr
 	@go generate
-	packr build -o $(CURDIR)/var/$(PROJECT_NAME)
-	@ln -sf $(CURDIR)/var/$(PROJECT_NAME) $(GO_PATH)/bin/$(PROJECT_NAME)
+	packr build -ldflags='-s -w' -o $(CURDIR)/var/hub .
+	@ln -sf $(CURDIR)/var/hub $(GO_PATH)/bin/hub
 
-build-ui:
-	npm run build
+lint: lint-npm lint-go ## Lint the application
+
+lint-npm:
+	npm install
+	npm run lint
 
 lint-go:
 	@cd ; go get golang.org/x/lint/golint
 	@cd ; go get golang.org/x/tools/cmd/goimports
 	go get -d ./...
+	go mod tidy
 	gofmt -s -w .
 	go vet ./...
 	golint -set_exit_status=1 ./...
 	goimports -w .
 
-lint-ui:
-	[ -d ./node_modules ] || npm install
-	npm run fmt
+test: test-go test-npm ## Test the application
 
 test-go:
 	@mkdir -p var/
 	@go test -race -cover -coverprofile  var/coverage.txt ./...
 	@go tool cover -func var/coverage.txt | awk '/^total/{print $$1 " " $$3}'
 
+test-npm:
+	npm install
+	npm run test
+
+clean: ## Remove files listed in .gitignore (possibly with some exceptions)
+	git clean -Xdff --exclude='!/.env'
+
+clean-full:
+	git clean -Xdff
+
+copy-config: ## Copy missing config files into place
+	[ -f /.env ] || cp /.env.dist /.env
+
 post-lint:
-	@git diff --exit-code --quiet || (echo "There should not be any changes after the lint runs" && git status && exit 122;)
-
-install-hooks:
-	echo $$PATH
-	@cp ops/hooks/* .git/hooks/
-
-pipeline: full post-lint
-
-loc:
-	@find . -name '*.go' | xargs wc -l | tail -n 1 | awk '{print "Go: " $$1}'
-	@find ./ui -name '*.ts' | xargs wc -l | tail -n 1 | awk '{print "TS: " $$1}'
-	@find ./ui -name '*.vue' | xargs wc -l | tail -n 1 | awk '{print "Vue: " $$1}'
-	@find ./ui -name '*.css' | xargs wc -l | tail -n 1 | awk '{print "CSS: " $$1}'
+	@git diff --exit-code --quiet || (echo 'There should not be any changes after the lint runs' && git status && exit 1;)

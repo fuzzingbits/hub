@@ -1,17 +1,21 @@
-FROM node:12-buster as nodeBuilder
-WORKDIR /project
+FROM node:14-buster as nodeBuilder
+WORKDIR /build-staging
 COPY . .
-RUN git clean -Xdf
-RUN make full-ui
+RUN make clean-full
+RUN make lint-npm test-npm build-npm
 
-FROM golang:1.15-buster as goBuilder
-WORKDIR /project
+FROM golang:1.16-buster as goBuilder
+WORKDIR /build-staging
 COPY . .
-RUN git clean -Xdf
-COPY --from=nodeBuilder /project/dist/ /project/dist/
-RUN make full-go
+RUN make clean-full
+COPY --from=nodeBuilder /build-staging/resources/dist/ /build-staging/resources/dist/
+RUN make lint-go test-go build-go
 
 FROM debian:buster
-COPY --from=goBuilder /project/var/hub /usr/local/bin/
-CMD ["hub"]
-EXPOSE 2020
+RUN apt-get update
+RUN apt-get install -y ca-certificates
+WORKDIR /app
+COPY --from=goBuilder /build-staging/assets/ ./assets/
+COPY --from=goBuilder /build-staging/var/hub ./hub
+CMD ["./hub"]
+EXPOSE 8000

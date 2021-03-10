@@ -1,8 +1,10 @@
 import { NuxtConfig } from "@nuxt/types";
 
 const config: NuxtConfig = {
+	buildDir: 'var/.nuxt',
 	ssr: false,
 	generate: {
+		dir: "resources/dist",
 		fallback: "200.html",
 		exclude: [/^.*$/],
 	},

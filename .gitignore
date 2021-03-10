@@ -1,13 +1,19 @@
-# Project Temporary Files
+# System Files
+/.vscode/
+/.idea/
+.DS_Store
+
+# Temporary Files
 /var/
+
+# Disted Files
 /.env
 
-# Go
-debug.test
+# NPM Files
+/node_modules/
+npm-debug.log
+/resources/dist/
+
+# Go Files
 __debug_bin
 *-packr.go
-
-# Nuxt
-/node_modules/
-/.nuxt/
-/dist/

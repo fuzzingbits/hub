@@ -64,7 +64,7 @@ func getRootHandler(app App) http.Handler {
 		return httputil.NewSingleHostReverseProxy(uiURL)
 	}
 
-	uiFileSystem := packr.NewBox("../../dist")
+	uiFileSystem := packr.NewBox("../../resources/dist")
 
 	spaHandler := &web.SinglePageAppHandler{
 		FileSystem: uiFileSystem,

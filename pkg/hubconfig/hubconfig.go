@@ -29,7 +29,7 @@ func GetConfig() (*Config, error) {
 
 	// Default values are here
 	c := &Config{
-		Listen:           "0.0.0.0:2020",
+		Listen:           "0.0.0.0:8000",
 		DevUIProxyAddr:   "http://0.0.0.0:3000",
 		DatabaseDSN:      "root:justTheDevPassword@(127.0.0.1:2021)/hub?charset=utf8&parseTime=True&loc=Local",
 		DocumentStoreDSN: "mongodb://root:justTheDevPassword@127.0.0.1:2022",

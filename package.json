@@ -2,20 +2,22 @@
 	"private": true,
 	"prettier": "./ui/.prettierrc.js",
 	"scripts": {
-		"build": "nuxt-ts generate",
-		"fmt": "prettier *.{js,json} ui/**/*.{json,js,ts,vue,css} --write",
-		"dev": "nuxt-ts"
+		"build": "nuxt generate",
+		"test": "",
+		"lint": "prettier *.{js,json} ui/**/*.{json,js,ts,vue,css} --write",
+		"dev": "nuxt"
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-free": "^5.15.2",
 		"@nuxt/typescript-runtime": "^2.1.0",
 		"@types/md5": "^2.3.0",
 		"axios": "^0.21.1",
+		"core-js": "^3.8.3",
 		"md5": "^2.3.0",
-		"nuxt": "^2.15.2"
+		"nuxt": "^2.14.12"
 	},
 	"devDependencies": {
-		"@nuxt/types": "^2.15.2",
-		"@nuxt/typescript-build": "^2.1.0"
+		"@nuxt/types": "^2.14.12",
+		"@nuxt/typescript-build": "^2.0.4"
 	}
 }
