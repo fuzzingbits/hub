@@ -15,7 +15,6 @@ FROM debian:buster
 RUN apt-get update
 RUN apt-get install -y ca-certificates
 WORKDIR /app
-COPY --from=goBuilder /build-staging/assets/ ./assets/
 COPY --from=goBuilder /build-staging/var/hub ./hub
 CMD ["./hub"]
 EXPOSE 8000
