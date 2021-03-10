@@ -18,7 +18,13 @@ func (c *Production) getRedisClient() (redis.Conn, error) {
 	}
 
 	// Try to make a connection
-	client, err := redis.Dial("tcp", c.config.CacheAddress)
+	client, err := redis.Dial(
+		"tcp",
+		c.config.CacheAddress,
+		redis.DialUsername(c.config.CacheUsername),
+		redis.DialPassword(c.config.CachePassword),
+	)
+
 	if err != nil {
 		return nil, err
 	}
