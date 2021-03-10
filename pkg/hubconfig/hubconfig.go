@@ -13,7 +13,6 @@ type Config struct {
 	DatabaseDSN      string `env:"DATABASE_DSN"`
 	DocumentStoreDSN string `env:"DOCUMENT_STORE_DSN"`
 	CacheAddress     string `env:"CACHE_ADDRESS"`
-	CacheUsername    string `env:"CACHE_USERNAME"`
 	CachePassword    string `env:"CACHE_PASSWORD"`
 	// Development Parameters
 	DevProxyToNuxt        bool   `env:"DEV_PROXY_TO_NUXT"`

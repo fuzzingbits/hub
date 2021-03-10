@@ -21,7 +21,6 @@ func (c *Production) getRedisClient() (redis.Conn, error) {
 	client, err := redis.Dial(
 		"tcp",
 		c.config.CacheAddress,
-		redis.DialUsername(c.config.CacheUsername),
 		redis.DialPassword(c.config.CachePassword),
 	)
 
