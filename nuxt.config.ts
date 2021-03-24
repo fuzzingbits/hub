@@ -17,6 +17,7 @@ const config: NuxtConfig = {
 	},
 	build: {
 		extractCSS: true,
+		publicPath: '/nuxt-build/'
 	},
 	components: [
 		"~/ui/components"

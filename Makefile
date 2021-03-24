@@ -1,4 +1,4 @@
-.PHONY: help docker build build-npm build-go lint lint-npm lint-go test test-go test-npm clean clean-full copy-config post-lint
+.PHONY: help docker build build-npm build-go lint lint-npm lint-go test test-npm test-go clean clean-full copy-config post-lint
 
 SHELL=/bin/bash -o pipefail
 
@@ -22,9 +22,8 @@ build-npm:
 	npm run build
 
 build-go:
-	@cd ; go get github.com/gobuffalo/packr/packr
 	@go generate
-	packr build -ldflags='-s -w' -o $(CURDIR)/var/hub .
+	go build -ldflags='-s -w' -o $(CURDIR)/var/hub .
 	@ln -sf $(CURDIR)/var/hub $(GO_PATH)/bin/hub
 
 lint: lint-npm lint-go ## Lint the application
@@ -43,21 +42,23 @@ lint-go:
 	golint -set_exit_status=1 ./...
 	goimports -w .
 
-test: test-go test-npm ## Test the application
+test: test-npm test-go ## Test the application
+
+test-npm:
+	npm install
+	npm run test
 
 test-go:
 	@mkdir -p var/
 	@go test -race -cover -coverprofile  var/coverage.txt ./...
 	@go tool cover -func var/coverage.txt | awk '/^total/{print $$1 " " $$3}'
 
-test-npm:
-	npm install
-	npm run test
-
 clean: ## Remove files listed in .gitignore (possibly with some exceptions)
+	@git init 2> /dev/null
 	git clean -Xdff --exclude='!/.env'
 
 clean-full:
+	@git init 2> /dev/null
 	git clean -Xdff
 
 copy-config: ## Copy missing config files into place

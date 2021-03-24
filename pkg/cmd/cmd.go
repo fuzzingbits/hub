@@ -14,7 +14,7 @@ import (
 	"github.com/fuzzingbits/hub/pkg/hub"
 	"github.com/fuzzingbits/hub/pkg/hubconfig"
 	"github.com/fuzzingbits/hub/pkg/util/forge/web"
-	"github.com/gobuffalo/packr"
+	"github.com/fuzzingbits/hub/resources"
 	"github.com/rollbar/rollbar-go"
 )
 
@@ -64,7 +64,7 @@ func getRootHandler(app App) http.Handler {
 		return httputil.NewSingleHostReverseProxy(uiURL)
 	}
 
-	uiFileSystem := packr.NewBox("../../resources/dist")
+	uiFileSystem := http.FS(resources.Nuxt)
 
 	spaHandler := &web.SinglePageAppHandler{
 		FileSystem: uiFileSystem,
