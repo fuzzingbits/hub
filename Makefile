@@ -1,4 +1,4 @@
-.PHONY: help docker build build-npm build-go lint lint-npm lint-go test test-npm test-go clean clean-full copy-config post-lint
+.PHONY: help full full-go full-npm docker build build-npm build-go lint lint-npm lint-go test test-npm test-go clean clean-full copy-config git-change-check
 
 SHELL=/bin/bash -o pipefail
 
@@ -11,6 +11,12 @@ help: ## Display general help about this command
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' Makefile \
 	| sed -n 's/^\(.*\): \(.*\)##\(.*\)/    \1 :: \3/p' \
 	| column -t -c 1  -s '::'
+
+full: lint test build
+
+full-go: lint-go test-go build-go
+
+full-npm: lint-npm test-npm build-npm
 
 docker:
 	docker build -t fuzzingbits/hub:latest .
@@ -64,5 +70,5 @@ clean-full:
 copy-config: ## Copy missing config files into place
 	[ -f /.env ] || cp /.env.dist /.env
 
-post-lint:
-	@git diff --exit-code --quiet || (echo 'There should not be any changes after the lint runs' && git status && exit 1;)
+git-change-check:
+	@git diff --exit-code --quiet || (echo 'There should not be any changes at this point' && git status && exit 1;)

@@ -16,3 +16,4 @@ npm-debug.log
 
 # Go Files
 __debug_bin
+debug.test
