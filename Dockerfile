@@ -1,4 +1,4 @@
-FROM node:14-buster as nodeBuilder
+FROM node:16-buster as nodeBuilder
 WORKDIR /build-staging
 COPY . .
 RUN make clean-full

@@ -31,10 +31,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import * as types from "~/ui/assets/types";
-import md5 from "md5";
-import HubApi from "~/ui/assets/api";
+import Vue from 'vue';
+import * as types from '~/ui/assets/types';
+import md5 from 'md5';
+import HubApi from '~/ui/assets/api';
 
 export default Vue.extend({
 	data: function() {
@@ -45,24 +45,24 @@ export default Vue.extend({
 	methods: {
 		logout() {
 			HubApi.userLogout();
-			this.$store.commit("user/setState", null);
-			this.$router.push("/");
+			this.$store.commit('user/setState', null);
+			this.$router.push('/');
 		},
 	},
 	computed: {
 		profilePictureHref: function(): string {
 			if (this.setupRequired) {
-				return "/setup";
+				return '/setup';
 			}
 
 			if (!this.session) {
-				return "/login";
+				return '/login';
 			}
 
-			return "/profile";
+			return '/profile';
 		},
 		profilePictureURL: function(): string {
-			let email = "";
+			let email = '';
 			if (this.session) {
 				email = this.session.user.email;
 				email.toLowerCase();

@@ -12,8 +12,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import Poster from "~/ui/assets/poster";
+import Vue from 'vue';
+import Poster from '~/ui/assets/poster';
 
 export default Vue.extend({
 	props: {

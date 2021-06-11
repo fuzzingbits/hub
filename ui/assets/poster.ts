@@ -1,6 +1,6 @@
-import * as types from "./types";
+import * as types from './types';
 
-function isApiResponse(response: any): boolean {
+function isApiResponse(response: types.Response): boolean {
 	return true;
 }
 
@@ -8,13 +8,13 @@ class Poster {
 	public state = true;
 	public complete = false;
 	public loading = false;
-	public message = "";
+	public message = '';
 
 	public constructor(startLoading = false) {
 		this.loading = startLoading;
 	}
 
-	public setResponse(response: types.Response) {
+	public setResponse(response: types.Response): void {
 		// Complete the request
 		this.loading = false;
 		this.complete = true;
@@ -24,7 +24,7 @@ class Poster {
 		this.message = response.message;
 	}
 
-	public handlerError(err: any) {
+	public handlerError(err: any): void {
 		// Complete the request
 		this.loading = false;
 		this.complete = true;
@@ -40,13 +40,13 @@ class Poster {
 		}
 
 		this.state = false;
-		this.message = "Something went wrong";
+		this.message = 'Something went wrong';
 	}
 
 	public reset(loading = false) {
 		this.complete = false;
 		this.state = true;
-		this.message = "";
+		this.message = '';
 		this.loading = loading;
 	}
 }

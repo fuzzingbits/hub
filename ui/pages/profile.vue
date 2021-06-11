@@ -16,10 +16,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import HubApi from "~/ui/assets/api";
-import Poster from "~/ui/assets/poster";
-import * as types from "~/ui/assets/types";
+import Vue from 'vue';
+import HubApi from '~/ui/assets/api';
+import Poster from '~/ui/assets/poster';
+import * as types from '~/ui/assets/types';
 
 export default Vue.extend({
 	data: function() {
@@ -34,24 +34,24 @@ export default Vue.extend({
 	},
 	methods: {
 		changeColor(e: any) {
-			const form = document.querySelector("#page-form") as HTMLFormElement;
+			const form = document.querySelector('#page-form') as HTMLFormElement;
 			const formData = new FormData(form);
-			document.documentElement.style.setProperty("--primary-light", formData.get("themeColorLight") as string);
-			document.documentElement.style.setProperty("--primary-dark", formData.get("themeColorDark") as string);
+			document.documentElement.style.setProperty('--primary-light', formData.get('themeColorLight') as string);
+			document.documentElement.style.setProperty('--primary-dark', formData.get('themeColorDark') as string);
 		},
 		submit(): void {
 			this.formPoster.reset(true);
 
-			const form = document.querySelector("#page-form") as HTMLFormElement;
+			const form = document.querySelector('#page-form') as HTMLFormElement;
 			const formData = new FormData(form);
 
 			HubApi.userUpdate({
-				uuid: formData.get("uuid") as string,
-				firstName: formData.get("firstName") as string,
-				lastName: formData.get("lastName") as string,
-				email: formData.get("email") as string,
-				themeColorLight: formData.get("themeColorLight") as string,
-				themeColorDark: formData.get("themeColorDark") as string,
+				uuid: formData.get('uuid') as string,
+				firstName: formData.get('firstName') as string,
+				lastName: formData.get('lastName') as string,
+				email: formData.get('email') as string,
+				themeColorLight: formData.get('themeColorLight') as string,
+				themeColorDark: formData.get('themeColorDark') as string,
 			})
 				.then(response => {
 					this.formPoster.setResponse(response);
@@ -60,7 +60,7 @@ export default Vue.extend({
 					}
 
 					// Login the user
-					this.$store.commit("user/setState", response.data);
+					this.$store.commit('user/setState', response.data);
 				})
 				.catch(err => {
 					this.formPoster.handlerError(err);

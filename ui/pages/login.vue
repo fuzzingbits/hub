@@ -12,9 +12,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import HubApi from "~/ui/assets/api";
-import Poster from "~/ui/assets/poster";
+import Vue from 'vue';
+import HubApi from '~/ui/assets/api';
+import Poster from '~/ui/assets/poster';
 
 export default Vue.extend({
 	data: function() {
@@ -26,12 +26,12 @@ export default Vue.extend({
 		submit(): void {
 			this.formPoster.reset(true);
 
-			const form = document.querySelector("#page-form") as HTMLFormElement;
+			const form = document.querySelector('#page-form') as HTMLFormElement;
 			const formData = new FormData(form);
 
 			HubApi.userLogin({
-				email: formData.get("email") as string,
-				password: formData.get("password") as string,
+				email: formData.get('email') as string,
+				password: formData.get('password') as string,
 			})
 				.then(response => {
 					this.formPoster.setResponse(response);
@@ -40,10 +40,10 @@ export default Vue.extend({
 					}
 
 					// Login the user
-					this.$store.commit("user/setState", response.data);
+					this.$store.commit('user/setState', response.data);
 
 					// Redirect to the home page
-					this.$router.push("/");
+					this.$router.push('/');
 				})
 				.catch(err => {
 					this.formPoster.handlerError(err);

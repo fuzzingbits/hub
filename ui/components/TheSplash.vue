@@ -13,9 +13,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import HubApi from "~/ui/assets/api";
-import Poster from "~/ui/assets/poster";
+import Vue from 'vue';
+import HubApi from '~/ui/assets/api';
+import Poster from '~/ui/assets/poster';
 
 export default Vue.extend({
 	data: function() {
@@ -53,7 +53,7 @@ export default Vue.extend({
 			this.userPoster.reset(true);
 			HubApi.userMe()
 				.then(response => {
-					this.$store.commit("user/setState", response.data);
+					this.$store.commit('user/setState', response.data);
 					this.userPoster.setResponse(response);
 					this.userDataLoadedOnce = true;
 				})
@@ -65,12 +65,12 @@ export default Vue.extend({
 			this.serverPoster.reset(true);
 			HubApi.serverStatus()
 				.then(response => {
-					this.$store.commit("server/setStatus", response.data);
+					this.$store.commit('server/setStatus', response.data);
 					this.serverPoster.setResponse(response);
 					this.serverDataLoadedOnce = true;
 
 					if (response.data && response.data.setupRequired) {
-						this.$router.push("/setup");
+						this.$router.push('/setup');
 					}
 				})
 				.catch(err => {

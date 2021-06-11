@@ -4,7 +4,7 @@
 	"scripts": {
 		"build": "nuxt generate",
 		"test": "",
-		"lint": "prettier *.{js,json} ui/**/*.{json,js,ts,vue,css} --write",
+		"lint": "eslint --ext .js,.ts,.vue ui --fix --quiet",
 		"dev": "nuxt"
 	},
 	"dependencies": {
@@ -18,6 +18,8 @@
 	},
 	"devDependencies": {
 		"@nuxt/types": "^2.15.6",
-		"@nuxt/typescript-build": "^2.0.4"
+		"@nuxt/typescript-build": "^2.0.4",
+		"@vue/eslint-config-typescript": "^7.0.0",
+		"eslint": "^7.28.0"
 	}
 }

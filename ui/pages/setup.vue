@@ -14,10 +14,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import HubApi from "~/ui/assets/api";
-import * as types from "~/ui/assets/types";
-import Poster from "~/ui/assets/poster";
+import Vue from 'vue';
+import HubApi from '~/ui/assets/api';
+import * as types from '~/ui/assets/types';
+import Poster from '~/ui/assets/poster';
 
 export default Vue.extend({
 	data: function() {
@@ -34,14 +34,14 @@ export default Vue.extend({
 		submit(): void {
 			this.formPoster.reset(true);
 
-			const form = document.querySelector("#page-form") as HTMLFormElement;
+			const form = document.querySelector('#page-form') as HTMLFormElement;
 			const formData = new FormData(form);
 
 			HubApi.serverSetup({
-				firstName: formData.get("firstName") as string,
-				lastName: formData.get("lastName") as string,
-				email: formData.get("email") as string,
-				password: formData.get("password") as string,
+				firstName: formData.get('firstName') as string,
+				lastName: formData.get('lastName') as string,
+				email: formData.get('email') as string,
+				password: formData.get('password') as string,
 			})
 				.then(response => {
 					this.formPoster.setResponse(response);
@@ -50,16 +50,16 @@ export default Vue.extend({
 					}
 
 					// Login the new user
-					this.$store.commit("user/setState", response.data);
+					this.$store.commit('user/setState', response.data);
 
 					// Update the server status
 					let serverStatus: types.ServerStatus = {
 						setupRequired: false,
 					};
-					this.$store.commit("server/setStatus", serverStatus);
+					this.$store.commit('server/setStatus', serverStatus);
 
 					// Redirect to the home page
-					this.$router.push("/");
+					this.$router.push('/');
 				})
 				.catch(err => {
 					this.formPoster.handlerError(err);

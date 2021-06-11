@@ -12,10 +12,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import HubApi from "~/ui/assets/api";
-import Poster from "~/ui/assets/poster";
-import * as types from "~/ui/assets/types";
+import Vue from 'vue';
+import HubApi from '~/ui/assets/api';
+import Poster from '~/ui/assets/poster';
+import * as types from '~/ui/assets/types';
 
 export default Vue.extend({});
 </script>
