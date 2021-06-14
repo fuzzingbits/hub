@@ -1,6 +1,5 @@
 {
 	"private": true,
-	"prettier": "./ui/.prettierrc.js",
 	"scripts": {
 		"build": "nuxt generate",
 		"test": "",
