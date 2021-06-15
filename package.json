@@ -13,7 +13,7 @@
 		"axios": "^0.21.1",
 		"core-js": "^3.12.1",
 		"md5": "^2.3.0",
-		"nuxt": "^2.15.6"
+		"nuxt": "^2.15.7"
 	},
 	"devDependencies": {
 		"@nuxt/types": "^2.15.6",
