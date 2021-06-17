@@ -1,4 +1,4 @@
-.PHONY: help full full-go full-npm docker build build-npm build-go lint lint-npm lint-go test test-npm test-go clean clean-full copy-config git-change-check
+.PHONY: help full full-go full-npm docker build build-npm build-go lint lint-npm lint-go test test-npm test-go clean clean-full copy-config projectl git-change-check
 
 SHELL=/bin/bash -o pipefail
 
@@ -69,6 +69,10 @@ clean-full:
 
 copy-config: ## Copy missing config files into place
 	[ -f /.env ] || cp /.env.dist /.env
+
+projectl:
+	@cd ; go get github.com/aaronellington/projectl
+	projectl
 
 git-change-check:
 	@git diff --exit-code --quiet || (echo 'There should not be any changes at this point' && git status && exit 1;)
