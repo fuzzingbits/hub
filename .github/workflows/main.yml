@@ -16,9 +16,6 @@ jobs:
         with:
           go-version: 1.16
 
-      - name: Install projectl
-        run: cd ; go get github.com/aaronellington/projectl
-
       - name: Set up Node
         uses: actions/setup-node@v1
         with:
