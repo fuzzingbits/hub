@@ -19,6 +19,6 @@
 		"@nuxt/types": "^2.15.6",
 		"@nuxt/typescript-build": "^2.0.4",
 		"@vue/eslint-config-typescript": "^7.0.0",
-		"eslint": "^7.28.0"
+		"eslint": "^7.29.0"
 	}
 }
