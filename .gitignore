@@ -9,6 +9,10 @@
 # Disted Files
 /.env
 
+# Environment Files
+/.env.local
+/.env.*.local
+
 # NPM Files
 /node_modules/
 npm-debug.log

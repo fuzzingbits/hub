@@ -39,8 +39,8 @@ lint-npm:
 	npm run lint
 
 lint-go:
-	@cd ; go get golang.org/x/lint/golint
-	@cd ; go get golang.org/x/tools/cmd/goimports
+	@go install golang.org/x/lint/golint@latest
+	@go install golang.org/x/tools/cmd/goimports@latest
 	go get -d ./...
 	go mod tidy
 	gofmt -s -w .
@@ -71,7 +71,7 @@ copy-config: ## Copy missing config files into place
 	[ -f /.env ] || cp /.env.dist /.env
 
 projectl:
-	@cd ; go get github.com/aaronellington/projectl
+	@go install github.com/aaronellington/projectl@latest
 	$(shell go env GOPATH)/bin/projectl
 
 git-change-check:
