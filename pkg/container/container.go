@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/fuzzingbits/hub/pkg/hubconfig"
+	"github.com/fuzzingbits/hub/pkg/provider/routine"
 	"github.com/fuzzingbits/hub/pkg/provider/session"
 	"github.com/fuzzingbits/hub/pkg/provider/user"
 	"github.com/fuzzingbits/hub/pkg/provider/usersettings"
@@ -22,6 +23,8 @@ type Container interface {
 	SessionProvider() (session.Provider, error)
 	// UserSettingsProvider safely builds and returns the Provider
 	UserSettingsProvider() (usersettings.Provider, error)
+	// RoutineProvider safely builds and returns the Provider
+	RoutineProvider() (routine.Provider, error)
 }
 
 // Production is our production container for our external connections
@@ -45,6 +48,9 @@ type Production struct {
 	// Session Provider
 	sessionProvider      *session.RedisProvider
 	sessionProviderMutex *sync.Mutex
+	// Routine Provider
+	routineProvider      *routine.DatabaseProvider
+	routineProviderMutex *sync.Mutex
 }
 
 // NewProduction builds a container with all of the config
@@ -57,6 +63,7 @@ func NewProduction(hubConfig *hubconfig.Config) Container {
 		mariaClientMutex:          &sync.Mutex{},
 		mongoClientMutex:          &sync.Mutex{},
 		redisClientMutex:          &sync.Mutex{},
+		routineProviderMutex:      &sync.Mutex{},
 	}
 }
 
@@ -74,10 +81,15 @@ func (c *Production) AutoMigrate(clearExitstingData bool) error {
 		return err
 	}
 
+	if _, err := c.RoutineProvider(); err != nil {
+		return err
+	}
+
 	if err := autoMigrateAll([]dataProvider{
 		c.userProvider,
 		c.userSettingsProvider,
 		c.sessionProvider,
+		c.routineProvider,
 	}, clearExitstingData); err != nil {
 		return err
 	}

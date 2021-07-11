@@ -3,6 +3,7 @@ package container
 import (
 	"fmt"
 
+	"github.com/fuzzingbits/hub/pkg/provider/routine"
 	"github.com/fuzzingbits/hub/pkg/provider/session"
 	"github.com/fuzzingbits/hub/pkg/provider/user"
 	"github.com/fuzzingbits/hub/pkg/provider/usersettings"
@@ -17,6 +18,8 @@ type Mockable struct {
 	UserSettingsProviderError error
 	SessionProviderValue      *session.Mockable
 	SessionProviderError      error
+	RoutineProviderValue      *routine.Mockable
+	RoutineProviderError      error
 }
 
 // NewMockable builds a new mockable container
@@ -29,6 +32,9 @@ func NewMockable() *Mockable {
 			Provider: mockableprovider.NewProvider(),
 		},
 		SessionProviderValue: &session.Mockable{
+			Provider: mockableprovider.NewProvider(),
+		},
+		RoutineProviderValue: &routine.Mockable{
 			Provider: mockableprovider.NewProvider(),
 		},
 	}
@@ -64,4 +70,13 @@ func (m *Mockable) SessionProvider() (session.Provider, error) {
 	}
 
 	return m.SessionProviderValue, m.SessionProviderError
+}
+
+// RoutineProvider safely builds and returns the Provider
+func (m *Mockable) RoutineProvider() (routine.Provider, error) {
+	if m.RoutineProviderValue == nil {
+		return nil, fmt.Errorf("error getting the mockable session.Provider")
+	}
+
+	return m.RoutineProviderValue, m.RoutineProviderError
 }
