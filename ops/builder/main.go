@@ -13,6 +13,8 @@ import (
 // TypeScriptInterfaces written to `ui/assets/types.ts`
 var TypeScriptInterfaces = []interface{}{
 	entity.ServerStatus{},
+	entity.Task{},
+	entity.TaskCreateRequest{},
 	entity.User{},
 	entity.UserContext{},
 	entity.UserCreateRequest{},

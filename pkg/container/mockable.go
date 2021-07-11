@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/fuzzingbits/hub/pkg/provider/session"
+	"github.com/fuzzingbits/hub/pkg/provider/task"
 	"github.com/fuzzingbits/hub/pkg/provider/user"
 	"github.com/fuzzingbits/hub/pkg/provider/usersettings"
 	"github.com/fuzzingbits/hub/pkg/util/forge/mockableprovider"
@@ -17,6 +18,8 @@ type Mockable struct {
 	UserSettingsProviderError error
 	SessionProviderValue      *session.Mockable
 	SessionProviderError      error
+	TaskProviderValue         *task.Mockable
+	TaskProviderError         error
 }
 
 // NewMockable builds a new mockable container
@@ -29,6 +32,9 @@ func NewMockable() *Mockable {
 			Provider: mockableprovider.NewProvider(),
 		},
 		SessionProviderValue: &session.Mockable{
+			Provider: mockableprovider.NewProvider(),
+		},
+		TaskProviderValue: &task.Mockable{
 			Provider: mockableprovider.NewProvider(),
 		},
 	}
@@ -64,4 +70,13 @@ func (m *Mockable) SessionProvider() (session.Provider, error) {
 	}
 
 	return m.SessionProviderValue, m.SessionProviderError
+}
+
+// TaskProvider safely builds and returns the Provider
+func (m *Mockable) TaskProvider() (task.Provider, error) {
+	if m.TaskProviderValue == nil {
+		return nil, fmt.Errorf("error getting the mockable task.Provider")
+	}
+
+	return m.TaskProviderValue, m.TaskProviderError
 }
